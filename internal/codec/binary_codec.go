@@ -10,7 +10,7 @@ import (
 )
 
 type BinaryCodec interface {
-	Encode(buf *bytes.Buffer)
+	Encode(buf *bytes.Buffer) error
 	Decode(buf *bytes.Reader) error
 }
 
