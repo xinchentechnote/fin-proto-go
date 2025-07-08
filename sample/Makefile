@@ -25,6 +25,7 @@ fmt: fix
 
 fix:
 	@echo "Applying fixes..."
+	goimports -w ./..
 	go fix ./...
 
 test:
