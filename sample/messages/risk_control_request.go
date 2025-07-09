@@ -19,7 +19,7 @@ func (s *SubOrder) Encode(buf *bytes.Buffer) {
 	binary.Write(buf, binary.LittleEndian, s.Qty)
 }
 
-func (s *SubOrder) Decode(buf *bytes.Reader) error {
+func (s *SubOrder) Decode(buf *bytes.Buffer) error {
 	var err error
 	if s.ClOrdID, err = codec.GetFixedString(buf, 16); err != nil {
 		return err
@@ -60,7 +60,7 @@ func (r *RiskControlRequest) Encode(buf *bytes.Buffer) error {
 	return nil
 }
 
-func (r *RiskControlRequest) Decode(buf *bytes.Reader) error {
+func (r *RiskControlRequest) Decode(buf *bytes.Buffer) error {
 	var err error
 	if r.UniqueOrderID, err = codec.GetStringLE[uint16](buf); err != nil {
 		return err

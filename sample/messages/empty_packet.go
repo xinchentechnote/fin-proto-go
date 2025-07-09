@@ -28,6 +28,5 @@ func (p *EmptyPacket) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *EmptyPacket) Decode(buf *bytes.Buffer) error {
-	// Implement decoding logic here.
 	return nil
 }

@@ -3,6 +3,7 @@ package sample_bin
 
 import (
 	"bytes"
+	"encoding/binary"
 	"fmt"
 )
 
@@ -25,12 +26,23 @@ func (p *InerPacket) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *InerPacket) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldU32); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldU32", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldI16List); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldI16List", err)
+	}
 	return nil
 }
 
 // Decode decodes the packet from a byte slice.
 func (p *InerPacket) Decode(buf *bytes.Buffer) error {
-	// Implement decoding logic here.
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldU32); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldU32", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldI16List); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldI16List", err)
+	}
 	return nil
 }
 
@@ -54,11 +66,28 @@ func (p *NestedPacket) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *NestedPacket) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
+	if err := p.SubPacket.Encode(buf); err != nil {
+		return err
+	}
+	if err := p.SubPacketList.Encode(buf); err != nil {
+		return err
+	}
+	if err := p.InerPacket.Encode(buf); err != nil {
+		return err
+	}
 	return nil
 }
 
 // Decode decodes the packet from a byte slice.
 func (p *NestedPacket) Decode(buf *bytes.Buffer) error {
-	// Implement decoding logic here.
+	if err := p.SubPacket.Decode(buf); err != nil {
+		return err
+	}
+	if err := p.SubPacketList.Decode(buf); err != nil {
+		return err
+	}
+	if err := p.InerPacket.Decode(buf); err != nil {
+		return err
+	}
 	return nil
 }

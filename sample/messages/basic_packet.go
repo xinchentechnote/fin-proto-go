@@ -3,6 +3,7 @@ package sample_bin
 
 import (
 	"bytes"
+	"encoding/binary"
 	"fmt"
 )
 
@@ -43,11 +44,130 @@ func (p *BasicPacket) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *BasicPacket) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldI8); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldI8", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldI16); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldI16", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldI32); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldI32", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldI64); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldI64", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldU8); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldU8", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldU16); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldU16", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldU32); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldU32", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldU64); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldU64", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldF32); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldF32", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldF64); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldF64", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldI8List); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldI8List", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldI16List); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldI16List", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldI32List); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldI32List", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldI64List); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldI64List", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldU8List); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldU8List", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldU16List); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldU16List", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldU32List); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldU32List", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldU64List); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldU64List", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldF32List); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldF32List", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldF64List); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldF64List", err)
+	}
 	return nil
 }
 
 // Decode decodes the packet from a byte slice.
 func (p *BasicPacket) Decode(buf *bytes.Buffer) error {
-	// Implement decoding logic here.
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldI8); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldI8", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldI16); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldI16", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldI32); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldI32", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldI64); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldI64", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldU8); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldU8", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldU16); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldU16", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldU32); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldU32", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldU64); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldU64", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldF32); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldF32", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldF64); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldF64", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldI8List); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldI8List", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldI16List); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldI16List", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldI32List); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldI32List", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldI64List); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldI64List", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldU8List); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldU8List", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldU16List); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldU16List", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldU32List); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldU32List", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldU64List); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldU64List", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldF32List); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldF32List", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldF64List); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldF64List", err)
+	}
 	return nil
 }

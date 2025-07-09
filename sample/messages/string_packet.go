@@ -4,6 +4,8 @@ package sample_bin
 import (
 	"bytes"
 	"fmt"
+
+	"github.com/xinchentechnote/fin-proto-go/internal/codec"
 )
 
 // StringPacket represents the packet structure.
@@ -31,11 +33,74 @@ func (p *StringPacket) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *StringPacket) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
+	if err := codec.PutString[uint16](buf, p.FieldDynamicString); err != nil {
+		return err
+	}
+	if err := codec.PutString[uint16](buf, p.FieldDynamicString1); err != nil {
+		return err
+	}
+	if err := codec.PutFixedString(buf, p.FieldFixedString1, 1); err != nil {
+		return err
+	}
+	if err := codec.PutFixedString(buf, p.FieldFixedString10, 10); err != nil {
+		return err
+	}
+	if err := codec.PutString[uint16](buf, p.FieldDynamicStringList); err != nil {
+		return err
+	}
+	if err := codec.PutString[uint16](buf, p.FieldDynamicString1List); err != nil {
+		return err
+	}
+	if err := codec.PutFixedString(buf, p.FieldFixedString1List, 1); err != nil {
+		return err
+	}
+	if err := codec.PutFixedString(buf, p.FieldFixedString10List, 10); err != nil {
+		return err
+	}
 	return nil
 }
 
 // Decode decodes the packet from a byte slice.
 func (p *StringPacket) Decode(buf *bytes.Buffer) error {
-	// Implement decoding logic here.
+	if val, err := codec.GetString[uint16](buf); err != nil {
+		return err
+	} else {
+		p.FieldDynamicString = val
+	}
+	if val, err := codec.GetString[uint16](buf); err != nil {
+		return err
+	} else {
+		p.FieldDynamicString1 = val
+	}
+	if val, err := codec.GetFixedString(buf, 1); err != nil {
+		return err
+	} else {
+		p.FieldFixedString1 = val
+	}
+	if val, err := codec.GetFixedString(buf, 10); err != nil {
+		return err
+	} else {
+		p.FieldFixedString10 = val
+	}
+	if val, err := codec.GetString[uint16](buf); err != nil {
+		return err
+	} else {
+		p.FieldDynamicStringList = val
+	}
+	if val, err := codec.GetString[uint16](buf); err != nil {
+		return err
+	} else {
+		p.FieldDynamicString1List = val
+	}
+	if val, err := codec.GetFixedString(buf, 1); err != nil {
+		return err
+	} else {
+		p.FieldFixedString1List = val
+	}
+	if val, err := codec.GetFixedString(buf, 10); err != nil {
+		return err
+	} else {
+		p.FieldFixedString10List = val
+	}
 	return nil
 }
