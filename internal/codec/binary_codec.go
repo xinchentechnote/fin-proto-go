@@ -11,7 +11,7 @@ import (
 
 type BinaryCodec interface {
 	Encode(buf *bytes.Buffer) error
-	Decode(buf *bytes.Reader) error
+	Decode(buf *bytes.Buffer) error
 }
 
 type BasicType interface {
@@ -24,12 +24,39 @@ type BasicType interface {
 // String Functions
 // ----------------------------
 
-func PutStringLE[T constraints.Unsigned](buf *bytes.Buffer, s string) {
-	binary.Write(buf, binary.LittleEndian, T(len(s)))
-	buf.WriteString(s)
+func PutString[T constraints.Unsigned](buf *bytes.Buffer, s string) error {
+	if err := binary.Write(buf, binary.BigEndian, T(len(s))); err != nil {
+		return err
+	}
+	if _, err := buf.WriteString(s); err != nil {
+		return err
+	}
+	return nil
 }
 
-func GetStringLE[T constraints.Unsigned](buf *bytes.Reader) (string, error) {
+func PutStringLE[T constraints.Unsigned](buf *bytes.Buffer, s string) error {
+	if err := binary.Write(buf, binary.LittleEndian, T(len(s))); err != nil {
+		return err
+	}
+	if _, err := buf.WriteString(s); err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetString[T constraints.Unsigned](buf *bytes.Buffer) (string, error) {
+	var t T
+	if err := binary.Read(buf, binary.BigEndian, &t); err != nil {
+		return "", err
+	}
+	length := int(t)
+
+	strBytes := make([]byte, length)
+	_, err := io.ReadFull(buf, strBytes)
+	return string(strBytes), err
+}
+
+func GetStringLE[T constraints.Unsigned](buf *bytes.Buffer) (string, error) {
 	var t T
 	if err := binary.Read(buf, binary.LittleEndian, &t); err != nil {
 		return "", err
@@ -41,17 +68,24 @@ func GetStringLE[T constraints.Unsigned](buf *bytes.Reader) (string, error) {
 	return string(strBytes), err
 }
 
-func PutFixedString(buf *bytes.Buffer, s string, fixedLen int) {
+func PutFixedString(buf *bytes.Buffer, s string, fixedLen int) error {
 	data := []byte(s)
 	if len(data) > fixedLen {
-		buf.Write(data[:fixedLen])
+		if _, err := buf.Write(data[:fixedLen]); err != nil {
+			return err
+		}
 	} else {
-		buf.Write(data)
-		buf.Write(bytes.Repeat([]byte{0}, fixedLen-len(data)))
+		if _, err := buf.Write(data); err != nil {
+			return err
+		}
+		if _, err := buf.Write(bytes.Repeat([]byte{0}, fixedLen-len(data))); err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
-func GetFixedString(buf *bytes.Reader, fixedLen int) (string, error) {
+func GetFixedString(buf *bytes.Buffer, fixedLen int) (string, error) {
 	strBytes := make([]byte, fixedLen)
 	_, err := io.ReadFull(buf, strBytes)
 	return string(bytes.TrimRight(strBytes, "\x00")), err
@@ -60,21 +94,26 @@ func GetFixedString(buf *bytes.Reader, fixedLen int) (string, error) {
 // PutStringListLE encodes a list of strings into the buffer using little-endian format.
 // T: type used for the list length prefix (e.g., uint8, uint16, uint32)
 // K: type used for each string's length prefix (e.g., uint8, uint16, uint32)
-func PutStringListLE[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.Buffer, values []string) {
+func PutStringListLE[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.Buffer, values []string) error {
 	// Write the list length prefix
-	_ = binary.Write(buf, binary.LittleEndian, T(len(values)))
+	if err := binary.Write(buf, binary.LittleEndian, T(len(values))); err != nil {
+		return err
+	}
 
 	// Write each string with its own length prefix
 	for _, s := range values {
-		_ = binary.Write(buf, binary.LittleEndian, K(len(s)))
+		if err := binary.Write(buf, binary.LittleEndian, K(len(s))); err != nil {
+			return err
+		}
 		buf.WriteString(s)
 	}
+	return nil
 }
 
 // GetStringListLE decodes a list of strings from a buffer using little-endian encoding.
 // T: type used for the list length prefix (e.g., uint8, uint16, uint32)
 // K: type used for each string's length prefix (e.g., uint8, uint16, uint32)
-func GetStringListLE[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.Reader) ([]string, error) {
+func GetStringListLE[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.Buffer) ([]string, error) {
 	var t T
 	if err := binary.Read(buf, binary.LittleEndian, &t); err != nil {
 		return nil, err
@@ -101,7 +140,7 @@ func GetStringListLE[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.
 }
 
 // GetBasicType reads a basic type value from the buffer using the specified byte order.
-func GetBasicType[T BasicType](buf *bytes.Reader, order binary.ByteOrder) (T, error) {
+func GetBasicType[T BasicType](buf *bytes.Buffer, order binary.ByteOrder) (T, error) {
 	var v T
 	err := binary.Read(buf, order, &v)
 	return v, err

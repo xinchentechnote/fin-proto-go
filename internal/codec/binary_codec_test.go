@@ -15,8 +15,7 @@ func TestPutAndGetStringLE(t *testing.T) {
 
 	codec.PutStringLE[uint16](&buf, original)
 
-	reader := bytes.NewReader(buf.Bytes())
-	decoded, err := codec.GetStringLE[uint16](reader)
+	decoded, err := codec.GetStringLE[uint16](&buf)
 
 	require.NoError(t, err)
 	require.Equal(t, original, decoded)
@@ -27,8 +26,7 @@ func TestPutAndGetFixedString(t *testing.T) {
 	original := "abc"
 	codec.PutFixedString(&buf, original, 8)
 
-	reader := bytes.NewReader(buf.Bytes())
-	decoded, err := codec.GetFixedString(reader, 8)
+	decoded, err := codec.GetFixedString(&buf, 8)
 
 	require.NoError(t, err)
 	require.Equal(t, original, decoded)
@@ -39,8 +37,7 @@ func TestFixedStringOverflow(t *testing.T) {
 	original := "toolongstring"
 	codec.PutFixedString(&buf, original, 5)
 
-	reader := bytes.NewReader(buf.Bytes())
-	decoded, err := codec.GetFixedString(reader, 5)
+	decoded, err := codec.GetFixedString(&buf, 5)
 
 	require.NoError(t, err)
 	require.Equal(t, original[:5], decoded)
@@ -51,8 +48,7 @@ func TestPutAndGetStringListLE(t *testing.T) {
 
 	var buf bytes.Buffer
 	codec.PutStringListLE[uint16, uint16](&buf, original)
-	reader := bytes.NewReader(buf.Bytes())
-	decoded, err := codec.GetStringListLE[uint16, uint16](reader)
+	decoded, err := codec.GetStringListLE[uint16, uint16](&buf)
 	require.NoError(t, err)
 	require.Equal(t, original, decoded)
 }
@@ -67,8 +63,7 @@ func TestGetBasicType(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to write: %v", err)
 		}
-		reader := bytes.NewReader(buf.Bytes())
-		val, err := codec.GetBasicType[uint8](reader, order)
+		val, err := codec.GetBasicType[uint8](buf, order)
 		if err != nil || val != original {
 			t.Errorf("expected %v, got %v (err=%v)", original, val, err)
 		}
@@ -81,8 +76,7 @@ func TestGetBasicType(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to write: %v", err)
 		}
-		reader := bytes.NewReader(buf.Bytes())
-		val, err := codec.GetBasicType[int16](reader, order)
+		val, err := codec.GetBasicType[int16](buf, order)
 		if err != nil || val != original {
 			t.Errorf("expected %v, got %v (err=%v)", original, val, err)
 		}
@@ -95,8 +89,7 @@ func TestGetBasicType(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to write: %v", err)
 		}
-		reader := bytes.NewReader(buf.Bytes())
-		val, err := codec.GetBasicType[uint32](reader, order)
+		val, err := codec.GetBasicType[uint32](buf, order)
 		if err != nil || val != original {
 			t.Errorf("expected %v, got %v (err=%v)", original, val, err)
 		}
@@ -109,8 +102,7 @@ func TestGetBasicType(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to write: %v", err)
 		}
-		reader := bytes.NewReader(buf.Bytes())
-		val, err := codec.GetBasicType[float64](reader, order)
+		val, err := codec.GetBasicType[float64](buf, order)
 		if err != nil || val != original {
 			t.Errorf("expected %v, got %v (err=%v)", original, val, err)
 		}
