@@ -28,8 +28,7 @@ func TestRiskControlRequestCodec(t *testing.T) {
 
 	var buf bytes.Buffer
 	assert.NoError(t, original.Encode(&buf))
-	reader := bytes.NewReader(buf.Bytes())
 	var decoded sample.RiskControlRequest
-	assert.NoError(t, decoded.Decode(reader))
+	assert.NoError(t, decoded.Decode(&buf))
 	assert.Equal(t, original, decoded)
 }

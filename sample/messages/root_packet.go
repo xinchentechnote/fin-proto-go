@@ -3,6 +3,7 @@ package sample_bin
 
 import (
 	"bytes"
+	"encoding/binary"
 	"fmt"
 
 	"github.com/xinchentechnote/fin-proto-go/internal/codec"
@@ -29,11 +30,46 @@ func (p *RootPacket) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *RootPacket) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
+	if err := binary.Write(buf, binary.LittleEndian, p.MsgType); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "MsgType", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.PayloadLen); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "PayloadLen", err)
+	}
+	if err := p.Payload.Encode(buf); err != nil {
+		return err
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.Checksum); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "Checksum", err)
+	}
 	return nil
 }
 
 // Decode decodes the packet from a byte slice.
 func (p *RootPacket) Decode(buf *bytes.Buffer) error {
-	// Implement decoding logic here.
+	if err := binary.Read(buf, binary.LittleEndian, &p.MsgType); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "MsgType", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.PayloadLen); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "PayloadLen", err)
+	}
+	switch p.MsgType {
+	case 1:
+		p.Payload = &BasicPacket{}
+	case 2:
+		p.Payload = &StringPacket{}
+	case 3:
+		p.Payload = &NestedPacket{}
+	case 4:
+		p.Payload = &EmptyPacket{}
+	default:
+		return fmt.Errorf("unsupported MsgType: %v", p.MsgType)
+	}
+	if err := p.Payload.Decode(buf); err != nil {
+		return err
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.Checksum); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "Checksum", err)
+	}
 	return nil
 }

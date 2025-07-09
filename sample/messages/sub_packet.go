@@ -3,6 +3,7 @@ package sample_bin
 
 import (
 	"bytes"
+	"encoding/binary"
 	"fmt"
 )
 
@@ -25,11 +26,22 @@ func (p *SubPacket) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *SubPacket) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldU32); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldU32", err)
+	}
+	if err := binary.Write(buf, binary.LittleEndian, p.FieldI16List); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "fieldI16List", err)
+	}
 	return nil
 }
 
 // Decode decodes the packet from a byte slice.
 func (p *SubPacket) Decode(buf *bytes.Buffer) error {
-	// Implement decoding logic here.
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldU32); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldU32", err)
+	}
+	if err := binary.Read(buf, binary.LittleEndian, &p.FieldI16List); err != nil {
+		return fmt.Errorf("failed to decode %s: %w", "fieldI16List", err)
+	}
 	return nil
 }
