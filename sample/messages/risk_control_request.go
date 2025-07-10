@@ -15,8 +15,8 @@ type SubOrder struct {
 
 func (s *SubOrder) Encode(buf *bytes.Buffer) {
 	codec.PutFixedString(buf, s.ClOrdID, 16)
-	binary.Write(buf, binary.LittleEndian, s.Price)
-	binary.Write(buf, binary.LittleEndian, s.Qty)
+	binary.Write(buf, binary.BigEndian, s.Price)
+	binary.Write(buf, binary.BigEndian, s.Qty)
 }
 
 func (s *SubOrder) Decode(buf *bytes.Buffer) error {
@@ -24,10 +24,10 @@ func (s *SubOrder) Decode(buf *bytes.Buffer) error {
 	if s.ClOrdID, err = codec.GetFixedString(buf, 16); err != nil {
 		return err
 	}
-	if s.Price, err = codec.GetBasicType[uint64](buf, binary.LittleEndian); err != nil {
+	if s.Price, err = codec.GetBasicType[uint64](buf); err != nil {
 		return err
 	}
-	if s.Qty, err = codec.GetBasicType[uint32](buf, binary.LittleEndian); err != nil {
+	if s.Qty, err = codec.GetBasicType[uint32](buf); err != nil {
 		return err
 	}
 	return nil
@@ -47,22 +47,22 @@ type RiskControlRequest struct {
 }
 
 func (r *RiskControlRequest) Encode(buf *bytes.Buffer) error {
-	codec.PutStringLE[uint16](buf, r.UniqueOrderID)
+	codec.PutString[uint16](buf, r.UniqueOrderID)
 	codec.PutFixedString(buf, r.ClOrdID, 16)
 	codec.PutFixedString(buf, r.MarketID, 3)
 	codec.PutFixedString(buf, r.SecurityID, 12)
-	binary.Write(buf, binary.LittleEndian, r.Side)
-	binary.Write(buf, binary.LittleEndian, r.OrderType)
-	binary.Write(buf, binary.LittleEndian, r.Price)
-	binary.Write(buf, binary.LittleEndian, r.Qty)
-	codec.PutStringListLE[uint16, uint16](buf, r.ExtraInfo)
+	binary.Write(buf, binary.BigEndian, r.Side)
+	binary.Write(buf, binary.BigEndian, r.OrderType)
+	binary.Write(buf, binary.BigEndian, r.Price)
+	binary.Write(buf, binary.BigEndian, r.Qty)
+	codec.PutStringList[uint16, uint16](buf, r.ExtraInfo)
 	r.SubOrder.Encode(buf)
 	return nil
 }
 
 func (r *RiskControlRequest) Decode(buf *bytes.Buffer) error {
 	var err error
-	if r.UniqueOrderID, err = codec.GetStringLE[uint16](buf); err != nil {
+	if r.UniqueOrderID, err = codec.GetString[uint16](buf); err != nil {
 		return err
 	}
 	if r.ClOrdID, err = codec.GetFixedString(buf, 16); err != nil {
@@ -74,19 +74,19 @@ func (r *RiskControlRequest) Decode(buf *bytes.Buffer) error {
 	if r.SecurityID, err = codec.GetFixedString(buf, 12); err != nil {
 		return err
 	}
-	if r.Side, err = codec.GetBasicType[byte](buf, binary.LittleEndian); err != nil {
+	if r.Side, err = codec.GetBasicType[byte](buf); err != nil {
 		return err
 	}
-	if r.OrderType, err = codec.GetBasicType[byte](buf, binary.LittleEndian); err != nil {
+	if r.OrderType, err = codec.GetBasicType[byte](buf); err != nil {
 		return err
 	}
-	if r.Price, err = codec.GetBasicType[uint64](buf, binary.LittleEndian); err != nil {
+	if r.Price, err = codec.GetBasicType[uint64](buf); err != nil {
 		return err
 	}
-	if r.Qty, err = codec.GetBasicType[uint32](buf, binary.LittleEndian); err != nil {
+	if r.Qty, err = codec.GetBasicType[uint32](buf); err != nil {
 		return err
 	}
-	if r.ExtraInfo, err = codec.GetStringListLE[uint16, uint16](buf); err != nil {
+	if r.ExtraInfo, err = codec.GetStringList[uint16, uint16](buf); err != nil {
 		return err
 	}
 	if err = r.SubOrder.Decode(buf); err != nil {
