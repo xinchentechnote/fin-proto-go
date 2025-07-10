@@ -3,7 +3,6 @@ package sample_bin
 
 import (
 	"bytes"
-	"encoding/binary"
 	"fmt"
 
 	"github.com/xinchentechnote/fin-proto-go/internal/codec"
@@ -28,10 +27,10 @@ func (p *InerPacket) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *InerPacket) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := binary.Write(buf, binary.LittleEndian, p.FieldU32); err != nil {
+	if err := codec.PutBasicType(buf, p.FieldU32); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldU32", err)
 	}
-	if err := binary.Write(buf, binary.LittleEndian, p.FieldI16List); err != nil {
+	if err := codec.PutBasicTypeList[uint16](buf, p.FieldI16List); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldI16List", err)
 	}
 	return nil
@@ -39,18 +38,22 @@ func (p *InerPacket) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *InerPacket) Decode(buf *bytes.Buffer) error {
-	if err := binary.Read(buf, binary.LittleEndian, &p.FieldU32); err != nil {
-		return fmt.Errorf("failed to decode %s: %w", "fieldU32", err)
+	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+		return err
+	} else {
+		p.FieldU32 = val
 	}
-	if err := binary.Read(buf, binary.LittleEndian, &p.FieldI16List); err != nil {
-		return fmt.Errorf("failed to decode %s: %w", "fieldI16List", err)
+	if val, err := codec.GetBasicTypeList[uint16, int16](buf); err != nil {
+		return err
+	} else {
+		p.FieldI16List = val
 	}
 	return nil
 }
 
 // NestedPacket represents the packet structure.
 type NestedPacket struct {
-	SubPacket     SubPacket   `json:"SubPacket"`
+	SubPacket     SubPacket    `json:"SubPacket"`
 	SubPacketList []*SubPacket `json:"SubPacketList"`
 	InerPacket    `json:"InerPacket"`
 }
@@ -71,7 +74,7 @@ func (p *NestedPacket) Encode(buf *bytes.Buffer) error {
 	if err := p.SubPacket.Encode(buf); err != nil {
 		return err
 	}
-	if err := codec.PutObjectList[uint16, *SubPacket](buf, p.SubPacketList); err != nil {
+	if err := codec.PutObjectList[uint16](buf, p.SubPacketList); err != nil {
 		return err
 	}
 	if err := p.InerPacket.Encode(buf); err != nil {
