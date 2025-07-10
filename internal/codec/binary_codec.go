@@ -20,6 +20,49 @@ type BasicType interface {
 		~float32 | ~float64
 }
 
+func PutBasicType[T BasicType](buf *bytes.Buffer, v T) error {
+	return binary.Read(buf, binary.BigEndian, &v)
+}
+
+// GetBasicType reads a basic type value from the buffer using the specified byte order.
+func GetBasicType[T BasicType](buf *bytes.Buffer) (T, error) {
+	var v T
+	err := binary.Read(buf, binary.BigEndian, &v)
+	return v, err
+}
+
+func PutBasicTypeList[T constraints.Unsigned, K BasicType](buf *bytes.Buffer, values []K) error {
+	if err := binary.Write(buf, binary.BigEndian, T(len(values))); err != nil {
+		return err
+	}
+	for _, s := range values {
+		if err := PutBasicType(buf, s); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// GetBasicType reads a basic type value from the buffer using the specified byte order.
+func GetBasicTypeList[T constraints.Unsigned, K BasicType](buf *bytes.Buffer) ([]K, error) {
+	var t T
+	if err := binary.Read(buf, binary.BigEndian, &t); err != nil {
+		return nil, err
+	}
+	count := int(t)
+
+	result := make([]K, 0, count)
+	var err error
+	for i := 0; i < count; i++ {
+		v, e := GetBasicType[K](buf)
+		if e != nil {
+			return nil, e
+		}
+		result = append(result, v)
+	}
+	return result, err
+}
+
 // ----------------------------
 // String Functions
 // ----------------------------
@@ -247,13 +290,6 @@ func GetStringList[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.Bu
 		result = append(result, string(strBytes))
 	}
 	return result, nil
-}
-
-// GetBasicType reads a basic type value from the buffer using the specified byte order.
-func GetBasicType[T BasicType](buf *bytes.Buffer, order binary.ByteOrder) (T, error) {
-	var v T
-	err := binary.Read(buf, order, &v)
-	return v, err
 }
 
 // Object
