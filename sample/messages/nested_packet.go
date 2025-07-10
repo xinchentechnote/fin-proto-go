@@ -5,12 +5,14 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+
+	"github.com/xinchentechnote/fin-proto-go/internal/codec"
 )
 
 // InerPacket represents the packet structure.
 type InerPacket struct {
-	FieldU32     uint32 `json:"fieldU32"`
-	FieldI16List int16  `json:"fieldI16List"`
+	FieldU32     uint32  `json:"fieldU32"`
+	FieldI16List []int16 `json:"fieldI16List"`
 }
 
 // NewInerPacket creates a new instance of InerPacket.
@@ -48,8 +50,8 @@ func (p *InerPacket) Decode(buf *bytes.Buffer) error {
 
 // NestedPacket represents the packet structure.
 type NestedPacket struct {
-	SubPacket     SubPacket `json:"SubPacket"`
-	SubPacketList SubPacket `json:"SubPacketList"`
+	SubPacket     SubPacket   `json:"SubPacket"`
+	SubPacketList []*SubPacket `json:"SubPacketList"`
 	InerPacket    `json:"InerPacket"`
 }
 
@@ -69,7 +71,7 @@ func (p *NestedPacket) Encode(buf *bytes.Buffer) error {
 	if err := p.SubPacket.Encode(buf); err != nil {
 		return err
 	}
-	if err := p.SubPacketList.Encode(buf); err != nil {
+	if err := codec.PutObjectList[uint16, *SubPacket](buf, p.SubPacketList); err != nil {
 		return err
 	}
 	if err := p.InerPacket.Encode(buf); err != nil {
@@ -83,8 +85,10 @@ func (p *NestedPacket) Decode(buf *bytes.Buffer) error {
 	if err := p.SubPacket.Decode(buf); err != nil {
 		return err
 	}
-	if err := p.SubPacketList.Decode(buf); err != nil {
+	if val, err := codec.GetObjectList[uint16](buf, func() *SubPacket { return &SubPacket{} }); err != nil {
 		return err
+	} else {
+		p.SubPacketList = val
 	}
 	if err := p.InerPacket.Decode(buf); err != nil {
 		return err

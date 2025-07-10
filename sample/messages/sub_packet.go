@@ -9,8 +9,8 @@ import (
 
 // SubPacket represents the packet structure.
 type SubPacket struct {
-	FieldU32     uint32 `json:"fieldU32"`
-	FieldI16List int16  `json:"fieldI16List"`
+	FieldU32     uint32  `json:"fieldU32"`
+	FieldI16List []int16 `json:"fieldI16List"`
 }
 
 // NewSubPacket creates a new instance of SubPacket.

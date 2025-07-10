@@ -10,14 +10,14 @@ import (
 
 // StringPacket represents the packet structure.
 type StringPacket struct {
-	FieldDynamicString      string `json:"fieldDynamicString"`
-	FieldDynamicString1     string `json:"fieldDynamicString1"`
-	FieldFixedString1       string `json:"fieldFixedString1"`
-	FieldFixedString10      string `json:"fieldFixedString10"`
-	FieldDynamicStringList  string `json:"fieldDynamicStringList"`
-	FieldDynamicString1List string `json:"fieldDynamicString1List"`
-	FieldFixedString1List   string `json:"fieldFixedString1List"`
-	FieldFixedString10List  string `json:"fieldFixedString10List"`
+	FieldDynamicString      string   `json:"fieldDynamicString"`
+	FieldDynamicString1     string   `json:"fieldDynamicString1"`
+	FieldFixedString1       string   `json:"fieldFixedString1"`
+	FieldFixedString10      string   `json:"fieldFixedString10"`
+	FieldDynamicStringList  []string `json:"fieldDynamicStringList"`
+	FieldDynamicString1List []string `json:"fieldDynamicString1List"`
+	FieldFixedString1List   []string `json:"fieldFixedString1List"`
+	FieldFixedString10List  []string `json:"fieldFixedString10List"`
 }
 
 // NewStringPacket creates a new instance of StringPacket.
@@ -45,16 +45,16 @@ func (p *StringPacket) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutFixedString(buf, p.FieldFixedString10, 10); err != nil {
 		return err
 	}
-	if err := codec.PutString[uint16](buf, p.FieldDynamicStringList); err != nil {
+	if err := codec.PutStringList[uint16, uint16](buf, p.FieldDynamicStringList); err != nil {
 		return err
 	}
-	if err := codec.PutString[uint16](buf, p.FieldDynamicString1List); err != nil {
+	if err := codec.PutStringList[uint16, uint16](buf, p.FieldDynamicString1List); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.FieldFixedString1List, 1); err != nil {
+	if err := codec.PutFixedStringList[uint16](buf, p.FieldFixedString1List, 1); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.FieldFixedString10List, 10); err != nil {
+	if err := codec.PutFixedStringList[uint16](buf, p.FieldFixedString10List, 10); err != nil {
 		return err
 	}
 	return nil
@@ -82,22 +82,22 @@ func (p *StringPacket) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.FieldFixedString10 = val
 	}
-	if val, err := codec.GetString[uint16](buf); err != nil {
+	if val, err := codec.GetStringList[uint16, uint16](buf); err != nil {
 		return err
 	} else {
 		p.FieldDynamicStringList = val
 	}
-	if val, err := codec.GetString[uint16](buf); err != nil {
+	if val, err := codec.GetStringList[uint16, uint16](buf); err != nil {
 		return err
 	} else {
 		p.FieldDynamicString1List = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.GetFixedStringList[uint16](buf, 1); err != nil {
 		return err
 	} else {
 		p.FieldFixedString1List = val
 	}
-	if val, err := codec.GetFixedString(buf, 10); err != nil {
+	if val, err := codec.GetFixedStringList[uint16](buf, 10); err != nil {
 		return err
 	} else {
 		p.FieldFixedString10List = val
