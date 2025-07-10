@@ -3,6 +3,7 @@ package sample_bin
 
 import (
 	"bytes"
+	"encoding/binary"
 	"fmt"
 
 	"github.com/xinchentechnote/fin-proto-go/internal/codec"
@@ -32,10 +33,15 @@ func (p *RootPacket) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutBasicTypeLE(buf, p.MsgType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgType", err)
 	}
+	var PayloadBuf bytes.Buffer
+	if err := p.Payload.Encode(&PayloadBuf); err != nil {
+		return err
+	}
+	p.PayloadLen = uint32(PayloadBuf.Available())
 	if err := codec.PutBasicTypeLE(buf, p.PayloadLen); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "PayloadLen", err)
 	}
-	if err := p.Payload.Encode(buf); err != nil {
+	if err := binary.Write(buf, binary.LittleEndian, PayloadBuf.Bytes()); err != nil {
 		return err
 	}
 	if err := codec.PutBasicTypeLE(buf, p.Checksum); err != nil {
