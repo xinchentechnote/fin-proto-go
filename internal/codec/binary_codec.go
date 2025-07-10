@@ -21,11 +21,11 @@ type BasicType interface {
 }
 
 func PutBasicType[T BasicType](buf *bytes.Buffer, v T) error {
-	return binary.Read(buf, binary.BigEndian, &v)
+	return binary.Write(buf, binary.BigEndian, &v)
 }
 
 func PutBasicTypeLE[T BasicType](buf *bytes.Buffer, v T) error {
-	return binary.Read(buf, binary.LittleEndian, &v)
+	return binary.Write(buf, binary.LittleEndian, &v)
 }
 
 // GetBasicType reads a basic type value from the buffer using the specified byte order.

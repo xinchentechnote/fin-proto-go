@@ -53,9 +53,9 @@ func (p *InerPacket) Decode(buf *bytes.Buffer) error {
 
 // NestedPacket represents the packet structure.
 type NestedPacket struct {
-	SubPacket     SubPacket    `json:"SubPacket"`
+	SubPacket     *SubPacket   `json:"SubPacket"`
 	SubPacketList []*SubPacket `json:"SubPacketList"`
-	InerPacket    `json:"InerPacket"`
+	InerPacket    *InerPacket  `json:"InerPacket"`
 }
 
 // NewNestedPacket creates a new instance of NestedPacket.
@@ -85,6 +85,9 @@ func (p *NestedPacket) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *NestedPacket) Decode(buf *bytes.Buffer) error {
+	if p.SubPacket == nil {
+		p.SubPacket = &SubPacket{}
+	}
 	if err := p.SubPacket.Decode(buf); err != nil {
 		return err
 	}
@@ -92,6 +95,9 @@ func (p *NestedPacket) Decode(buf *bytes.Buffer) error {
 		return err
 	} else {
 		p.SubPacketList = val
+	}
+	if p.InerPacket == nil {
+		p.InerPacket = &InerPacket{}
 	}
 	if err := p.InerPacket.Decode(buf); err != nil {
 		return err
