@@ -27,10 +27,10 @@ func (p *SubPacket) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *SubPacket) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicType(buf, p.FieldU32); err != nil {
+	if err := codec.PutBasicTypeLE(buf, p.FieldU32); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldU32", err)
 	}
-	if err := codec.PutBasicTypeList[uint16](buf, p.FieldI16List); err != nil {
+	if err := codec.PutBasicTypeListLE[uint16](buf, p.FieldI16List); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldI16List", err)
 	}
 	return nil
@@ -38,12 +38,12 @@ func (p *SubPacket) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *SubPacket) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.GetBasicTypeLE[uint32](buf); err != nil {
 		return err
 	} else {
 		p.FieldU32 = val
 	}
-	if val, err := codec.GetBasicTypeList[uint16, int16](buf); err != nil {
+	if val, err := codec.GetBasicTypeListLE[uint16, int16](buf); err != nil {
 		return err
 	} else {
 		p.FieldI16List = val
