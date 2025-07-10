@@ -9,26 +9,26 @@ import (
 
 // BasicPacket represents the packet structure.
 type BasicPacket struct {
-	FieldI8      int8    `json:"fieldI8"`
-	FieldI16     int16   `json:"fieldI16"`
-	FieldI32     int32   `json:"fieldI32"`
-	FieldI64     int64   `json:"fieldI64"`
-	FieldU8      uint8   `json:"fieldU8"`
-	FieldU16     uint16  `json:"fieldU16"`
-	FieldU32     uint32  `json:"fieldU32"`
-	FieldU64     uint64  `json:"fieldU64"`
-	FieldF32     float32 `json:"fieldF32"`
-	FieldF64     float64 `json:"fieldF64"`
-	FieldI8List  int8    `json:"fieldI8List"`
-	FieldI16List int16   `json:"fieldI16List"`
-	FieldI32List int32   `json:"fieldI32List"`
-	FieldI64List int64   `json:"fieldI64List"`
-	FieldU8List  uint8   `json:"fieldU8List"`
-	FieldU16List uint16  `json:"fieldU16List"`
-	FieldU32List uint32  `json:"fieldU32List"`
-	FieldU64List uint64  `json:"fieldU64List"`
-	FieldF32List float32 `json:"fieldF32List"`
-	FieldF64List float64 `json:"fieldF64List"`
+	FieldI8      int8      `json:"fieldI8"`
+	FieldI16     int16     `json:"fieldI16"`
+	FieldI32     int32     `json:"fieldI32"`
+	FieldI64     int64     `json:"fieldI64"`
+	FieldU8      uint8     `json:"fieldU8"`
+	FieldU16     uint16    `json:"fieldU16"`
+	FieldU32     uint32    `json:"fieldU32"`
+	FieldU64     uint64    `json:"fieldU64"`
+	FieldF32     float32   `json:"fieldF32"`
+	FieldF64     float64   `json:"fieldF64"`
+	FieldI8List  []int8    `json:"fieldI8List"`
+	FieldI16List []int16   `json:"fieldI16List"`
+	FieldI32List []int32   `json:"fieldI32List"`
+	FieldI64List []int64   `json:"fieldI64List"`
+	FieldU8List  []uint8   `json:"fieldU8List"`
+	FieldU16List []uint16  `json:"fieldU16List"`
+	FieldU32List []uint32  `json:"fieldU32List"`
+	FieldU64List []uint64  `json:"fieldU64List"`
+	FieldF32List []float32 `json:"fieldF32List"`
+	FieldF64List []float64 `json:"fieldF64List"`
 }
 
 // NewBasicPacket creates a new instance of BasicPacket.
