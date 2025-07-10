@@ -54,7 +54,7 @@ func TestPutAndGetStringListLE(t *testing.T) {
 }
 
 func TestGetBasicType(t *testing.T) {
-	order := binary.LittleEndian
+	order := binary.BigEndian
 
 	t.Run("uint8", func(t *testing.T) {
 		var original uint8 = 123

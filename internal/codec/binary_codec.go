@@ -24,10 +24,20 @@ func PutBasicType[T BasicType](buf *bytes.Buffer, v T) error {
 	return binary.Read(buf, binary.BigEndian, &v)
 }
 
+func PutBasicTypeLE[T BasicType](buf *bytes.Buffer, v T) error {
+	return binary.Read(buf, binary.LittleEndian, &v)
+}
+
 // GetBasicType reads a basic type value from the buffer using the specified byte order.
 func GetBasicType[T BasicType](buf *bytes.Buffer) (T, error) {
 	var v T
 	err := binary.Read(buf, binary.BigEndian, &v)
+	return v, err
+}
+
+func GetBasicTypeLE[T BasicType](buf *bytes.Buffer) (T, error) {
+	var v T
+	err := binary.Read(buf, binary.LittleEndian, &v)
 	return v, err
 }
 
@@ -43,10 +53,41 @@ func PutBasicTypeList[T constraints.Unsigned, K BasicType](buf *bytes.Buffer, va
 	return nil
 }
 
+func PutBasicTypeListLE[T constraints.Unsigned, K BasicType](buf *bytes.Buffer, values []K) error {
+	if err := binary.Write(buf, binary.LittleEndian, T(len(values))); err != nil {
+		return err
+	}
+	for _, s := range values {
+		if err := PutBasicType(buf, s); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // GetBasicType reads a basic type value from the buffer using the specified byte order.
 func GetBasicTypeList[T constraints.Unsigned, K BasicType](buf *bytes.Buffer) ([]K, error) {
 	var t T
 	if err := binary.Read(buf, binary.BigEndian, &t); err != nil {
+		return nil, err
+	}
+	count := int(t)
+
+	result := make([]K, 0, count)
+	var err error
+	for i := 0; i < count; i++ {
+		v, e := GetBasicType[K](buf)
+		if e != nil {
+			return nil, e
+		}
+		result = append(result, v)
+	}
+	return result, err
+}
+
+func GetBasicTypeListLE[T constraints.Unsigned, K BasicType](buf *bytes.Buffer) ([]K, error) {
+	var t T
+	if err := binary.Read(buf, binary.LittleEndian, &t); err != nil {
 		return nil, err
 	}
 	count := int(t)
@@ -342,7 +383,7 @@ func PutObjectListLE[T constraints.Unsigned, K BinaryCodec](buf *bytes.Buffer, v
 	return nil
 }
 
-func GetObjectListLE[T constraints.Unsigned, K BinaryCodec](buf *bytes.Buffer) ([]K, error) {
+func GetObjectListLE[T constraints.Unsigned, K BinaryCodec](buf *bytes.Buffer, newFn func() K) ([]K, error) {
 	var t T
 	if err := binary.Read(buf, binary.BigEndian, &t); err != nil {
 		return nil, err
@@ -351,7 +392,7 @@ func GetObjectListLE[T constraints.Unsigned, K BinaryCodec](buf *bytes.Buffer) (
 
 	result := make([]K, 0, count)
 	for i := 0; i < count; i++ {
-		var k K
+		k := newFn()
 		if e := k.Decode(buf); e != nil {
 			return result, e
 		}
