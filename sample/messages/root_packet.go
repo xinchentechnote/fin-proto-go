@@ -29,16 +29,16 @@ func (p *RootPacket) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *RootPacket) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicType(buf, p.MsgType); err != nil {
+	if err := codec.PutBasicTypeLE(buf, p.MsgType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgType", err)
 	}
-	if err := codec.PutBasicType(buf, p.PayloadLen); err != nil {
+	if err := codec.PutBasicTypeLE(buf, p.PayloadLen); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "PayloadLen", err)
 	}
 	if err := p.Payload.Encode(buf); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.Checksum); err != nil {
+	if err := codec.PutBasicTypeLE(buf, p.Checksum); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "Checksum", err)
 	}
 	return nil
@@ -46,12 +46,12 @@ func (p *RootPacket) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *RootPacket) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicType[uint16](buf); err != nil {
+	if val, err := codec.GetBasicTypeLE[uint16](buf); err != nil {
 		return err
 	} else {
 		p.MsgType = val
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.GetBasicTypeLE[uint32](buf); err != nil {
 		return err
 	} else {
 		p.PayloadLen = val
@@ -71,7 +71,7 @@ func (p *RootPacket) Decode(buf *bytes.Buffer) error {
 	if err := p.Payload.Decode(buf); err != nil {
 		return err
 	}
-	if val, err := codec.GetBasicType[int32](buf); err != nil {
+	if val, err := codec.GetBasicTypeLE[int32](buf); err != nil {
 		return err
 	} else {
 		p.Checksum = val
