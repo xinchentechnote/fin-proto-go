@@ -63,7 +63,7 @@ func TestGetBasicType(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to write: %v", err)
 		}
-		val, err := codec.GetBasicType[uint8](buf, order)
+		val, err := codec.GetBasicType[uint8](buf)
 		if err != nil || val != original {
 			t.Errorf("expected %v, got %v (err=%v)", original, val, err)
 		}
@@ -76,7 +76,7 @@ func TestGetBasicType(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to write: %v", err)
 		}
-		val, err := codec.GetBasicType[int16](buf, order)
+		val, err := codec.GetBasicType[int16](buf)
 		if err != nil || val != original {
 			t.Errorf("expected %v, got %v (err=%v)", original, val, err)
 		}
@@ -89,7 +89,7 @@ func TestGetBasicType(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to write: %v", err)
 		}
-		val, err := codec.GetBasicType[uint32](buf, order)
+		val, err := codec.GetBasicType[uint32](buf)
 		if err != nil || val != original {
 			t.Errorf("expected %v, got %v (err=%v)", original, val, err)
 		}
@@ -102,7 +102,7 @@ func TestGetBasicType(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to write: %v", err)
 		}
-		val, err := codec.GetBasicType[float64](buf, order)
+		val, err := codec.GetBasicType[float64](buf)
 		if err != nil || val != original {
 			t.Errorf("expected %v, got %v (err=%v)", original, val, err)
 		}
