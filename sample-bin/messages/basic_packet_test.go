@@ -6,12 +6,12 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	msg "github.com/xinchentechnote/fin-proto-go/sample/messages"
+	msg "github.com/xinchentechnote/fin-proto-go/sample-bin/messages"
 )
 
-func TestRootPacketCodec(t *testing.T) {
+func TestBasicPacketCodec(t *testing.T) {
 
-	payload := &msg.BasicPacket{
+	original := &msg.BasicPacket{
 		FieldI8:       1,
 		FieldI16:      2,
 		FieldI32:      4,
@@ -35,15 +35,9 @@ func TestRootPacketCodec(t *testing.T) {
 		FieldF32List:  []float32{4},
 		FieldF64List:  []float64{8},
 	}
-	original := &msg.RootPacket{
-		PayloadLen: 4,
-		MsgType:    1,
-		Payload:    payload,
-		Checksum:   4,
-	}
 	var buf bytes.Buffer
 	assert.NoError(t, original.Encode(&buf))
-	var decoded msg.RootPacket
+	var decoded msg.BasicPacket
 	assert.NoError(t, decoded.Decode(&buf))
 	assert.Equal(t, original, &decoded)
 }

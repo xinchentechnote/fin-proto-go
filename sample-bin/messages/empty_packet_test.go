@@ -6,18 +6,15 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	msg "github.com/xinchentechnote/fin-proto-go/sample/messages"
+	msg "github.com/xinchentechnote/fin-proto-go/sample-bin/messages"
 )
 
-func TestSubPacketCodec(t *testing.T) {
+func TestEmptyPacketCodec(t *testing.T) {
 
-	original := &msg.SubPacket{
-		FieldU32:     4,
-		FieldI16List: []int16{2},
-	}
+	original := &msg.EmptyPacket{}
 	var buf bytes.Buffer
 	assert.NoError(t, original.Encode(&buf))
-	var decoded msg.SubPacket
+	var decoded msg.EmptyPacket
 	assert.NoError(t, decoded.Decode(&buf))
 	assert.Equal(t, original, &decoded)
 }

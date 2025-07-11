@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	msg "github.com/xinchentechnote/fin-proto-go/sample/messages"
+	msg "github.com/xinchentechnote/fin-proto-go/sample-bin/messages"
 )
 
 func TestNestedPacketCodec(t *testing.T) {
