@@ -10,26 +10,28 @@ import (
 
 // BasicPacket represents the packet structure.
 type BasicPacket struct {
-	FieldI8      int8      `json:"fieldI8"`
-	FieldI16     int16     `json:"fieldI16"`
-	FieldI32     int32     `json:"fieldI32"`
-	FieldI64     int64     `json:"fieldI64"`
-	FieldU8      uint8     `json:"fieldU8"`
-	FieldU16     uint16    `json:"fieldU16"`
-	FieldU32     uint32    `json:"fieldU32"`
-	FieldU64     uint64    `json:"fieldU64"`
-	FieldF32     float32   `json:"fieldF32"`
-	FieldF64     float64   `json:"fieldF64"`
-	FieldI8List  []int8    `json:"fieldI8List"`
-	FieldI16List []int16   `json:"fieldI16List"`
-	FieldI32List []int32   `json:"fieldI32List"`
-	FieldI64List []int64   `json:"fieldI64List"`
-	FieldU8List  []uint8   `json:"fieldU8List"`
-	FieldU16List []uint16  `json:"fieldU16List"`
-	FieldU32List []uint32  `json:"fieldU32List"`
-	FieldU64List []uint64  `json:"fieldU64List"`
-	FieldF32List []float32 `json:"fieldF32List"`
-	FieldF64List []float64 `json:"fieldF64List"`
+	FieldI8       int8      `json:"fieldI8"`
+	FieldI16      int16     `json:"fieldI16"`
+	FieldI32      int32     `json:"fieldI32"`
+	FieldI64      int64     `json:"fieldI64"`
+	FieldChar     string    `json:"fieldChar"`
+	FieldU8       uint8     `json:"fieldU8"`
+	FieldU16      uint16    `json:"fieldU16"`
+	FieldU32      uint32    `json:"fieldU32"`
+	FieldU64      uint64    `json:"fieldU64"`
+	FieldF32      float32   `json:"fieldF32"`
+	FieldF64      float64   `json:"fieldF64"`
+	FieldI8List   []int8    `json:"fieldI8List"`
+	FieldI16List  []int16   `json:"fieldI16List"`
+	FieldI32List  []int32   `json:"fieldI32List"`
+	FieldI64List  []int64   `json:"fieldI64List"`
+	FieldCharList []string  `json:"fieldCharList"`
+	FieldU8List   []uint8   `json:"fieldU8List"`
+	FieldU16List  []uint16  `json:"fieldU16List"`
+	FieldU32List  []uint32  `json:"fieldU32List"`
+	FieldU64List  []uint64  `json:"fieldU64List"`
+	FieldF32List  []float32 `json:"fieldF32List"`
+	FieldF64List  []float64 `json:"fieldF64List"`
 }
 
 // NewBasicPacket creates a new instance of BasicPacket.
@@ -39,7 +41,7 @@ func NewBasicPacket() *BasicPacket {
 
 // String returns a string representation of the packet.
 func (p *BasicPacket) String() string {
-	return fmt.Sprintf("BasicPacket{FieldI8: %v, FieldI16: %v, FieldI32: %v, FieldI64: %v, FieldU8: %v, FieldU16: %v, FieldU32: %v, FieldU64: %v, FieldF32: %v, FieldF64: %v, FieldI8List: %v, FieldI16List: %v, FieldI32List: %v, FieldI64List: %v, FieldU8List: %v, FieldU16List: %v, FieldU32List: %v, FieldU64List: %v, FieldF32List: %v, FieldF64List: %v}", p.FieldI8, p.FieldI16, p.FieldI32, p.FieldI64, p.FieldU8, p.FieldU16, p.FieldU32, p.FieldU64, p.FieldF32, p.FieldF64, p.FieldI8List, p.FieldI16List, p.FieldI32List, p.FieldI64List, p.FieldU8List, p.FieldU16List, p.FieldU32List, p.FieldU64List, p.FieldF32List, p.FieldF64List)
+	return fmt.Sprintf("BasicPacket{FieldI8: %v, FieldI16: %v, FieldI32: %v, FieldI64: %v, FieldChar: %v, FieldU8: %v, FieldU16: %v, FieldU32: %v, FieldU64: %v, FieldF32: %v, FieldF64: %v, FieldI8List: %v, FieldI16List: %v, FieldI32List: %v, FieldI64List: %v, FieldCharList: %v, FieldU8List: %v, FieldU16List: %v, FieldU32List: %v, FieldU64List: %v, FieldF32List: %v, FieldF64List: %v}", p.FieldI8, p.FieldI16, p.FieldI32, p.FieldI64, p.FieldChar, p.FieldU8, p.FieldU16, p.FieldU32, p.FieldU64, p.FieldF32, p.FieldF64, p.FieldI8List, p.FieldI16List, p.FieldI32List, p.FieldI64List, p.FieldCharList, p.FieldU8List, p.FieldU16List, p.FieldU32List, p.FieldU64List, p.FieldF32List, p.FieldF64List)
 }
 
 // Encode encodes the packet into a byte slice.
@@ -56,6 +58,9 @@ func (p *BasicPacket) Encode(buf *bytes.Buffer) error {
 	}
 	if err := codec.PutBasicTypeLE(buf, p.FieldI64); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldI64", err)
+	}
+	if err := codec.PutFixedString(buf, p.FieldChar, 1); err != nil {
+		return err
 	}
 	if err := codec.PutBasicTypeLE(buf, p.FieldU8); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldU8", err)
@@ -86,6 +91,9 @@ func (p *BasicPacket) Encode(buf *bytes.Buffer) error {
 	}
 	if err := codec.PutBasicTypeListLE[uint16](buf, p.FieldI64List); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldI64List", err)
+	}
+	if err := codec.PutFixedStringListLE[uint16](buf, p.FieldCharList, 1); err != nil {
+		return err
 	}
 	if err := codec.PutBasicTypeListLE[uint16](buf, p.FieldU8List); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldU8List", err)
@@ -129,6 +137,11 @@ func (p *BasicPacket) Decode(buf *bytes.Buffer) error {
 		return err
 	} else {
 		p.FieldI64 = val
+	}
+	if val, err := codec.GetFixedString(buf, 1); err != nil {
+		return err
+	} else {
+		p.FieldChar = val
 	}
 	if val, err := codec.GetBasicTypeLE[uint8](buf); err != nil {
 		return err
@@ -179,6 +192,11 @@ func (p *BasicPacket) Decode(buf *bytes.Buffer) error {
 		return err
 	} else {
 		p.FieldI64List = val
+	}
+	if val, err := codec.GetFixedStringListLE[uint16](buf, 1); err != nil {
+		return err
+	} else {
+		p.FieldCharList = val
 	}
 	if val, err := codec.GetBasicTypeListLE[uint16, uint8](buf); err != nil {
 		return err
