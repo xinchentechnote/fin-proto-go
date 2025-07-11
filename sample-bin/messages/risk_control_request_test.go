@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	sample "github.com/xinchentechnote/fin-proto-go/sample/messages"
+	sample "github.com/xinchentechnote/fin-proto-go/sample-bin/messages"
 )
 
 func TestRiskControlRequestCodec(t *testing.T) {
