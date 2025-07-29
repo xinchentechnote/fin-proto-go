@@ -48,6 +48,9 @@ func (p *SseBinary) Encode(buf *bytes.Buffer) error {
 	if err := binary.Write(buf, binary.BigEndian, BodyBuf.Bytes()); err != nil {
 		return err
 	}
+	if checksumService, ok := codec.Get("SSE_BIN"); ok {
+		p.Checksum = checksumService.(codec.ChecksumService[*bytes.Buffer, uint32]).Calc(buf)
+	}
 	if err := codec.PutBasicType(buf, p.Checksum); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "Checksum", err)
 	}

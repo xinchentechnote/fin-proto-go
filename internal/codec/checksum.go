@@ -1,6 +1,7 @@
 package codec
 
 import (
+	"bytes"
 	"hash/crc32"
 	"sync"
 )
@@ -60,9 +61,9 @@ func (c *Crc16ChecksumService) Algorithm() string {
 	return "CRC16"
 }
 
-func (c *Crc16ChecksumService) Calc(data []byte) uint16 {
+func (c *Crc16ChecksumService) Calc(data *bytes.Buffer) uint16 {
 	var crc uint16 = 0xFFFF
-	for _, b := range data {
+	for _, b := range data.Bytes() {
 		crc ^= uint16(b)
 		for i := 0; i < 8; i++ {
 			if crc&0x0001 != 0 {
@@ -80,8 +81,8 @@ type Crc32ChecksumService struct{}
 func (c *Crc32ChecksumService) Algorithm() string {
 	return "CRC32"
 }
-func (c *Crc32ChecksumService) Calc(data []byte) uint32 {
-	return crc32.ChecksumIEEE(data)
+func (c *Crc32ChecksumService) Calc(data *bytes.Buffer) uint32 {
+	return crc32.ChecksumIEEE(data.Bytes())
 }
 
 type SseBinChecksumService struct{}
@@ -89,9 +90,9 @@ type SseBinChecksumService struct{}
 func (c *SseBinChecksumService) Algorithm() string {
 	return "SSE_BIN"
 }
-func (c *SseBinChecksumService) Calc(data []byte) uint32 {
+func (c *SseBinChecksumService) Calc(data *bytes.Buffer) uint32 {
 	var checksum uint32
-	for _, b := range data {
+	for _, b := range data.Bytes() {
 		checksum = (checksum + uint32(b)) & 0xFF
 	}
 	return checksum
@@ -102,9 +103,9 @@ type SzseBinChecksumService struct{}
 func (c *SzseBinChecksumService) Algorithm() string {
 	return "SZSE_BIN"
 }
-func (c *SzseBinChecksumService) Calc(data []byte) uint32 {
+func (c *SzseBinChecksumService) Calc(data *bytes.Buffer) uint32 {
 	var checksum uint32
-	for _, b := range data {
+	for _, b := range data.Bytes() {
 		checksum += uint32(b)
 	}
 	return checksum % 256
