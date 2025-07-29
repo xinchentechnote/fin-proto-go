@@ -1,4 +1,7 @@
 #/bin/bash
+cd bjse-trade-bin
+make
+cd -
 cd risk-bin
 make
 cd -
