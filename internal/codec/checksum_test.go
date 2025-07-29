@@ -1,6 +1,7 @@
 package codec_test
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/xinchentechnote/fin-proto-go/internal/codec"
@@ -19,7 +20,7 @@ func TestRegistryAndGet(t *testing.T) {
 	// CRC16
 	svcAny := mustGet[uint16](t, "CRC16")
 	if svc, ok := svcAny.(*codec.Crc16ChecksumService); ok {
-		sum := svc.Calc([]byte("123456789"))
+		sum := svc.Calc(bytes.NewBufferString("123456789"))
 		if sum != 0x4B37 { // CRC16/MODBUS for "123456789"
 			t.Errorf("CRC16 wrong: got %04X, want 0x4B37", sum)
 		}
@@ -30,7 +31,7 @@ func TestRegistryAndGet(t *testing.T) {
 	// CRC32
 	svcAny = mustGet[uint32](t, "CRC32")
 	if svc, ok := svcAny.(*codec.Crc32ChecksumService); ok {
-		sum := svc.Calc([]byte("123456789"))
+		sum := svc.Calc(bytes.NewBufferString("123456789"))
 		if sum != 0xCBF43926 { // CRC32 IEEE
 			t.Errorf("CRC32 wrong: got %08X, want CBF43926", sum)
 		}
@@ -41,7 +42,7 @@ func TestRegistryAndGet(t *testing.T) {
 	// SSE_BIN
 	svcAny = mustGet[uint32](t, "SSE_BIN")
 	if svc, ok := svcAny.(*codec.SseBinChecksumService); ok {
-		sum := svc.Calc([]byte{1, 2, 3})
+		sum := svc.Calc(bytes.NewBuffer([]byte{1, 2, 3}))
 		if sum != ((1 + 2 + 3) & 0xFF) {
 			t.Errorf("SSE_BIN wrong: got %d, want %d", sum, (1+2+3)&0xFF)
 		}
@@ -52,7 +53,7 @@ func TestRegistryAndGet(t *testing.T) {
 	// SZSE_BIN
 	svcAny = mustGet[uint32](t, "SZSE_BIN")
 	if svc, ok := svcAny.(*codec.SzseBinChecksumService); ok {
-		sum := svc.Calc([]byte{1, 2, 3})
+		sum := svc.Calc(bytes.NewBuffer([]byte{1, 2, 3}))
 		if sum != (1+2+3)%256 {
 			t.Errorf("SZSE_BIN wrong: got %d, want %d", sum, (1+2+3)%256)
 		}
