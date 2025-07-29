@@ -103,10 +103,10 @@ type SzseBinChecksumService struct{}
 func (c *SzseBinChecksumService) Algorithm() string {
 	return "SZSE_BIN"
 }
-func (c *SzseBinChecksumService) Calc(data *bytes.Buffer) uint32 {
-	var checksum uint32
+func (c *SzseBinChecksumService) Calc(data *bytes.Buffer) int32 {
+	var checksum int32
 	for _, b := range data.Bytes() {
-		checksum += uint32(b)
+		checksum += int32(b)
 	}
 	return checksum % 256
 }

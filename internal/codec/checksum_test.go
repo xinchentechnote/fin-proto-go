@@ -51,7 +51,7 @@ func TestRegistryAndGet(t *testing.T) {
 	}
 
 	// SZSE_BIN
-	svcAny = mustGet[uint32](t, "SZSE_BIN")
+	svcAny = mustGet[int32](t, "SZSE_BIN")
 	if svc, ok := svcAny.(*codec.SzseBinChecksumService); ok {
 		sum := svc.Calc(bytes.NewBuffer([]byte{1, 2, 3}))
 		if sum != (1+2+3)%256 {
