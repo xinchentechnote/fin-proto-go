@@ -14,7 +14,7 @@ type RootPacket struct {
 	MsgType    uint16            `json:"MsgType"`
 	PayloadLen uint32            `json:"PayloadLen"`
 	Payload    codec.BinaryCodec `json:"Payload"`
-	Checksum   int32             `json:"Checksum"`
+	Checksum   uint32            `json:"Checksum"`
 }
 
 // NewRootPacket creates a new instance of RootPacket.
@@ -43,6 +43,9 @@ func (p *RootPacket) Encode(buf *bytes.Buffer) error {
 	}
 	if err := binary.Write(buf, binary.LittleEndian, PayloadBuf.Bytes()); err != nil {
 		return err
+	}
+	if checksumService, ok := codec.Get("CRC32"); ok {
+		p.Checksum = checksumService.(codec.ChecksumService[*bytes.Buffer, uint32]).Calc(buf)
 	}
 	if err := codec.PutBasicTypeLE(buf, p.Checksum); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "Checksum", err)
@@ -77,7 +80,7 @@ func (p *RootPacket) Decode(buf *bytes.Buffer) error {
 	if err := p.Payload.Decode(buf); err != nil {
 		return err
 	}
-	if val, err := codec.GetBasicTypeLE[int32](buf); err != nil {
+	if val, err := codec.GetBasicTypeLE[uint32](buf); err != nil {
 		return err
 	} else {
 		p.Checksum = val
