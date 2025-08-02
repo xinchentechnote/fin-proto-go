@@ -12,13 +12,14 @@ import (
 func TestRcBinaryCodec(t *testing.T) {
 
 	body := &msg.NewOrder{
-		ClOrdId:    "hello",
-		SecurityId: "hello",
-		Side:       "x",
-		Price:      8,
-		OrderQty:   8,
-		OrdType:    "x",
-		Account:    "hello",
+		UniqueOrderId: "hello",
+		ClOrdId:       "hello",
+		SecurityId:    "hello",
+		Side:          "x",
+		Price:         8,
+		OrderQty:      8,
+		OrdType:       "x",
+		Account:       "hello",
 	}
 	original := &msg.RcBinary{
 		Version:    4,

@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/xinchentechnote/fin-proto-go/internal/codec"
+	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
 // TradeCaptureReportAckExtend031 represents the packet structure.

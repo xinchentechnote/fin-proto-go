@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/xinchentechnote/fin-proto-go/internal/codec"
+	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
 // Extend200402 represents the packet structure.

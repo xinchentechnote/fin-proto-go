@@ -5,14 +5,16 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/xinchentechnote/fin-proto-go/internal/codec"
+	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
 // CancelReject represents the packet structure.
 type CancelReject struct {
-	ClOrdId      string `json:"ClOrdID"`
-	OrigClOrdId  string `json:"OrigClOrdID"`
-	CxlRejReason uint32 `json:"CxlRejReason"`
+	UniqueOrderId     string `json:"UniqueOrderID"`
+	UniqueOrigOrderId string `json:"UniqueOrigOrderID"`
+	ClOrdId           string `json:"ClOrdID"`
+	OrigClOrdId       string `json:"OrigClOrdID"`
+	CxlRejReason      uint32 `json:"CxlRejReason"`
 }
 
 // NewCancelReject creates a new instance of CancelReject.
@@ -22,12 +24,18 @@ func NewCancelReject() *CancelReject {
 
 // String returns a string representation of the packet.
 func (p *CancelReject) String() string {
-	return fmt.Sprintf("CancelReject{ClOrdId: %v, OrigClOrdId: %v, CxlRejReason: %v}", p.ClOrdId, p.OrigClOrdId, p.CxlRejReason)
+	return fmt.Sprintf("CancelReject{UniqueOrderId: %v, UniqueOrigOrderId: %v, ClOrdId: %v, OrigClOrdId: %v, CxlRejReason: %v}", p.UniqueOrderId, p.UniqueOrigOrderId, p.ClOrdId, p.OrigClOrdId, p.CxlRejReason)
 }
 
 // Encode encodes the packet into a byte slice.
 func (p *CancelReject) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
+	if err := codec.PutString[uint32](buf, p.UniqueOrderId); err != nil {
+		return err
+	}
+	if err := codec.PutString[uint32](buf, p.UniqueOrigOrderId); err != nil {
+		return err
+	}
 	if err := codec.PutString[uint32](buf, p.ClOrdId); err != nil {
 		return err
 	}
@@ -42,6 +50,16 @@ func (p *CancelReject) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *CancelReject) Decode(buf *bytes.Buffer) error {
+	if val, err := codec.GetString[uint32](buf); err != nil {
+		return err
+	} else {
+		p.UniqueOrderId = val
+	}
+	if val, err := codec.GetString[uint32](buf); err != nil {
+		return err
+	} else {
+		p.UniqueOrigOrderId = val
+	}
 	if val, err := codec.GetString[uint32](buf); err != nil {
 		return err
 	} else {

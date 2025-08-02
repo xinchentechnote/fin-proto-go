@@ -12,11 +12,12 @@ import (
 func TestExecutionReportCodec(t *testing.T) {
 
 	original := &msg.ExecutionReport{
-		ClOrdId:   "hello",
-		OrdCnfmId: "hello",
-		LastPx:    8,
-		LastQty:   8,
-		OrdStatus: "x",
+		UniqueOrderId: "hello",
+		ClOrdId:       "hello",
+		OrdCnfmId:     "hello",
+		LastPx:        8,
+		LastQty:       8,
+		OrdStatus:     "x",
 	}
 	var buf bytes.Buffer
 	assert.NoError(t, original.Encode(&buf))

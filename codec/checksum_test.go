@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/xinchentechnote/fin-proto-go/internal/codec"
+	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
 // helper: get service and fail if not found

@@ -9,21 +9,16 @@ import (
 	msg "github.com/xinchentechnote/fin-proto-go/risk-bin/messages"
 )
 
-func TestNewOrderCodec(t *testing.T) {
+func TestRiskResultCodec(t *testing.T) {
 
-	original := &msg.NewOrder{
+	original := &msg.RiskResult{
 		UniqueOrderId: "hello",
-		ClOrdId:       "hello",
-		SecurityId:    "hello",
-		Side:          "x",
-		Price:         8,
-		OrderQty:      8,
-		OrdType:       "x",
-		Account:       "hello",
+		RiskStatus:    1,
+		RiskReason:    "hello",
 	}
 	var buf bytes.Buffer
 	assert.NoError(t, original.Encode(&buf))
-	var decoded msg.NewOrder
+	var decoded msg.RiskResult
 	assert.NoError(t, decoded.Decode(&buf))
 	assert.Equal(t, original, &decoded)
 }

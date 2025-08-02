@@ -5,14 +5,16 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/xinchentechnote/fin-proto-go/internal/codec"
+	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
 // OrderCancel represents the packet structure.
 type OrderCancel struct {
-	ClOrdId     string `json:"ClOrdID"`
-	OrigClOrdId string `json:"OrigClOrdID"`
-	SecurityId  string `json:"SecurityID"`
+	UniqueOrderId     string `json:"UniqueOrderID"`
+	UniqueOrigOrderId string `json:"UniqueOrigOrderID"`
+	ClOrdId           string `json:"ClOrdID"`
+	OrigClOrdId       string `json:"OrigClOrdID"`
+	SecurityId        string `json:"SecurityID"`
 }
 
 // NewOrderCancel creates a new instance of OrderCancel.
@@ -22,12 +24,18 @@ func NewOrderCancel() *OrderCancel {
 
 // String returns a string representation of the packet.
 func (p *OrderCancel) String() string {
-	return fmt.Sprintf("OrderCancel{ClOrdId: %v, OrigClOrdId: %v, SecurityId: %v}", p.ClOrdId, p.OrigClOrdId, p.SecurityId)
+	return fmt.Sprintf("OrderCancel{UniqueOrderId: %v, UniqueOrigOrderId: %v, ClOrdId: %v, OrigClOrdId: %v, SecurityId: %v}", p.UniqueOrderId, p.UniqueOrigOrderId, p.ClOrdId, p.OrigClOrdId, p.SecurityId)
 }
 
 // Encode encodes the packet into a byte slice.
 func (p *OrderCancel) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
+	if err := codec.PutString[uint32](buf, p.UniqueOrderId); err != nil {
+		return err
+	}
+	if err := codec.PutString[uint32](buf, p.UniqueOrigOrderId); err != nil {
+		return err
+	}
 	if err := codec.PutString[uint32](buf, p.ClOrdId); err != nil {
 		return err
 	}
@@ -42,6 +50,16 @@ func (p *OrderCancel) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *OrderCancel) Decode(buf *bytes.Buffer) error {
+	if val, err := codec.GetString[uint32](buf); err != nil {
+		return err
+	} else {
+		p.UniqueOrderId = val
+	}
+	if val, err := codec.GetString[uint32](buf); err != nil {
+		return err
+	} else {
+		p.UniqueOrigOrderId = val
+	}
 	if val, err := codec.GetString[uint32](buf); err != nil {
 		return err
 	} else {
