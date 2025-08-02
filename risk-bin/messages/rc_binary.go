@@ -6,34 +6,8 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"github.com/xinchentechnote/fin-proto-go/internal/codec"
+	"github.com/xinchentechnote/fin-proto-go/codec"
 )
-
-func init() {
-	RegisterMessage(100101, func() codec.BinaryCodec { return &NewOrder{} })
-	RegisterMessage(200102, func() codec.BinaryCodec { return &OrderConfirm{} })
-	RegisterMessage(200115, func() codec.BinaryCodec { return &ExecutionReport{} })
-	RegisterMessage(190007, func() codec.BinaryCodec { return &OrderCancel{} })
-	RegisterMessage(290008, func() codec.BinaryCodec { return &CancelReject{} })
-}
-
-// RiskMessageFactory message factory
-type RiskMessageFactory func() codec.BinaryCodec
-
-var registry = map[uint32]RiskMessageFactory{}
-
-// RegisterMessage registers a message type with its factory function.
-func RegisterMessage(msgType uint32, factory RiskMessageFactory) {
-	registry[msgType] = factory
-}
-
-// NewMessageByMsgType new message by type
-func NewMessageByMsgType(msgType uint32) (codec.BinaryCodec, error) {
-	if factory, ok := registry[msgType]; ok {
-		return factory(), nil
-	}
-	return nil, fmt.Errorf("unknown message type: %d", msgType)
-}
 
 // RcBinary represents the packet structure.
 type RcBinary struct {
@@ -104,6 +78,8 @@ func (p *RcBinary) Decode(buf *bytes.Buffer) error {
 		p.Body = &OrderCancel{}
 	case 290008:
 		p.Body = &CancelReject{}
+	case 800001:
+		p.Body = &RiskResult{}
 	default:
 		return fmt.Errorf("unsupported MsgType: %v", p.MsgType)
 	}

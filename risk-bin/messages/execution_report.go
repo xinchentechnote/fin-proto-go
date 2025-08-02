@@ -5,16 +5,17 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/xinchentechnote/fin-proto-go/internal/codec"
+	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
 // ExecutionReport represents the packet structure.
 type ExecutionReport struct {
-	ClOrdId   string `json:"ClOrdID"`
-	OrdCnfmId string `json:"OrdCnfmID"`
-	LastPx    uint64 `json:"LastPx"`
-	LastQty   uint64 `json:"LastQty"`
-	OrdStatus string `json:"OrdStatus"`
+	UniqueOrderId string `json:"UniqueOrderID"`
+	ClOrdId       string `json:"ClOrdID"`
+	OrdCnfmId     string `json:"OrdCnfmID"`
+	LastPx        uint64 `json:"LastPx"`
+	LastQty       uint64 `json:"LastQty"`
+	OrdStatus     string `json:"OrdStatus"`
 }
 
 // NewExecutionReport creates a new instance of ExecutionReport.
@@ -24,12 +25,15 @@ func NewExecutionReport() *ExecutionReport {
 
 // String returns a string representation of the packet.
 func (p *ExecutionReport) String() string {
-	return fmt.Sprintf("ExecutionReport{ClOrdId: %v, OrdCnfmId: %v, LastPx: %v, LastQty: %v, OrdStatus: %v}", p.ClOrdId, p.OrdCnfmId, p.LastPx, p.LastQty, p.OrdStatus)
+	return fmt.Sprintf("ExecutionReport{UniqueOrderId: %v, ClOrdId: %v, OrdCnfmId: %v, LastPx: %v, LastQty: %v, OrdStatus: %v}", p.UniqueOrderId, p.ClOrdId, p.OrdCnfmId, p.LastPx, p.LastQty, p.OrdStatus)
 }
 
 // Encode encodes the packet into a byte slice.
 func (p *ExecutionReport) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
+	if err := codec.PutString[uint32](buf, p.UniqueOrderId); err != nil {
+		return err
+	}
 	if err := codec.PutString[uint32](buf, p.ClOrdId); err != nil {
 		return err
 	}
@@ -50,6 +54,11 @@ func (p *ExecutionReport) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *ExecutionReport) Decode(buf *bytes.Buffer) error {
+	if val, err := codec.GetString[uint32](buf); err != nil {
+		return err
+	} else {
+		p.UniqueOrderId = val
+	}
 	if val, err := codec.GetString[uint32](buf); err != nil {
 		return err
 	} else {

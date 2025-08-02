@@ -12,10 +12,12 @@ import (
 func TestOrderConfirmCodec(t *testing.T) {
 
 	original := &msg.OrderConfirm{
-		ClOrdId:      "hello",
-		ExecType:     "x",
-		OrdRejReason: 4,
-		OrdCnfmId:    "hello",
+		UniqueOrderId:     "hello",
+		UniqueOrigOrderId: "hello",
+		ClOrdId:           "hello",
+		ExecType:          "x",
+		OrdRejReason:      4,
+		OrdCnfmId:         "hello",
 	}
 	var buf bytes.Buffer
 	assert.NoError(t, original.Encode(&buf))

@@ -5,18 +5,19 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/xinchentechnote/fin-proto-go/internal/codec"
+	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
 // NewOrder represents the packet structure.
 type NewOrder struct {
-	ClOrdId    string `json:"ClOrdID"`
-	SecurityId string `json:"SecurityID"`
-	Side       string `json:"Side"`
-	Price      uint64 `json:"Price"`
-	OrderQty   uint64 `json:"OrderQty"`
-	OrdType    string `json:"OrdType"`
-	Account    string `json:"Account"`
+	UniqueOrderId string `json:"UniqueOrderID"`
+	ClOrdId       string `json:"ClOrdID"`
+	SecurityId    string `json:"SecurityID"`
+	Side          string `json:"Side"`
+	Price         uint64 `json:"Price"`
+	OrderQty      uint64 `json:"OrderQty"`
+	OrdType       string `json:"OrdType"`
+	Account       string `json:"Account"`
 }
 
 // NewNewOrder creates a new instance of NewOrder.
@@ -26,12 +27,15 @@ func NewNewOrder() *NewOrder {
 
 // String returns a string representation of the packet.
 func (p *NewOrder) String() string {
-	return fmt.Sprintf("NewOrder{ClOrdId: %v, SecurityId: %v, Side: %v, Price: %v, OrderQty: %v, OrdType: %v, Account: %v}", p.ClOrdId, p.SecurityId, p.Side, p.Price, p.OrderQty, p.OrdType, p.Account)
+	return fmt.Sprintf("NewOrder{UniqueOrderId: %v, ClOrdId: %v, SecurityId: %v, Side: %v, Price: %v, OrderQty: %v, OrdType: %v, Account: %v}", p.UniqueOrderId, p.ClOrdId, p.SecurityId, p.Side, p.Price, p.OrderQty, p.OrdType, p.Account)
 }
 
 // Encode encodes the packet into a byte slice.
 func (p *NewOrder) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
+	if err := codec.PutString[uint32](buf, p.UniqueOrderId); err != nil {
+		return err
+	}
 	if err := codec.PutString[uint32](buf, p.ClOrdId); err != nil {
 		return err
 	}
@@ -58,6 +62,11 @@ func (p *NewOrder) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *NewOrder) Decode(buf *bytes.Buffer) error {
+	if val, err := codec.GetString[uint32](buf); err != nil {
+		return err
+	} else {
+		p.UniqueOrderId = val
+	}
 	if val, err := codec.GetString[uint32](buf); err != nil {
 		return err
 	} else {

@@ -12,9 +12,11 @@ import (
 func TestCancelRejectCodec(t *testing.T) {
 
 	original := &msg.CancelReject{
-		ClOrdId:      "hello",
-		OrigClOrdId:  "hello",
-		CxlRejReason: 4,
+		UniqueOrderId:     "hello",
+		UniqueOrigOrderId: "hello",
+		ClOrdId:           "hello",
+		OrigClOrdId:       "hello",
+		CxlRejReason:      4,
 	}
 	var buf bytes.Buffer
 	assert.NoError(t, original.Encode(&buf))

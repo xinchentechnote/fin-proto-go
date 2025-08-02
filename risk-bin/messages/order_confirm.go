@@ -5,15 +5,17 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/xinchentechnote/fin-proto-go/internal/codec"
+	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
 // OrderConfirm represents the packet structure.
 type OrderConfirm struct {
-	ClOrdId      string `json:"ClOrdID"`
-	ExecType     string `json:"ExecType"`
-	OrdRejReason uint32 `json:"OrdRejReason"`
-	OrdCnfmId    string `json:"OrdCnfmID"`
+	UniqueOrderId     string `json:"UniqueOrderID"`
+	UniqueOrigOrderId string `json:"UniqueOrigOrderID"`
+	ClOrdId           string `json:"ClOrdID"`
+	ExecType          string `json:"ExecType"`
+	OrdRejReason      uint32 `json:"OrdRejReason"`
+	OrdCnfmId         string `json:"OrdCnfmID"`
 }
 
 // NewOrderConfirm creates a new instance of OrderConfirm.
@@ -23,12 +25,18 @@ func NewOrderConfirm() *OrderConfirm {
 
 // String returns a string representation of the packet.
 func (p *OrderConfirm) String() string {
-	return fmt.Sprintf("OrderConfirm{ClOrdId: %v, ExecType: %v, OrdRejReason: %v, OrdCnfmId: %v}", p.ClOrdId, p.ExecType, p.OrdRejReason, p.OrdCnfmId)
+	return fmt.Sprintf("OrderConfirm{UniqueOrderId: %v, UniqueOrigOrderId: %v, ClOrdId: %v, ExecType: %v, OrdRejReason: %v, OrdCnfmId: %v}", p.UniqueOrderId, p.UniqueOrigOrderId, p.ClOrdId, p.ExecType, p.OrdRejReason, p.OrdCnfmId)
 }
 
 // Encode encodes the packet into a byte slice.
 func (p *OrderConfirm) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
+	if err := codec.PutString[uint32](buf, p.UniqueOrderId); err != nil {
+		return err
+	}
+	if err := codec.PutString[uint32](buf, p.UniqueOrigOrderId); err != nil {
+		return err
+	}
 	if err := codec.PutString[uint32](buf, p.ClOrdId); err != nil {
 		return err
 	}
@@ -46,6 +54,16 @@ func (p *OrderConfirm) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *OrderConfirm) Decode(buf *bytes.Buffer) error {
+	if val, err := codec.GetString[uint32](buf); err != nil {
+		return err
+	} else {
+		p.UniqueOrderId = val
+	}
+	if val, err := codec.GetString[uint32](buf); err != nil {
+		return err
+	} else {
+		p.UniqueOrigOrderId = val
+	}
 	if val, err := codec.GetString[uint32](buf); err != nil {
 		return err
 	} else {
