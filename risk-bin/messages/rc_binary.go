@@ -93,21 +93,10 @@ func (p *RcBinary) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.MsgBodyLen = val
 	}
-	switch p.MsgType {
-	case 100101:
-		p.Body = &NewOrder{}
-	case 200102:
-		p.Body = &OrderConfirm{}
-	case 200115:
-		p.Body = &ExecutionReport{}
-	case 190007:
-		p.Body = &OrderCancel{}
-	case 290008:
-		p.Body = &CancelReject{}
-	case 800001:
-		p.Body = &RiskResult{}
-	default:
-		return fmt.Errorf("unsupported MsgType: %v", p.MsgType)
+	if body, err := NewMessageByMsgType(p.MsgType); err != nil {
+		return err
+	} else {
+		p.Body = body
 	}
 	if err := p.Body.Decode(buf); err != nil {
 		return err
