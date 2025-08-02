@@ -66,7 +66,7 @@ func (p *RcBinary) Encode(buf *bytes.Buffer) error {
 	if err := p.Body.Encode(&BodyBuf); err != nil {
 		return err
 	}
-	p.MsgBodyLen = uint32(BodyBuf.Available())
+	p.MsgBodyLen = uint32(BodyBuf.Len())
 	if err := codec.PutBasicType(buf, p.MsgBodyLen); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgBodyLen", err)
 	}
