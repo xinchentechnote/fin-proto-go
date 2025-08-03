@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // NewOrder represents the packet structure.
 type NewOrder struct {
 	UniqueOrderId string `json:"UniqueOrderID"`

@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // RiskResult represents the packet structure.
 type RiskResult struct {
 	UniqueOrderId string `json:"UniqueOrderID"`

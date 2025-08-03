@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // ExecutionReport represents the packet structure.
 type ExecutionReport struct {
 	UniqueOrderId string `json:"UniqueOrderID"`
