@@ -158,8 +158,10 @@ func (p *ExecutionConfirm) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutFixedString(buf, p.OrderRestrictions, 4); err != nil {
 		return err
 	}
-	if err := p.ApplExtend.Encode(buf); err != nil {
-		return err
+	if p.ApplExtend != nil {
+		if err := p.ApplExtend.Encode(buf); err != nil {
+			return err
+		}
 	}
 	return nil
 }

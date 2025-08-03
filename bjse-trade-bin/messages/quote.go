@@ -108,8 +108,10 @@ func (p *Quote) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutBasicTypeLE(buf, p.OfferSize); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "OfferSize", err)
 	}
-	if err := p.ApplExtend.Encode(buf); err != nil {
-		return err
+	if p.ApplExtend != nil {
+		if err := p.ApplExtend.Encode(buf); err != nil {
+			return err
+		}
 	}
 	return nil
 }

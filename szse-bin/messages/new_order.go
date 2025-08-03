@@ -134,8 +134,10 @@ func (p *NewOrder) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutBasicType(buf, p.Price); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "Price", err)
 	}
-	if err := p.ApplExtend.Encode(buf); err != nil {
-		return err
+	if p.ApplExtend != nil {
+		if err := p.ApplExtend.Encode(buf); err != nil {
+			return err
+		}
 	}
 	return nil
 }
