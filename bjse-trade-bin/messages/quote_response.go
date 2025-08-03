@@ -8,6 +8,26 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+	RegistryQuoteResponseApplIdFactory("070", func() codec.BinaryCodec { return &QuoteResponseExtend070{} })
+}
+
+var quoteResponseApplIdFactoryCache = map[string]func() codec.BinaryCodec{}
+
+func RegistryQuoteResponseApplIdFactory(applId string, factory func() codec.BinaryCodec) {
+	quoteResponseApplIdFactoryCache[applId] = factory
+}
+
+func NewQuoteResponseMessageByApplId(key string) (codec.BinaryCodec, error) {
+	if factory, ok := quoteResponseApplIdFactoryCache[key]; ok {
+		return factory(), nil
+	}
+	return nil, fmt.Errorf("unknown message type")
+}
+
+func init() {
+}
+
 // Quote2 represents the packet structure.
 type Quote2 struct {
 	QuoteId    string `json:"QuoteID"`
@@ -257,11 +277,10 @@ func (p *QuoteResponse) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.Quote2 = val
 	}
-	switch p.ApplId {
-	case "070":
-		p.ApplExtend = &QuoteResponseExtend070{}
-	default:
-		return fmt.Errorf("unsupported ApplId: %v", p.ApplId)
+	if val, err := NewQuoteResponseMessageByApplId(p.ApplId); err != nil {
+		return err
+	} else {
+		p.ApplExtend = val
 	}
 	if err := p.ApplExtend.Decode(buf); err != nil {
 		return err

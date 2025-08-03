@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // QuoteExtend070 represents the packet structure.
 type QuoteExtend070 struct {
 	BranchId          string `json:"BranchID"`

@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // Extend200515 represents the packet structure.
 type Extend200515 struct {
 	ConfirmId  string `json:"ConfirmID"`

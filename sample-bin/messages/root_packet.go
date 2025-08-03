@@ -10,20 +10,20 @@ import (
 )
 
 func init() {
-	RegistryMsgTypeFactory(1, func() codec.BinaryCodec { return &BasicPacket{} })
-	RegistryMsgTypeFactory(2, func() codec.BinaryCodec { return &StringPacket{} })
-	RegistryMsgTypeFactory(3, func() codec.BinaryCodec { return &NestedPacket{} })
-	RegistryMsgTypeFactory(4, func() codec.BinaryCodec { return &EmptyPacket{} })
+	RegistryRootPacketMsgTypeFactory(1, func() codec.BinaryCodec { return &BasicPacket{} })
+	RegistryRootPacketMsgTypeFactory(2, func() codec.BinaryCodec { return &StringPacket{} })
+	RegistryRootPacketMsgTypeFactory(3, func() codec.BinaryCodec { return &NestedPacket{} })
+	RegistryRootPacketMsgTypeFactory(4, func() codec.BinaryCodec { return &EmptyPacket{} })
 }
 
-var msgTypeFactoryCache = map[uint16]func() codec.BinaryCodec{}
+var rootPacketMsgTypeFactoryCache = map[uint16]func() codec.BinaryCodec{}
 
-func RegistryMsgTypeFactory(msgType uint16, factory func() codec.BinaryCodec) {
-	msgTypeFactoryCache[msgType] = factory
+func RegistryRootPacketMsgTypeFactory(msgType uint16, factory func() codec.BinaryCodec) {
+	rootPacketMsgTypeFactoryCache[msgType] = factory
 }
 
-func NewMessageByMsgType(key uint16) (codec.BinaryCodec, error) {
-	if factory, ok := msgTypeFactoryCache[key]; ok {
+func NewRootPacketMessageByMsgType(key uint16) (codec.BinaryCodec, error) {
+	if factory, ok := rootPacketMsgTypeFactoryCache[key]; ok {
 		return factory(), nil
 	}
 	return nil, fmt.Errorf("unknown message type")
@@ -85,7 +85,7 @@ func (p *RootPacket) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.PayloadLen = val
 	}
-	if val, err := NewMessageByMsgType(p.MsgType); err != nil {
+	if val, err := NewRootPacketMessageByMsgType(p.MsgType); err != nil {
 		return err
 	} else {
 		p.Payload = val

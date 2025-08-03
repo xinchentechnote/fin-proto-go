@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // AllegeQuoteExtend070 represents the packet structure.
 type AllegeQuoteExtend070 struct {
 	CashMargin        string `json:"CashMargin"`

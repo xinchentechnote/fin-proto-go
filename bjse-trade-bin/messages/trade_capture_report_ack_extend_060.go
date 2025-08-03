@@ -6,6 +6,9 @@ import (
 	"fmt"
 )
 
+func init() {
+}
+
 // TradeCaptureReportAckExtend060 represents the packet structure.
 type TradeCaptureReportAckExtend060 struct {
 }

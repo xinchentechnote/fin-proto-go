@@ -6,6 +6,9 @@ import (
 	"fmt"
 )
 
+func init() {
+}
+
 // ExtendNewOrder043 represents the packet structure.
 type ExtendNewOrder043 struct {
 }

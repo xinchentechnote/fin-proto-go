@@ -8,6 +8,12 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
+func init() {
+}
+
 // NoPartitions represents the packet structure.
 type NoPartitions struct {
 	PartitionNo   int32  `json:"PartitionNo"`

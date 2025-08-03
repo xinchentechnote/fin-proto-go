@@ -6,6 +6,9 @@ import (
 	"fmt"
 )
 
+func init() {
+}
+
 // TradeCaptureCofirmExtend060 represents the packet structure.
 type TradeCaptureCofirmExtend060 struct {
 }

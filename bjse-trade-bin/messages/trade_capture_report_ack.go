@@ -8,6 +8,27 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+	RegistryTradeCaptureReportAckApplIdFactory("031", func() codec.BinaryCodec { return &TradeCaptureReportAckExtend031{} })
+	RegistryTradeCaptureReportAckApplIdFactory("051", func() codec.BinaryCodec { return &TradeCaptureReportAckExtend051{} })
+	RegistryTradeCaptureReportAckApplIdFactory("060", func() codec.BinaryCodec { return &TradeCaptureReportAckExtend060{} })
+	RegistryTradeCaptureReportAckApplIdFactory("061", func() codec.BinaryCodec { return &TradeCaptureReportAckExtend061{} })
+	RegistryTradeCaptureReportAckApplIdFactory("062", func() codec.BinaryCodec { return &TradeCaptureReportAckExtend062{} })
+}
+
+var tradeCaptureReportAckApplIdFactoryCache = map[string]func() codec.BinaryCodec{}
+
+func RegistryTradeCaptureReportAckApplIdFactory(applId string, factory func() codec.BinaryCodec) {
+	tradeCaptureReportAckApplIdFactoryCache[applId] = factory
+}
+
+func NewTradeCaptureReportAckMessageByApplId(key string) (codec.BinaryCodec, error) {
+	if factory, ok := tradeCaptureReportAckApplIdFactoryCache[key]; ok {
+		return factory(), nil
+	}
+	return nil, fmt.Errorf("unknown message type")
+}
+
 // TradeCaptureReportAck represents the packet structure.
 type TradeCaptureReportAck struct {
 	PartitionNo             int32             `json:"PartitionNo"`
@@ -331,19 +352,10 @@ func (p *TradeCaptureReportAck) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.CounterPartyBranchId = val
 	}
-	switch p.ApplId {
-	case "031":
-		p.ApplExtend = &TradeCaptureReportAckExtend031{}
-	case "051":
-		p.ApplExtend = &TradeCaptureReportAckExtend051{}
-	case "060":
-		p.ApplExtend = &TradeCaptureReportAckExtend060{}
-	case "061":
-		p.ApplExtend = &TradeCaptureReportAckExtend061{}
-	case "062":
-		p.ApplExtend = &TradeCaptureReportAckExtend062{}
-	default:
-		return fmt.Errorf("unsupported ApplId: %v", p.ApplId)
+	if val, err := NewTradeCaptureReportAckMessageByApplId(p.ApplId); err != nil {
+		return err
+	} else {
+		p.ApplExtend = val
 	}
 	if err := p.ApplExtend.Decode(buf); err != nil {
 		return err

@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // Extend100201 represents the packet structure.
 type Extend100201 struct {
 	StopPx         int64  `json:"StopPx"`

@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // Extend200415 represents the packet structure.
 type Extend200415 struct {
 	PositionEffect      string `json:"PositionEffect"`

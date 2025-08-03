@@ -9,6 +9,99 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+	RegistrySzseBinaryMsgTypeFactory(1, func() codec.BinaryCodec { return &Logon{} })
+	RegistrySzseBinaryMsgTypeFactory(2, func() codec.BinaryCodec { return &Logout{} })
+	RegistrySzseBinaryMsgTypeFactory(3, func() codec.BinaryCodec { return &Heartbeat{} })
+	RegistrySzseBinaryMsgTypeFactory(4, func() codec.BinaryCodec { return &BusinessReject{} })
+	RegistrySzseBinaryMsgTypeFactory(5, func() codec.BinaryCodec { return &ReportSynchronization{} })
+	RegistrySzseBinaryMsgTypeFactory(6, func() codec.BinaryCodec { return &PlatformStateInfo{} })
+	RegistrySzseBinaryMsgTypeFactory(7, func() codec.BinaryCodec { return &ReportFinished{} })
+	RegistrySzseBinaryMsgTypeFactory(9, func() codec.BinaryCodec { return &PlatformPartition{} })
+	RegistrySzseBinaryMsgTypeFactory(10, func() codec.BinaryCodec { return &TradingSessionStatus{} })
+	RegistrySzseBinaryMsgTypeFactory(100101, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(100201, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(100301, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(100401, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(100501, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(100601, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(100701, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(101201, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(101301, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(101401, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(101501, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(101601, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(101701, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(101801, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(101901, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(102301, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(102701, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(102801, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(102901, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(103101, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(106301, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(103301, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(103501, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(103701, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(104101, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(104128, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(104701, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistrySzseBinaryMsgTypeFactory(200102, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(200202, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(200302, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(200402, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(200502, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(200602, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(200702, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(201202, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(201302, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(201402, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(201502, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(201602, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(201702, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(201802, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(201902, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(202202, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(202302, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(202702, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(202802, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(202902, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(203102, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(206302, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(203302, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(203502, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(203702, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(204102, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(204129, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(204702, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistrySzseBinaryMsgTypeFactory(200115, func() codec.BinaryCodec { return &ExecutionReport{} })
+	RegistrySzseBinaryMsgTypeFactory(200215, func() codec.BinaryCodec { return &ExecutionReport{} })
+	RegistrySzseBinaryMsgTypeFactory(200315, func() codec.BinaryCodec { return &ExecutionReport{} })
+	RegistrySzseBinaryMsgTypeFactory(200415, func() codec.BinaryCodec { return &ExecutionReport{} })
+	RegistrySzseBinaryMsgTypeFactory(200515, func() codec.BinaryCodec { return &ExecutionReport{} })
+	RegistrySzseBinaryMsgTypeFactory(200615, func() codec.BinaryCodec { return &ExecutionReport{} })
+	RegistrySzseBinaryMsgTypeFactory(200715, func() codec.BinaryCodec { return &ExecutionReport{} })
+	RegistrySzseBinaryMsgTypeFactory(206315, func() codec.BinaryCodec { return &ExecutionReport{} })
+	RegistrySzseBinaryMsgTypeFactory(203715, func() codec.BinaryCodec { return &ExecutionReport{} })
+	RegistrySzseBinaryMsgTypeFactory(204115, func() codec.BinaryCodec { return &ExecutionReport{} })
+	RegistrySzseBinaryMsgTypeFactory(204130, func() codec.BinaryCodec { return &ExecutionReport{} })
+	RegistrySzseBinaryMsgTypeFactory(190007, func() codec.BinaryCodec { return &OrderCancelRequest{} })
+	RegistrySzseBinaryMsgTypeFactory(290008, func() codec.BinaryCodec { return &CancelReject{} })
+}
+
+var szseBinaryMsgTypeFactoryCache = map[uint32]func() codec.BinaryCodec{}
+
+func RegistrySzseBinaryMsgTypeFactory(msgType uint32, factory func() codec.BinaryCodec) {
+	szseBinaryMsgTypeFactoryCache[msgType] = factory
+}
+
+func NewSzseBinaryMessageByMsgType(key uint32) (codec.BinaryCodec, error) {
+	if factory, ok := szseBinaryMsgTypeFactoryCache[key]; ok {
+		return factory(), nil
+	}
+	return nil, fmt.Errorf("unknown message type")
+}
+
 // SzseBinary represents the packet structure.
 type SzseBinary struct {
 	MsgType    uint32            `json:"MsgType"`
@@ -37,7 +130,7 @@ func (p *SzseBinary) Encode(buf *bytes.Buffer) error {
 	if err := p.Body.Encode(&BodyBuf); err != nil {
 		return err
 	}
-	p.BodyLength = uint32(BodyBuf.Available())
+	p.BodyLength = uint32(BodyBuf.Len())
 	if err := codec.PutBasicType(buf, p.BodyLength); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "BodyLength", err)
 	}
@@ -65,163 +158,10 @@ func (p *SzseBinary) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.BodyLength = val
 	}
-	switch p.MsgType {
-	case 1:
-		p.Body = &Logon{}
-	case 2:
-		p.Body = &Logout{}
-	case 3:
-		p.Body = &Heartbeat{}
-	case 4:
-		p.Body = &BusinessReject{}
-	case 5:
-		p.Body = &ReportSynchronization{}
-	case 6:
-		p.Body = &PlatformStateInfo{}
-	case 7:
-		p.Body = &ReportFinished{}
-	case 9:
-		p.Body = &PlatformPartition{}
-	case 10:
-		p.Body = &TradingSessionStatus{}
-	case 100101:
-		p.Body = &NewOrder{}
-	case 100201:
-		p.Body = &NewOrder{}
-	case 100301:
-		p.Body = &NewOrder{}
-	case 100401:
-		p.Body = &NewOrder{}
-	case 100501:
-		p.Body = &NewOrder{}
-	case 100601:
-		p.Body = &NewOrder{}
-	case 100701:
-		p.Body = &NewOrder{}
-	case 101201:
-		p.Body = &NewOrder{}
-	case 101301:
-		p.Body = &NewOrder{}
-	case 101401:
-		p.Body = &NewOrder{}
-	case 101501:
-		p.Body = &NewOrder{}
-	case 101601:
-		p.Body = &NewOrder{}
-	case 101701:
-		p.Body = &NewOrder{}
-	case 101801:
-		p.Body = &NewOrder{}
-	case 101901:
-		p.Body = &NewOrder{}
-	case 102301:
-		p.Body = &NewOrder{}
-	case 102701:
-		p.Body = &NewOrder{}
-	case 102801:
-		p.Body = &NewOrder{}
-	case 102901:
-		p.Body = &NewOrder{}
-	case 103101:
-		p.Body = &NewOrder{}
-	case 106301:
-		p.Body = &NewOrder{}
-	case 103301:
-		p.Body = &NewOrder{}
-	case 103501:
-		p.Body = &NewOrder{}
-	case 103701:
-		p.Body = &NewOrder{}
-	case 104101:
-		p.Body = &NewOrder{}
-	case 104128:
-		p.Body = &NewOrder{}
-	case 104701:
-		p.Body = &NewOrder{}
-	case 200102:
-		p.Body = &ExecutionConfirm{}
-	case 200202:
-		p.Body = &ExecutionConfirm{}
-	case 200302:
-		p.Body = &ExecutionConfirm{}
-	case 200402:
-		p.Body = &ExecutionConfirm{}
-	case 200502:
-		p.Body = &ExecutionConfirm{}
-	case 200602:
-		p.Body = &ExecutionConfirm{}
-	case 200702:
-		p.Body = &ExecutionConfirm{}
-	case 201202:
-		p.Body = &ExecutionConfirm{}
-	case 201302:
-		p.Body = &ExecutionConfirm{}
-	case 201402:
-		p.Body = &ExecutionConfirm{}
-	case 201502:
-		p.Body = &ExecutionConfirm{}
-	case 201602:
-		p.Body = &ExecutionConfirm{}
-	case 201702:
-		p.Body = &ExecutionConfirm{}
-	case 201802:
-		p.Body = &ExecutionConfirm{}
-	case 201902:
-		p.Body = &ExecutionConfirm{}
-	case 202202:
-		p.Body = &ExecutionConfirm{}
-	case 202302:
-		p.Body = &ExecutionConfirm{}
-	case 202702:
-		p.Body = &ExecutionConfirm{}
-	case 202802:
-		p.Body = &ExecutionConfirm{}
-	case 202902:
-		p.Body = &ExecutionConfirm{}
-	case 203102:
-		p.Body = &ExecutionConfirm{}
-	case 206302:
-		p.Body = &ExecutionConfirm{}
-	case 203302:
-		p.Body = &ExecutionConfirm{}
-	case 203502:
-		p.Body = &ExecutionConfirm{}
-	case 203702:
-		p.Body = &ExecutionConfirm{}
-	case 204102:
-		p.Body = &ExecutionConfirm{}
-	case 204129:
-		p.Body = &ExecutionConfirm{}
-	case 204702:
-		p.Body = &ExecutionConfirm{}
-	case 200115:
-		p.Body = &ExecutionReport{}
-	case 200215:
-		p.Body = &ExecutionReport{}
-	case 200315:
-		p.Body = &ExecutionReport{}
-	case 200415:
-		p.Body = &ExecutionReport{}
-	case 200515:
-		p.Body = &ExecutionReport{}
-	case 200615:
-		p.Body = &ExecutionReport{}
-	case 200715:
-		p.Body = &ExecutionReport{}
-	case 206315:
-		p.Body = &ExecutionReport{}
-	case 203715:
-		p.Body = &ExecutionReport{}
-	case 204115:
-		p.Body = &ExecutionReport{}
-	case 204130:
-		p.Body = &ExecutionReport{}
-	case 190007:
-		p.Body = &OrderCancelRequest{}
-	case 290008:
-		p.Body = &CancelReject{}
-	default:
-		return fmt.Errorf("unsupported MsgType: %v", p.MsgType)
+	if val, err := NewSzseBinaryMessageByMsgType(p.MsgType); err != nil {
+		return err
+	} else {
+		p.Body = val
 	}
 	if err := p.Body.Decode(buf); err != nil {
 		return err

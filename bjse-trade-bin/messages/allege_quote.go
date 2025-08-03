@@ -8,6 +8,23 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+	RegistryAllegeQuoteApplIdFactory("070", func() codec.BinaryCodec { return &AllegeQuoteExtend070{} })
+}
+
+var allegeQuoteApplIdFactoryCache = map[string]func() codec.BinaryCodec{}
+
+func RegistryAllegeQuoteApplIdFactory(applId string, factory func() codec.BinaryCodec) {
+	allegeQuoteApplIdFactoryCache[applId] = factory
+}
+
+func NewAllegeQuoteMessageByApplId(key string) (codec.BinaryCodec, error) {
+	if factory, ok := allegeQuoteApplIdFactoryCache[key]; ok {
+		return factory(), nil
+	}
+	return nil, fmt.Errorf("unknown message type")
+}
+
 // AllegeQuote represents the packet structure.
 type AllegeQuote struct {
 	PartitionNo      int32             `json:"PartitionNo"`
@@ -277,11 +294,10 @@ func (p *AllegeQuote) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.Memo = val
 	}
-	switch p.ApplId {
-	case "070":
-		p.ApplExtend = &AllegeQuoteExtend070{}
-	default:
-		return fmt.Errorf("unsupported ApplId: %v", p.ApplId)
+	if val, err := NewAllegeQuoteMessageByApplId(p.ApplId); err != nil {
+		return err
+	} else {
+		p.ApplExtend = val
 	}
 	if err := p.ApplExtend.Decode(buf); err != nil {
 		return err

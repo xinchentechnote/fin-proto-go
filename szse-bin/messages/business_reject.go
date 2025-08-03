@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // BusinessReject represents the packet structure.
 type BusinessReject struct {
 	ApplId               string `json:"ApplID"`

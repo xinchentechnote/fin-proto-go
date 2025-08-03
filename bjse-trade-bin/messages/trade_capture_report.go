@@ -8,6 +8,27 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+	RegistryTradeCaptureReportApplIdFactory("031", func() codec.BinaryCodec { return &TradeCaptureReportExtend031{} })
+	RegistryTradeCaptureReportApplIdFactory("051", func() codec.BinaryCodec { return &TradeCaptureReportExtend051{} })
+	RegistryTradeCaptureReportApplIdFactory("060", func() codec.BinaryCodec { return &TradeCaptureReportExtend060{} })
+	RegistryTradeCaptureReportApplIdFactory("061", func() codec.BinaryCodec { return &TradeCaptureReportExtend061{} })
+	RegistryTradeCaptureReportApplIdFactory("062", func() codec.BinaryCodec { return &TradeCaptureReportExtend062{} })
+}
+
+var tradeCaptureReportApplIdFactoryCache = map[string]func() codec.BinaryCodec{}
+
+func RegistryTradeCaptureReportApplIdFactory(applId string, factory func() codec.BinaryCodec) {
+	tradeCaptureReportApplIdFactoryCache[applId] = factory
+}
+
+func NewTradeCaptureReportMessageByApplId(key string) (codec.BinaryCodec, error) {
+	if factory, ok := tradeCaptureReportApplIdFactoryCache[key]; ok {
+		return factory(), nil
+	}
+	return nil, fmt.Errorf("unknown message type")
+}
+
 // TradeCaptureReport represents the packet structure.
 type TradeCaptureReport struct {
 	ApplId                string            `json:"ApplID"`
@@ -259,19 +280,10 @@ func (p *TradeCaptureReport) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.CounterPartyBranchId = val
 	}
-	switch p.ApplId {
-	case "031":
-		p.ApplExtend = &TradeCaptureReportExtend031{}
-	case "051":
-		p.ApplExtend = &TradeCaptureReportExtend051{}
-	case "060":
-		p.ApplExtend = &TradeCaptureReportExtend060{}
-	case "061":
-		p.ApplExtend = &TradeCaptureReportExtend061{}
-	case "062":
-		p.ApplExtend = &TradeCaptureReportExtend062{}
-	default:
-		return fmt.Errorf("unsupported ApplId: %v", p.ApplId)
+	if val, err := NewTradeCaptureReportMessageByApplId(p.ApplId); err != nil {
+		return err
+	} else {
+		p.ApplExtend = val
 	}
 	if err := p.ApplExtend.Decode(buf); err != nil {
 		return err

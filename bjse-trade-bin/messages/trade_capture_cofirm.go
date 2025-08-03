@@ -8,6 +8,27 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+	RegistryTradeCaptureCofirmApplIdFactory("031", func() codec.BinaryCodec { return &TradeCaptureCofirmExtend031{} })
+	RegistryTradeCaptureCofirmApplIdFactory("051", func() codec.BinaryCodec { return &TradeCaptureCofirmExtend051{} })
+	RegistryTradeCaptureCofirmApplIdFactory("060", func() codec.BinaryCodec { return &TradeCaptureCofirmExtend060{} })
+	RegistryTradeCaptureCofirmApplIdFactory("061", func() codec.BinaryCodec { return &TradeCaptureCofirmExtend061{} })
+	RegistryTradeCaptureCofirmApplIdFactory("062", func() codec.BinaryCodec { return &TradeCaptureCofirmExtend062{} })
+}
+
+var tradeCaptureCofirmApplIdFactoryCache = map[string]func() codec.BinaryCodec{}
+
+func RegistryTradeCaptureCofirmApplIdFactory(applId string, factory func() codec.BinaryCodec) {
+	tradeCaptureCofirmApplIdFactoryCache[applId] = factory
+}
+
+func NewTradeCaptureCofirmMessageByApplId(key string) (codec.BinaryCodec, error) {
+	if factory, ok := tradeCaptureCofirmApplIdFactoryCache[key]; ok {
+		return factory(), nil
+	}
+	return nil, fmt.Errorf("unknown message type")
+}
+
 // TradeCaptureCofirm represents the packet structure.
 type TradeCaptureCofirm struct {
 	PartitionNo           int32             `json:"PartitionNo"`
@@ -295,19 +316,10 @@ func (p *TradeCaptureCofirm) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.CounterPartyBranchId = val
 	}
-	switch p.ApplId {
-	case "031":
-		p.ApplExtend = &TradeCaptureCofirmExtend031{}
-	case "051":
-		p.ApplExtend = &TradeCaptureCofirmExtend051{}
-	case "060":
-		p.ApplExtend = &TradeCaptureCofirmExtend060{}
-	case "061":
-		p.ApplExtend = &TradeCaptureCofirmExtend061{}
-	case "062":
-		p.ApplExtend = &TradeCaptureCofirmExtend062{}
-	default:
-		return fmt.Errorf("unsupported ApplId: %v", p.ApplId)
+	if val, err := NewTradeCaptureCofirmMessageByApplId(p.ApplId); err != nil {
+		return err
+	} else {
+		p.ApplExtend = val
 	}
 	if err := p.ApplExtend.Decode(buf); err != nil {
 		return err

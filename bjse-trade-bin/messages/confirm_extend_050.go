@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // ConfirmExtend050 represents the packet structure.
 type ConfirmExtend050 struct {
 	ExpirationDays uint16 `json:"ExpirationDays"`

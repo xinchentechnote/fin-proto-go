@@ -6,6 +6,9 @@ import (
 	"fmt"
 )
 
+func init() {
+}
+
 // QuoteExtend071 represents the packet structure.
 type QuoteExtend071 struct {
 }

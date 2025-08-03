@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // TradeCaptureCofirmExtend051 represents the packet structure.
 type TradeCaptureCofirmExtend051 struct {
 	ExpirationDays uint16 `json:"ExpirationDays"`

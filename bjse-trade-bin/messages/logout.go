@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // Logout represents the packet structure.
 type Logout struct {
 	SessionStatus int32  `json:"SessionStatus"`

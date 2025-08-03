@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // TradingSessionStatus represents the packet structure.
 type TradingSessionStatus struct {
 	MarketId            string `json:"MarketID"`

@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // Extend102901 represents the packet structure.
 type Extend102901 struct {
 	DeductionPbu       string `json:"DeductionPBU"`

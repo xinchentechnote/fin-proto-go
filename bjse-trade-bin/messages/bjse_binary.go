@@ -8,6 +8,33 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+	RegistryBjseBinaryMsgTypeFactory(1, func() codec.BinaryCodec { return &Logon{} })
+	RegistryBjseBinaryMsgTypeFactory(2, func() codec.BinaryCodec { return &Logout{} })
+	RegistryBjseBinaryMsgTypeFactory(3, func() codec.BinaryCodec { return &Heartbeat{} })
+	RegistryBjseBinaryMsgTypeFactory(101000, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistryBjseBinaryMsgTypeFactory(102000, func() codec.BinaryCodec { return &OrderCancelRequest{} })
+	RegistryBjseBinaryMsgTypeFactory(201000, func() codec.BinaryCodec { return &CancelReject{} })
+	RegistryBjseBinaryMsgTypeFactory(202010, func() codec.BinaryCodec { return &ExecutionConfirm{} })
+	RegistryBjseBinaryMsgTypeFactory(203010, func() codec.BinaryCodec { return &ExecutionReport{} })
+	RegistryBjseBinaryMsgTypeFactory(5, func() codec.BinaryCodec { return &ReportSynchronization{} })
+	RegistryBjseBinaryMsgTypeFactory(6, func() codec.BinaryCodec { return &PlatformStateInfo{} })
+	RegistryBjseBinaryMsgTypeFactory(7, func() codec.BinaryCodec { return &ReportFinished{} })
+}
+
+var bjseBinaryMsgTypeFactoryCache = map[uint32]func() codec.BinaryCodec{}
+
+func RegistryBjseBinaryMsgTypeFactory(msgType uint32, factory func() codec.BinaryCodec) {
+	bjseBinaryMsgTypeFactoryCache[msgType] = factory
+}
+
+func NewBjseBinaryMessageByMsgType(key uint32) (codec.BinaryCodec, error) {
+	if factory, ok := bjseBinaryMsgTypeFactoryCache[key]; ok {
+		return factory(), nil
+	}
+	return nil, fmt.Errorf("unknown message type")
+}
+
 // BjseBinary represents the packet structure.
 type BjseBinary struct {
 	MsgType    uint32            `json:"MsgType"`
@@ -56,31 +83,10 @@ func (p *BjseBinary) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.BodyLength = val
 	}
-	switch p.MsgType {
-	case 1:
-		p.Body = &Logon{}
-	case 2:
-		p.Body = &Logout{}
-	case 3:
-		p.Body = &Heartbeat{}
-	case 101000:
-		p.Body = &NewOrder{}
-	case 102000:
-		p.Body = &OrderCancelRequest{}
-	case 201000:
-		p.Body = &CancelReject{}
-	case 202010:
-		p.Body = &ExecutionConfirm{}
-	case 203010:
-		p.Body = &ExecutionReport{}
-	case 5:
-		p.Body = &ReportSynchronization{}
-	case 6:
-		p.Body = &PlatformStateInfo{}
-	case 7:
-		p.Body = &ReportFinished{}
-	default:
-		return fmt.Errorf("unsupported MsgType: %v", p.MsgType)
+	if val, err := NewBjseBinaryMessageByMsgType(p.MsgType); err != nil {
+		return err
+	} else {
+		p.Body = val
 	}
 	if err := p.Body.Decode(buf); err != nil {
 		return err
