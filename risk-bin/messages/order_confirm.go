@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // OrderConfirm represents the packet structure.
 type OrderConfirm struct {
 	UniqueOrderId     string `json:"UniqueOrderID"`

@@ -10,26 +10,25 @@ import (
 )
 
 func init() {
-	RegisterMessage(100101, func() codec.BinaryCodec { return &NewOrder{} })
-	RegisterMessage(200102, func() codec.BinaryCodec { return &OrderConfirm{} })
-	RegisterMessage(200115, func() codec.BinaryCodec { return &ExecutionReport{} })
-	RegisterMessage(190007, func() codec.BinaryCodec { return &OrderCancel{} })
-	RegisterMessage(290008, func() codec.BinaryCodec { return &CancelReject{} })
+	RegistryMsgTypeFactory(100101, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistryMsgTypeFactory(200102, func() codec.BinaryCodec { return &OrderConfirm{} })
+	RegistryMsgTypeFactory(200115, func() codec.BinaryCodec { return &ExecutionReport{} })
+	RegistryMsgTypeFactory(190007, func() codec.BinaryCodec { return &OrderCancel{} })
+	RegistryMsgTypeFactory(290008, func() codec.BinaryCodec { return &CancelReject{} })
+	RegistryMsgTypeFactory(800001, func() codec.BinaryCodec { return &RiskResult{} })
 }
 
-var registry = map[uint32]func() codec.BinaryCodec{}
+var msgTypeFactoryCache = map[uint32]func() codec.BinaryCodec{}
 
-// RegisterMessage registers a message type with its factory function.
-func RegisterMessage(msgType uint32, factory func() codec.BinaryCodec) {
-	registry[msgType] = factory
+func RegistryMsgTypeFactory(msgType uint32, factory func() codec.BinaryCodec) {
+	msgTypeFactoryCache[msgType] = factory
 }
 
-// NewMessageByMsgType new message by type
-func NewMessageByMsgType(msgType uint32) (codec.BinaryCodec, error) {
-	if factory, ok := registry[msgType]; ok {
+func NewMessageByMsgType(key uint32) (codec.BinaryCodec, error) {
+	if factory, ok := msgTypeFactoryCache[key]; ok {
 		return factory(), nil
 	}
-	return nil, fmt.Errorf("unknown message type: %d", msgType)
+	return nil, fmt.Errorf("unknown message type")
 }
 
 // RcBinary represents the packet structure.
