@@ -174,10 +174,15 @@ func (p *QuoteResponse) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutObjectListLE[uint16](buf, p.Quote2); err != nil {
 		return err
 	}
-	if p.ApplExtend != nil {
-		if err := p.ApplExtend.Encode(buf); err != nil {
+	if p.ApplExtend == nil {
+		if val, err := NewQuoteResponseMessageByApplId(p.ApplId); err != nil {
 			return err
+		} else {
+			p.ApplExtend = val
 		}
+	}
+	if err := p.ApplExtend.Encode(buf); err != nil {
+		return err
 	}
 	return nil
 }

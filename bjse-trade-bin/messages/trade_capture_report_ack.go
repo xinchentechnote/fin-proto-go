@@ -179,10 +179,15 @@ func (p *TradeCaptureReportAck) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutFixedString(buf, p.CounterPartyBranchId, 2); err != nil {
 		return err
 	}
-	if p.ApplExtend != nil {
-		if err := p.ApplExtend.Encode(buf); err != nil {
+	if p.ApplExtend == nil {
+		if val, err := NewTradeCaptureReportAckMessageByApplId(p.ApplId); err != nil {
 			return err
+		} else {
+			p.ApplExtend = val
 		}
+	}
+	if err := p.ApplExtend.Encode(buf); err != nil {
+		return err
 	}
 	return nil
 }
