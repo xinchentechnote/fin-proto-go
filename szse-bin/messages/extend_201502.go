@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // Extend201502 represents the packet structure.
 type Extend201502 struct {
 	ShareProperty string `json:"ShareProperty"`

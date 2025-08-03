@@ -8,6 +8,25 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+	RegistryExecutionReportApplIdFactory("010", func() codec.BinaryCodec { return &ReportExtend010{} })
+	RegistryExecutionReportApplIdFactory("040", func() codec.BinaryCodec { return &ReportExtend040{} })
+	RegistryExecutionReportApplIdFactory("050", func() codec.BinaryCodec { return &ReportExtend050{} })
+}
+
+var executionReportApplIdFactoryCache = map[string]func() codec.BinaryCodec{}
+
+func RegistryExecutionReportApplIdFactory(applId string, factory func() codec.BinaryCodec) {
+	executionReportApplIdFactoryCache[applId] = factory
+}
+
+func NewExecutionReportMessageByApplId(key string) (codec.BinaryCodec, error) {
+	if factory, ok := executionReportApplIdFactoryCache[key]; ok {
+		return factory(), nil
+	}
+	return nil, fmt.Errorf("unknown message type")
+}
+
 // ExecutionReport represents the packet structure.
 type ExecutionReport struct {
 	PartitionNo      int32             `json:"PartitionNo"`
@@ -241,15 +260,10 @@ func (p *ExecutionReport) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.BranchId = val
 	}
-	switch p.ApplId {
-	case "010":
-		p.ApplExtend = &ReportExtend010{}
-	case "040":
-		p.ApplExtend = &ReportExtend040{}
-	case "050":
-		p.ApplExtend = &ReportExtend050{}
-	default:
-		return fmt.Errorf("unsupported ApplId: %v", p.ApplId)
+	if val, err := NewExecutionReportMessageByApplId(p.ApplId); err != nil {
+		return err
+	} else {
+		p.ApplExtend = val
 	}
 	if err := p.ApplExtend.Decode(buf); err != nil {
 		return err

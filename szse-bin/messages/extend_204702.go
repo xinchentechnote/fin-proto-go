@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // Extend204702 represents the packet structure.
 type Extend204702 struct {
 	SecondaryOrderId string `json:"SecondaryOrderID"`

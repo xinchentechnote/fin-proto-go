@@ -8,6 +8,41 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+	RegistryExecutionReportApplIdFactory("010", func() codec.BinaryCodec { return &Extend200115{} })
+	RegistryExecutionReportApplIdFactory("020", func() codec.BinaryCodec { return &Extend200215{} })
+	RegistryExecutionReportApplIdFactory("030", func() codec.BinaryCodec { return &Extend200315{} })
+	RegistryExecutionReportApplIdFactory("051", func() codec.BinaryCodec { return &Extend200515{} })
+	RegistryExecutionReportApplIdFactory("052", func() codec.BinaryCodec { return &Extend200515{} })
+	RegistryExecutionReportApplIdFactory("056", func() codec.BinaryCodec { return &Extend200515{} })
+	RegistryExecutionReportApplIdFactory("057", func() codec.BinaryCodec { return &Extend200515{} })
+	RegistryExecutionReportApplIdFactory("060", func() codec.BinaryCodec { return &Extend200615{} })
+	RegistryExecutionReportApplIdFactory("061", func() codec.BinaryCodec { return &Extend200615{} })
+	RegistryExecutionReportApplIdFactory("070", func() codec.BinaryCodec { return &Extend200715{} })
+	RegistryExecutionReportApplIdFactory("630", func() codec.BinaryCodec { return &Extend206315{} })
+	RegistryExecutionReportApplIdFactory("370", func() codec.BinaryCodec { return &Extend203715{} })
+	RegistryExecutionReportApplIdFactory("410", func() codec.BinaryCodec { return &Extend204115{} })
+	RegistryExecutionReportApplIdFactory("412", func() codec.BinaryCodec { return &Extend204115{} })
+	RegistryExecutionReportApplIdFactory("413", func() codec.BinaryCodec { return &Extend204115{} })
+	RegistryExecutionReportApplIdFactory("415", func() codec.BinaryCodec { return &Extend204115{} })
+	RegistryExecutionReportApplIdFactory("416", func() codec.BinaryCodec { return &Extend204115{} })
+	RegistryExecutionReportApplIdFactory("417", func() codec.BinaryCodec { return &Extend204130{} })
+	RegistryExecutionReportApplIdFactory("470", func() codec.BinaryCodec { return &Extend204715{} })
+}
+
+var executionReportApplIdFactoryCache = map[string]func() codec.BinaryCodec{}
+
+func RegistryExecutionReportApplIdFactory(applId string, factory func() codec.BinaryCodec) {
+	executionReportApplIdFactoryCache[applId] = factory
+}
+
+func NewExecutionReportMessageByApplId(key string) (codec.BinaryCodec, error) {
+	if factory, ok := executionReportApplIdFactoryCache[key]; ok {
+		return factory(), nil
+	}
+	return nil, fmt.Errorf("unknown message type")
+}
+
 // ExecutionReport represents the packet structure.
 type ExecutionReport struct {
 	PartitionNo      int32             `json:"PartitionNo"`
@@ -250,47 +285,10 @@ func (p *ExecutionReport) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.BranchId = val
 	}
-	switch p.ApplId {
-	case "010":
-		p.ApplExtend = &Extend200115{}
-	case "020":
-		p.ApplExtend = &Extend200215{}
-	case "030":
-		p.ApplExtend = &Extend200315{}
-	case "051":
-		p.ApplExtend = &Extend200515{}
-	case "052":
-		p.ApplExtend = &Extend200515{}
-	case "056":
-		p.ApplExtend = &Extend200515{}
-	case "057":
-		p.ApplExtend = &Extend200515{}
-	case "060":
-		p.ApplExtend = &Extend200615{}
-	case "061":
-		p.ApplExtend = &Extend200615{}
-	case "070":
-		p.ApplExtend = &Extend200715{}
-	case "630":
-		p.ApplExtend = &Extend206315{}
-	case "370":
-		p.ApplExtend = &Extend203715{}
-	case "410":
-		p.ApplExtend = &Extend204115{}
-	case "412":
-		p.ApplExtend = &Extend204115{}
-	case "413":
-		p.ApplExtend = &Extend204115{}
-	case "415":
-		p.ApplExtend = &Extend204115{}
-	case "416":
-		p.ApplExtend = &Extend204115{}
-	case "417":
-		p.ApplExtend = &Extend204130{}
-	case "470":
-		p.ApplExtend = &Extend204715{}
-	default:
-		return fmt.Errorf("unsupported ApplId: %v", p.ApplId)
+	if val, err := NewExecutionReportMessageByApplId(p.ApplId); err != nil {
+		return err
+	} else {
+		p.ApplExtend = val
 	}
 	if err := p.ApplExtend.Decode(buf); err != nil {
 		return err

@@ -8,6 +8,30 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+	RegistryExecutionConfirmApplIdFactory("010", func() codec.BinaryCodec { return &ConfirmExtend010{} })
+	RegistryExecutionConfirmApplIdFactory("040", func() codec.BinaryCodec { return &ConfirmExtend040{} })
+	RegistryExecutionConfirmApplIdFactory("041", func() codec.BinaryCodec { return &ConfirmExtend041{} })
+	RegistryExecutionConfirmApplIdFactory("042", func() codec.BinaryCodec { return &ConfirmExtend042{} })
+	RegistryExecutionConfirmApplIdFactory("043", func() codec.BinaryCodec { return &ConfirmExtend043{} })
+	RegistryExecutionConfirmApplIdFactory("044", func() codec.BinaryCodec { return &ConfirmExtend044{} })
+	RegistryExecutionConfirmApplIdFactory("045", func() codec.BinaryCodec { return &ConfirmExtend045{} })
+	RegistryExecutionConfirmApplIdFactory("050", func() codec.BinaryCodec { return &ConfirmExtend050{} })
+}
+
+var executionConfirmApplIdFactoryCache = map[string]func() codec.BinaryCodec{}
+
+func RegistryExecutionConfirmApplIdFactory(applId string, factory func() codec.BinaryCodec) {
+	executionConfirmApplIdFactoryCache[applId] = factory
+}
+
+func NewExecutionConfirmMessageByApplId(key string) (codec.BinaryCodec, error) {
+	if factory, ok := executionConfirmApplIdFactoryCache[key]; ok {
+		return factory(), nil
+	}
+	return nil, fmt.Errorf("unknown message type")
+}
+
 // ExecutionConfirm represents the packet structure.
 type ExecutionConfirm struct {
 	PartitionNo       int32             `json:"PartitionNo"`
@@ -277,25 +301,10 @@ func (p *ExecutionConfirm) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.OrderRestrictions = val
 	}
-	switch p.ApplId {
-	case "010":
-		p.ApplExtend = &ConfirmExtend010{}
-	case "040":
-		p.ApplExtend = &ConfirmExtend040{}
-	case "041":
-		p.ApplExtend = &ConfirmExtend041{}
-	case "042":
-		p.ApplExtend = &ConfirmExtend042{}
-	case "043":
-		p.ApplExtend = &ConfirmExtend043{}
-	case "044":
-		p.ApplExtend = &ConfirmExtend044{}
-	case "045":
-		p.ApplExtend = &ConfirmExtend045{}
-	case "050":
-		p.ApplExtend = &ConfirmExtend050{}
-	default:
-		return fmt.Errorf("unsupported ApplId: %v", p.ApplId)
+	if val, err := NewExecutionConfirmMessageByApplId(p.ApplId); err != nil {
+		return err
+	} else {
+		p.ApplExtend = val
 	}
 	if err := p.ApplExtend.Decode(buf); err != nil {
 		return err

@@ -6,6 +6,9 @@ import (
 	"fmt"
 )
 
+func init() {
+}
+
 // Heartbeat represents the packet structure.
 type Heartbeat struct {
 }

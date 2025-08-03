@@ -8,6 +8,50 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+	RegistryExecutionConfirmApplIdFactory("010", func() codec.BinaryCodec { return &Extend200102{} })
+	RegistryExecutionConfirmApplIdFactory("020", func() codec.BinaryCodec { return &Extend200202{} })
+	RegistryExecutionConfirmApplIdFactory("030", func() codec.BinaryCodec { return &Extend200302{} })
+	RegistryExecutionConfirmApplIdFactory("051", func() codec.BinaryCodec { return &Extend200502{} })
+	RegistryExecutionConfirmApplIdFactory("052", func() codec.BinaryCodec { return &Extend200502{} })
+	RegistryExecutionConfirmApplIdFactory("060", func() codec.BinaryCodec { return &Extend200602{} })
+	RegistryExecutionConfirmApplIdFactory("061", func() codec.BinaryCodec { return &Extend200602{} })
+	RegistryExecutionConfirmApplIdFactory("070", func() codec.BinaryCodec { return &Extend200702{} })
+	RegistryExecutionConfirmApplIdFactory("150", func() codec.BinaryCodec { return &Extend201502{} })
+	RegistryExecutionConfirmApplIdFactory("151", func() codec.BinaryCodec { return &Extend201502{} })
+	RegistryExecutionConfirmApplIdFactory("152", func() codec.BinaryCodec { return &Extend201502{} })
+	RegistryExecutionConfirmApplIdFactory("160", func() codec.BinaryCodec { return &Extend201602{} })
+	RegistryExecutionConfirmApplIdFactory("170", func() codec.BinaryCodec { return &Extend201702{} })
+	RegistryExecutionConfirmApplIdFactory("180", func() codec.BinaryCodec { return &Extend201802{} })
+	RegistryExecutionConfirmApplIdFactory("181", func() codec.BinaryCodec { return &Extend201802{} })
+	RegistryExecutionConfirmApplIdFactory("270", func() codec.BinaryCodec { return &Extend202702{} })
+	RegistryExecutionConfirmApplIdFactory("271", func() codec.BinaryCodec { return &Extend202702{} })
+	RegistryExecutionConfirmApplIdFactory("280", func() codec.BinaryCodec { return &Extend202802{} })
+	RegistryExecutionConfirmApplIdFactory("281", func() codec.BinaryCodec { return &Extend202802{} })
+	RegistryExecutionConfirmApplIdFactory("290", func() codec.BinaryCodec { return &Extend202902{} })
+	RegistryExecutionConfirmApplIdFactory("291", func() codec.BinaryCodec { return &Extend202902{} })
+	RegistryExecutionConfirmApplIdFactory("630", func() codec.BinaryCodec { return &Extend206302{} })
+	RegistryExecutionConfirmApplIdFactory("350", func() codec.BinaryCodec { return &Extend203502{} })
+	RegistryExecutionConfirmApplIdFactory("351", func() codec.BinaryCodec { return &Extend203502{} })
+	RegistryExecutionConfirmApplIdFactory("370", func() codec.BinaryCodec { return &Extend203702{} })
+	RegistryExecutionConfirmApplIdFactory("410", func() codec.BinaryCodec { return &Extend204102{} })
+	RegistryExecutionConfirmApplIdFactory("417", func() codec.BinaryCodec { return &Extend204129{} })
+	RegistryExecutionConfirmApplIdFactory("470", func() codec.BinaryCodec { return &Extend204702{} })
+}
+
+var executionConfirmApplIdFactoryCache = map[string]func() codec.BinaryCodec{}
+
+func RegistryExecutionConfirmApplIdFactory(applId string, factory func() codec.BinaryCodec) {
+	executionConfirmApplIdFactoryCache[applId] = factory
+}
+
+func NewExecutionConfirmMessageByApplId(key string) (codec.BinaryCodec, error) {
+	if factory, ok := executionConfirmApplIdFactoryCache[key]; ok {
+		return factory(), nil
+	}
+	return nil, fmt.Errorf("unknown message type")
+}
+
 // ExecutionConfirm represents the packet structure.
 type ExecutionConfirm struct {
 	PartitionNo       int32             `json:"PartitionNo"`
@@ -286,65 +330,10 @@ func (p *ExecutionConfirm) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.OrderRestrictions = val
 	}
-	switch p.ApplId {
-	case "010":
-		p.ApplExtend = &Extend200102{}
-	case "020":
-		p.ApplExtend = &Extend200202{}
-	case "030":
-		p.ApplExtend = &Extend200302{}
-	case "051":
-		p.ApplExtend = &Extend200502{}
-	case "052":
-		p.ApplExtend = &Extend200502{}
-	case "060":
-		p.ApplExtend = &Extend200602{}
-	case "061":
-		p.ApplExtend = &Extend200602{}
-	case "070":
-		p.ApplExtend = &Extend200702{}
-	case "150":
-		p.ApplExtend = &Extend201502{}
-	case "151":
-		p.ApplExtend = &Extend201502{}
-	case "152":
-		p.ApplExtend = &Extend201502{}
-	case "160":
-		p.ApplExtend = &Extend201602{}
-	case "170":
-		p.ApplExtend = &Extend201702{}
-	case "180":
-		p.ApplExtend = &Extend201802{}
-	case "181":
-		p.ApplExtend = &Extend201802{}
-	case "270":
-		p.ApplExtend = &Extend202702{}
-	case "271":
-		p.ApplExtend = &Extend202702{}
-	case "280":
-		p.ApplExtend = &Extend202802{}
-	case "281":
-		p.ApplExtend = &Extend202802{}
-	case "290":
-		p.ApplExtend = &Extend202902{}
-	case "291":
-		p.ApplExtend = &Extend202902{}
-	case "630":
-		p.ApplExtend = &Extend206302{}
-	case "350":
-		p.ApplExtend = &Extend203502{}
-	case "351":
-		p.ApplExtend = &Extend203502{}
-	case "370":
-		p.ApplExtend = &Extend203702{}
-	case "410":
-		p.ApplExtend = &Extend204102{}
-	case "417":
-		p.ApplExtend = &Extend204129{}
-	case "470":
-		p.ApplExtend = &Extend204702{}
-	default:
-		return fmt.Errorf("unsupported ApplId: %v", p.ApplId)
+	if val, err := NewExecutionConfirmMessageByApplId(p.ApplId); err != nil {
+		return err
+	} else {
+		p.ApplExtend = val
 	}
 	if err := p.ApplExtend.Decode(buf); err != nil {
 		return err

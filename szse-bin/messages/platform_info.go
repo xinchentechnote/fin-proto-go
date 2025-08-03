@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // PlatformInfo represents the packet structure.
 type PlatformInfo struct {
 	PlatformId        uint16               `json:"PlatformID"`

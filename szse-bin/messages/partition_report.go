@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // PartitionReport represents the packet structure.
 type PartitionReport struct {
 	PartitionNo int32 `json:"PartitionNo"`

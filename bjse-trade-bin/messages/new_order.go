@@ -8,6 +8,30 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+	RegistryNewOrderApplIdFactory("010", func() codec.BinaryCodec { return &ExtendNewOrder010{} })
+	RegistryNewOrderApplIdFactory("040", func() codec.BinaryCodec { return &ExtendNewOrder040{} })
+	RegistryNewOrderApplIdFactory("041", func() codec.BinaryCodec { return &ExtendNewOrder041{} })
+	RegistryNewOrderApplIdFactory("042", func() codec.BinaryCodec { return &ExtendNewOrder042{} })
+	RegistryNewOrderApplIdFactory("043", func() codec.BinaryCodec { return &ExtendNewOrder043{} })
+	RegistryNewOrderApplIdFactory("044", func() codec.BinaryCodec { return &ExtendNewOrder044{} })
+	RegistryNewOrderApplIdFactory("045", func() codec.BinaryCodec { return &ExtendNewOrder045{} })
+	RegistryNewOrderApplIdFactory("050", func() codec.BinaryCodec { return &ExtendNewOrder050{} })
+}
+
+var newOrderApplIdFactoryCache = map[string]func() codec.BinaryCodec{}
+
+func RegistryNewOrderApplIdFactory(applId string, factory func() codec.BinaryCodec) {
+	newOrderApplIdFactoryCache[applId] = factory
+}
+
+func NewNewOrderMessageByApplId(key string) (codec.BinaryCodec, error) {
+	if factory, ok := newOrderApplIdFactoryCache[key]; ok {
+		return factory(), nil
+	}
+	return nil, fmt.Errorf("unknown message type")
+}
+
 // NewOrder represents the packet structure.
 type NewOrder struct {
 	ApplId            string            `json:"ApplID"`
@@ -178,25 +202,10 @@ func (p *NewOrder) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.Price = val
 	}
-	switch p.ApplId {
-	case "010":
-		p.ApplExtend = &ExtendNewOrder010{}
-	case "040":
-		p.ApplExtend = &ExtendNewOrder040{}
-	case "041":
-		p.ApplExtend = &ExtendNewOrder041{}
-	case "042":
-		p.ApplExtend = &ExtendNewOrder042{}
-	case "043":
-		p.ApplExtend = &ExtendNewOrder043{}
-	case "044":
-		p.ApplExtend = &ExtendNewOrder044{}
-	case "045":
-		p.ApplExtend = &ExtendNewOrder045{}
-	case "050":
-		p.ApplExtend = &ExtendNewOrder050{}
-	default:
-		return fmt.Errorf("unsupported ApplId: %v", p.ApplId)
+	if val, err := NewNewOrderMessageByApplId(p.ApplId); err != nil {
+		return err
+	} else {
+		p.ApplExtend = val
 	}
 	if err := p.ApplExtend.Decode(buf); err != nil {
 		return err

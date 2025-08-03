@@ -6,6 +6,9 @@ import (
 	"fmt"
 )
 
+func init() {
+}
+
 // ConfirmExtend042 represents the packet structure.
 type ConfirmExtend042 struct {
 }

@@ -10,30 +10,30 @@ import (
 )
 
 func init() {
-	RegistryMsgTypeFactory(33, func() codec.BinaryCodec { return &Heartbeat{} })
-	RegistryMsgTypeFactory(40, func() codec.BinaryCodec { return &Logon{} })
-	RegistryMsgTypeFactory(41, func() codec.BinaryCodec { return &Logout{} })
-	RegistryMsgTypeFactory(58, func() codec.BinaryCodec { return &NewOrderSingle{} })
-	RegistryMsgTypeFactory(61, func() codec.BinaryCodec { return &OrderCancel{} })
-	RegistryMsgTypeFactory(32, func() codec.BinaryCodec { return &Confirm{} })
-	RegistryMsgTypeFactory(59, func() codec.BinaryCodec { return &CancelReject{} })
-	RegistryMsgTypeFactory(103, func() codec.BinaryCodec { return &Report{} })
-	RegistryMsgTypeFactory(204, func() codec.BinaryCodec { return &OrderReject{} })
-	RegistryMsgTypeFactory(209, func() codec.BinaryCodec { return &PlatformState{} })
-	RegistryMsgTypeFactory(208, func() codec.BinaryCodec { return &ExecRptInfo{} })
-	RegistryMsgTypeFactory(206, func() codec.BinaryCodec { return &ExecRptSync{} })
-	RegistryMsgTypeFactory(207, func() codec.BinaryCodec { return &ExecRptSyncRsp{} })
-	RegistryMsgTypeFactory(210, func() codec.BinaryCodec { return &ExecRptEndOfStream{} })
+	RegistrySseBinaryMsgTypeFactory(33, func() codec.BinaryCodec { return &Heartbeat{} })
+	RegistrySseBinaryMsgTypeFactory(40, func() codec.BinaryCodec { return &Logon{} })
+	RegistrySseBinaryMsgTypeFactory(41, func() codec.BinaryCodec { return &Logout{} })
+	RegistrySseBinaryMsgTypeFactory(58, func() codec.BinaryCodec { return &NewOrderSingle{} })
+	RegistrySseBinaryMsgTypeFactory(61, func() codec.BinaryCodec { return &OrderCancel{} })
+	RegistrySseBinaryMsgTypeFactory(32, func() codec.BinaryCodec { return &Confirm{} })
+	RegistrySseBinaryMsgTypeFactory(59, func() codec.BinaryCodec { return &CancelReject{} })
+	RegistrySseBinaryMsgTypeFactory(103, func() codec.BinaryCodec { return &Report{} })
+	RegistrySseBinaryMsgTypeFactory(204, func() codec.BinaryCodec { return &OrderReject{} })
+	RegistrySseBinaryMsgTypeFactory(209, func() codec.BinaryCodec { return &PlatformState{} })
+	RegistrySseBinaryMsgTypeFactory(208, func() codec.BinaryCodec { return &ExecRptInfo{} })
+	RegistrySseBinaryMsgTypeFactory(206, func() codec.BinaryCodec { return &ExecRptSync{} })
+	RegistrySseBinaryMsgTypeFactory(207, func() codec.BinaryCodec { return &ExecRptSyncRsp{} })
+	RegistrySseBinaryMsgTypeFactory(210, func() codec.BinaryCodec { return &ExecRptEndOfStream{} })
 }
 
-var msgTypeFactoryCache = map[uint32]func() codec.BinaryCodec{}
+var sseBinaryMsgTypeFactoryCache = map[uint32]func() codec.BinaryCodec{}
 
-func RegistryMsgTypeFactory(msgType uint32, factory func() codec.BinaryCodec) {
-	msgTypeFactoryCache[msgType] = factory
+func RegistrySseBinaryMsgTypeFactory(msgType uint32, factory func() codec.BinaryCodec) {
+	sseBinaryMsgTypeFactoryCache[msgType] = factory
 }
 
-func NewMessageByMsgType(key uint32) (codec.BinaryCodec, error) {
-	if factory, ok := msgTypeFactoryCache[key]; ok {
+func NewSseBinaryMessageByMsgType(key uint32) (codec.BinaryCodec, error) {
+	if factory, ok := sseBinaryMsgTypeFactoryCache[key]; ok {
 		return factory(), nil
 	}
 	return nil, fmt.Errorf("unknown message type")
@@ -104,7 +104,7 @@ func (p *SseBinary) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.MsgBodyLen = val
 	}
-	if val, err := NewMessageByMsgType(p.MsgType); err != nil {
+	if val, err := NewSseBinaryMessageByMsgType(p.MsgType); err != nil {
 		return err
 	} else {
 		p.Body = val

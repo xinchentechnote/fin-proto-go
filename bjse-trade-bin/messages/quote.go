@@ -8,6 +8,24 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+	RegistryQuoteApplIdFactory("070", func() codec.BinaryCodec { return &QuoteExtend070{} })
+	RegistryQuoteApplIdFactory("071", func() codec.BinaryCodec { return &QuoteExtend071{} })
+}
+
+var quoteApplIdFactoryCache = map[string]func() codec.BinaryCodec{}
+
+func RegistryQuoteApplIdFactory(applId string, factory func() codec.BinaryCodec) {
+	quoteApplIdFactoryCache[applId] = factory
+}
+
+func NewQuoteMessageByApplId(key string) (codec.BinaryCodec, error) {
+	if factory, ok := quoteApplIdFactoryCache[key]; ok {
+		return factory(), nil
+	}
+	return nil, fmt.Errorf("unknown message type")
+}
+
 // Quote represents the packet structure.
 type Quote struct {
 	ApplId           string            `json:"ApplID"`
@@ -178,13 +196,10 @@ func (p *Quote) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.OfferSize = val
 	}
-	switch p.ApplId {
-	case "070":
-		p.ApplExtend = &QuoteExtend070{}
-	case "071":
-		p.ApplExtend = &QuoteExtend071{}
-	default:
-		return fmt.Errorf("unsupported ApplId: %v", p.ApplId)
+	if val, err := NewQuoteMessageByApplId(p.ApplId); err != nil {
+		return err
+	} else {
+		p.ApplExtend = val
 	}
 	if err := p.ApplExtend.Decode(buf); err != nil {
 		return err

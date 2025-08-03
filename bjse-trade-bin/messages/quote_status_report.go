@@ -8,6 +8,23 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+	RegistryQuoteStatusReportApplIdFactory("070", func() codec.BinaryCodec { return &QuoteStatusReportExtend070{} })
+}
+
+var quoteStatusReportApplIdFactoryCache = map[string]func() codec.BinaryCodec{}
+
+func RegistryQuoteStatusReportApplIdFactory(applId string, factory func() codec.BinaryCodec) {
+	quoteStatusReportApplIdFactoryCache[applId] = factory
+}
+
+func NewQuoteStatusReportMessageByApplId(key string) (codec.BinaryCodec, error) {
+	if factory, ok := quoteStatusReportApplIdFactoryCache[key]; ok {
+		return factory(), nil
+	}
+	return nil, fmt.Errorf("unknown message type")
+}
+
 // QuoteStatusReport represents the packet structure.
 type QuoteStatusReport struct {
 	PartitionNo      int32             `json:"PartitionNo"`
@@ -214,11 +231,10 @@ func (p *QuoteStatusReport) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.OfferSize = val
 	}
-	switch p.ApplId {
-	case "070":
-		p.ApplExtend = &QuoteStatusReportExtend070{}
-	default:
-		return fmt.Errorf("unsupported ApplId: %v", p.ApplId)
+	if val, err := NewQuoteStatusReportMessageByApplId(p.ApplId); err != nil {
+		return err
+	} else {
+		p.ApplExtend = val
 	}
 	if err := p.ApplExtend.Decode(buf); err != nil {
 		return err

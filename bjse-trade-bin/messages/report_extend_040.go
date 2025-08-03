@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // ReportExtend040 represents the packet structure.
 type ReportExtend040 struct {
 	CashMargin string `json:"CashMargin"`

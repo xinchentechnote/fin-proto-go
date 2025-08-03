@@ -10,22 +10,22 @@ import (
 )
 
 func init() {
-	RegistryMsgTypeFactory(100101, func() codec.BinaryCodec { return &NewOrder{} })
-	RegistryMsgTypeFactory(200102, func() codec.BinaryCodec { return &OrderConfirm{} })
-	RegistryMsgTypeFactory(200115, func() codec.BinaryCodec { return &ExecutionReport{} })
-	RegistryMsgTypeFactory(190007, func() codec.BinaryCodec { return &OrderCancel{} })
-	RegistryMsgTypeFactory(290008, func() codec.BinaryCodec { return &CancelReject{} })
-	RegistryMsgTypeFactory(800001, func() codec.BinaryCodec { return &RiskResult{} })
+	RegistryRcBinaryMsgTypeFactory(100101, func() codec.BinaryCodec { return &NewOrder{} })
+	RegistryRcBinaryMsgTypeFactory(200102, func() codec.BinaryCodec { return &OrderConfirm{} })
+	RegistryRcBinaryMsgTypeFactory(200115, func() codec.BinaryCodec { return &ExecutionReport{} })
+	RegistryRcBinaryMsgTypeFactory(190007, func() codec.BinaryCodec { return &OrderCancel{} })
+	RegistryRcBinaryMsgTypeFactory(290008, func() codec.BinaryCodec { return &CancelReject{} })
+	RegistryRcBinaryMsgTypeFactory(800001, func() codec.BinaryCodec { return &RiskResult{} })
 }
 
-var msgTypeFactoryCache = map[uint32]func() codec.BinaryCodec{}
+var rcBinaryMsgTypeFactoryCache = map[uint32]func() codec.BinaryCodec{}
 
-func RegistryMsgTypeFactory(msgType uint32, factory func() codec.BinaryCodec) {
-	msgTypeFactoryCache[msgType] = factory
+func RegistryRcBinaryMsgTypeFactory(msgType uint32, factory func() codec.BinaryCodec) {
+	rcBinaryMsgTypeFactoryCache[msgType] = factory
 }
 
-func NewMessageByMsgType(key uint32) (codec.BinaryCodec, error) {
-	if factory, ok := msgTypeFactoryCache[key]; ok {
+func NewRcBinaryMessageByMsgType(key uint32) (codec.BinaryCodec, error) {
+	if factory, ok := rcBinaryMsgTypeFactoryCache[key]; ok {
 		return factory(), nil
 	}
 	return nil, fmt.Errorf("unknown message type")
@@ -89,7 +89,7 @@ func (p *RcBinary) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.MsgBodyLen = val
 	}
-	if val, err := NewMessageByMsgType(p.MsgType); err != nil {
+	if val, err := NewRcBinaryMessageByMsgType(p.MsgType); err != nil {
 		return err
 	} else {
 		p.Body = val

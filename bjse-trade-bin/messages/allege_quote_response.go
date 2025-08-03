@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // AllegeQuoteResponse represents the packet structure.
 type AllegeQuoteResponse struct {
 	PartitionNo      int32  `json:"PartitionNo"`

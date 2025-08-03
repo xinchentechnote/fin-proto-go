@@ -8,6 +8,12 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
+func init() {
+}
+
 // Quote1 represents the packet structure.
 type Quote1 struct {
 	QuoteId    string `json:"QuoteID"`
