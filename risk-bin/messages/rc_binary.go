@@ -17,13 +17,10 @@ func init() {
 	RegisterMessage(290008, func() codec.BinaryCodec { return &CancelReject{} })
 }
 
-// RiskMessageFactory message factory
-type RiskMessageFactory func() codec.BinaryCodec
-
-var registry = map[uint32]RiskMessageFactory{}
+var registry = map[uint32]func() codec.BinaryCodec{}
 
 // RegisterMessage registers a message type with its factory function.
-func RegisterMessage(msgType uint32, factory RiskMessageFactory) {
+func RegisterMessage(msgType uint32, factory func() codec.BinaryCodec) {
 	registry[msgType] = factory
 }
 
@@ -93,10 +90,10 @@ func (p *RcBinary) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.MsgBodyLen = val
 	}
-	if body, err := NewMessageByMsgType(p.MsgType); err != nil {
+	if val, err := NewMessageByMsgType(p.MsgType); err != nil {
 		return err
 	} else {
-		p.Body = body
+		p.Body = val
 	}
 	if err := p.Body.Decode(buf); err != nil {
 		return err
