@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // SubPacket represents the packet structure.
 type SubPacket struct {
 	FieldU32     uint32  `json:"fieldU32"`

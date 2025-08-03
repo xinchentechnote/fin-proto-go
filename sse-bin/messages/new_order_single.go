@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // NewOrderSingle represents the packet structure.
 type NewOrderSingle struct {
 	BizId        uint32 `json:"BizID"`

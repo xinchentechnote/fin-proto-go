@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // ExecRptInfo represents the packet structure.
 type ExecRptInfo struct {
 	PlatformId uint16   `json:"PlatformID"`

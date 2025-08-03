@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // OrderReject represents the packet structure.
 type OrderReject struct {
 	BizId        uint32 `json:"BizID"`

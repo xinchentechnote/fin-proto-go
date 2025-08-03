@@ -9,6 +9,36 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+	RegistryMsgTypeFactory(33, func() codec.BinaryCodec { return &Heartbeat{} })
+	RegistryMsgTypeFactory(40, func() codec.BinaryCodec { return &Logon{} })
+	RegistryMsgTypeFactory(41, func() codec.BinaryCodec { return &Logout{} })
+	RegistryMsgTypeFactory(58, func() codec.BinaryCodec { return &NewOrderSingle{} })
+	RegistryMsgTypeFactory(61, func() codec.BinaryCodec { return &OrderCancel{} })
+	RegistryMsgTypeFactory(32, func() codec.BinaryCodec { return &Confirm{} })
+	RegistryMsgTypeFactory(59, func() codec.BinaryCodec { return &CancelReject{} })
+	RegistryMsgTypeFactory(103, func() codec.BinaryCodec { return &Report{} })
+	RegistryMsgTypeFactory(204, func() codec.BinaryCodec { return &OrderReject{} })
+	RegistryMsgTypeFactory(209, func() codec.BinaryCodec { return &PlatformState{} })
+	RegistryMsgTypeFactory(208, func() codec.BinaryCodec { return &ExecRptInfo{} })
+	RegistryMsgTypeFactory(206, func() codec.BinaryCodec { return &ExecRptSync{} })
+	RegistryMsgTypeFactory(207, func() codec.BinaryCodec { return &ExecRptSyncRsp{} })
+	RegistryMsgTypeFactory(210, func() codec.BinaryCodec { return &ExecRptEndOfStream{} })
+}
+
+var msgTypeFactoryCache = map[uint32]func() codec.BinaryCodec{}
+
+func RegistryMsgTypeFactory(msgType uint32, factory func() codec.BinaryCodec) {
+	msgTypeFactoryCache[msgType] = factory
+}
+
+func NewMessageByMsgType(key uint32) (codec.BinaryCodec, error) {
+	if factory, ok := msgTypeFactoryCache[key]; ok {
+		return factory(), nil
+	}
+	return nil, fmt.Errorf("unknown message type")
+}
+
 // SseBinary represents the packet structure.
 type SseBinary struct {
 	MsgType    uint32            `json:"MsgType"`
@@ -41,7 +71,7 @@ func (p *SseBinary) Encode(buf *bytes.Buffer) error {
 	if err := p.Body.Encode(&BodyBuf); err != nil {
 		return err
 	}
-	p.MsgBodyLen = uint32(BodyBuf.Available())
+	p.MsgBodyLen = uint32(BodyBuf.Len())
 	if err := codec.PutBasicType(buf, p.MsgBodyLen); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgBodyLen", err)
 	}
@@ -74,37 +104,10 @@ func (p *SseBinary) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.MsgBodyLen = val
 	}
-	switch p.MsgType {
-	case 33:
-		p.Body = &Heartbeat{}
-	case 40:
-		p.Body = &Logon{}
-	case 41:
-		p.Body = &Logout{}
-	case 58:
-		p.Body = &NewOrderSingle{}
-	case 61:
-		p.Body = &OrderCancel{}
-	case 32:
-		p.Body = &Confirm{}
-	case 59:
-		p.Body = &CancelReject{}
-	case 103:
-		p.Body = &Report{}
-	case 204:
-		p.Body = &OrderReject{}
-	case 209:
-		p.Body = &PlatformState{}
-	case 208:
-		p.Body = &ExecRptInfo{}
-	case 206:
-		p.Body = &ExecRptSync{}
-	case 207:
-		p.Body = &ExecRptSyncRsp{}
-	case 210:
-		p.Body = &ExecRptEndOfStream{}
-	default:
-		return fmt.Errorf("unsupported MsgType: %v", p.MsgType)
+	if val, err := NewMessageByMsgType(p.MsgType); err != nil {
+		return err
+	} else {
+		p.Body = val
 	}
 	if err := p.Body.Decode(buf); err != nil {
 		return err

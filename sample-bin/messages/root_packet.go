@@ -9,6 +9,26 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+	RegistryMsgTypeFactory(1, func() codec.BinaryCodec { return &BasicPacket{} })
+	RegistryMsgTypeFactory(2, func() codec.BinaryCodec { return &StringPacket{} })
+	RegistryMsgTypeFactory(3, func() codec.BinaryCodec { return &NestedPacket{} })
+	RegistryMsgTypeFactory(4, func() codec.BinaryCodec { return &EmptyPacket{} })
+}
+
+var msgTypeFactoryCache = map[uint16]func() codec.BinaryCodec{}
+
+func RegistryMsgTypeFactory(msgType uint16, factory func() codec.BinaryCodec) {
+	msgTypeFactoryCache[msgType] = factory
+}
+
+func NewMessageByMsgType(key uint16) (codec.BinaryCodec, error) {
+	if factory, ok := msgTypeFactoryCache[key]; ok {
+		return factory(), nil
+	}
+	return nil, fmt.Errorf("unknown message type")
+}
+
 // RootPacket represents the packet structure.
 type RootPacket struct {
 	MsgType    uint16            `json:"MsgType"`
@@ -37,7 +57,7 @@ func (p *RootPacket) Encode(buf *bytes.Buffer) error {
 	if err := p.Payload.Encode(&PayloadBuf); err != nil {
 		return err
 	}
-	p.PayloadLen = uint32(PayloadBuf.Available())
+	p.PayloadLen = uint32(PayloadBuf.Len())
 	if err := codec.PutBasicTypeLE(buf, p.PayloadLen); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "PayloadLen", err)
 	}
@@ -65,17 +85,10 @@ func (p *RootPacket) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.PayloadLen = val
 	}
-	switch p.MsgType {
-	case 1:
-		p.Payload = &BasicPacket{}
-	case 2:
-		p.Payload = &StringPacket{}
-	case 3:
-		p.Payload = &NestedPacket{}
-	case 4:
-		p.Payload = &EmptyPacket{}
-	default:
-		return fmt.Errorf("unsupported MsgType: %v", p.MsgType)
+	if val, err := NewMessageByMsgType(p.MsgType); err != nil {
+		return err
+	} else {
+		p.Payload = val
 	}
 	if err := p.Payload.Decode(buf); err != nil {
 		return err

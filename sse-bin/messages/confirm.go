@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // Confirm represents the packet structure.
 type Confirm struct {
 	Pbu           string `json:"Pbu"`

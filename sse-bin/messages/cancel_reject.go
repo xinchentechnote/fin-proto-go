@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // CancelReject represents the packet structure.
 type CancelReject struct {
 	Pbu          string `json:"Pbu"`
