@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // Report represents the packet structure.
 type Report struct {
 	Pbu           string `json:"Pbu"`

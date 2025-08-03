@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // Logon represents the packet structure.
 type Logon struct {
 	SenderCompId string `json:"SenderCompID"`

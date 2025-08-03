@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // PlatformState represents the packet structure.
 type PlatformState struct {
 	PlatformId    uint16 `json:"PlatformID"`

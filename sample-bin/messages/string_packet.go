@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // StringPacket represents the packet structure.
 type StringPacket struct {
 	FieldDynamicString      string   `json:"fieldDynamicString"`

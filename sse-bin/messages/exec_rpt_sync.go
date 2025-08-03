@@ -8,6 +8,12 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
+func init() {
+}
+
 // SubExecRptSync represents the packet structure.
 type SubExecRptSync struct {
 	Pbu              string `json:"Pbu"`

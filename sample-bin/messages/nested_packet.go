@@ -8,6 +8,12 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
+func init() {
+}
+
 // InerPacket represents the packet structure.
 type InerPacket struct {
 	FieldU32     uint32  `json:"fieldU32"`

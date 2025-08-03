@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // ExecRptEndOfStream represents the packet structure.
 type ExecRptEndOfStream struct {
 	Pbu            string `json:"Pbu"`

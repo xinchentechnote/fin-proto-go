@@ -8,6 +8,9 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
+func init() {
+}
+
 // BasicPacket represents the packet structure.
 type BasicPacket struct {
 	FieldI8       int8      `json:"fieldI8"`

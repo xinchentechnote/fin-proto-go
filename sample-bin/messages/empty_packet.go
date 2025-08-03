@@ -6,6 +6,9 @@ import (
 	"fmt"
 )
 
+func init() {
+}
+
 // EmptyPacket represents the packet structure.
 type EmptyPacket struct {
 }
