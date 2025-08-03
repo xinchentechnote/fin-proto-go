@@ -62,10 +62,15 @@ func (p *BjseBinary) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutBasicTypeLE(buf, p.BodyLength); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "BodyLength", err)
 	}
-	if p.Body != nil {
-		if err := p.Body.Encode(buf); err != nil {
+	if p.Body == nil {
+		if val, err := NewBjseBinaryMessageByMsgType(p.MsgType); err != nil {
 			return err
+		} else {
+			p.Body = val
 		}
+	}
+	if err := p.Body.Encode(buf); err != nil {
+		return err
 	}
 	if err := codec.PutBasicTypeLE(buf, p.Checksum); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "Checksum", err)

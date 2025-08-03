@@ -123,10 +123,15 @@ func (p *QuoteStatusReport) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutBasicTypeLE(buf, p.OfferSize); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "OfferSize", err)
 	}
-	if p.ApplExtend != nil {
-		if err := p.ApplExtend.Encode(buf); err != nil {
+	if p.ApplExtend == nil {
+		if val, err := NewQuoteStatusReportMessageByApplId(p.ApplId); err != nil {
 			return err
+		} else {
+			p.ApplExtend = val
 		}
+	}
+	if err := p.ApplExtend.Encode(buf); err != nil {
+		return err
 	}
 	return nil
 }
