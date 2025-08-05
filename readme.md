@@ -117,7 +117,3 @@ The actual protocol definitions are maintained in a separate repository and incl
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-
-- Protocol definitions and specifications from Chinese financial exchanges
-- Inspired by financial messaging standards like FIX protocol
