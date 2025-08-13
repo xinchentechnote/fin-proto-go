@@ -126,17 +126,19 @@ func (p *SzseBinary) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutBasicType(buf, p.MsgType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgType", err)
 	}
-	var BodyBuf bytes.Buffer
-	if err := p.Body.Encode(&BodyBuf); err != nil {
-		return err
-	}
-	p.BodyLength = uint32(BodyBuf.Len())
-	if err := codec.PutBasicType(buf, p.BodyLength); err != nil {
+	bodyPos := buf.Len()
+	if err := codec.PutBasicType(buf, uint32(0)); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "BodyLength", err)
 	}
-	if err := binary.Write(buf, binary.BigEndian, BodyBuf.Bytes()); err != nil {
-		return err
+	bodyStart := buf.Len()
+	if p.Body != nil {
+		if err := p.Body.Encode(buf); err != nil {
+			return err
+		}
 	}
+	bodyEnd := buf.Len()
+	p.BodyLength = uint32(bodyEnd - bodyStart)
+	binary.BigEndian.PutUint32(buf.Bytes()[bodyPos:bodyPos+4], p.BodyLength)
 	if checksumService, ok := codec.Get("SZSE_BIN"); ok {
 		p.Checksum = checksumService.(codec.ChecksumService[*bytes.Buffer, int32]).Calc(buf)
 	}

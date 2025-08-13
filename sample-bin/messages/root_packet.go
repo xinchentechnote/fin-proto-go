@@ -53,17 +53,19 @@ func (p *RootPacket) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutBasicTypeLE(buf, p.MsgType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgType", err)
 	}
-	var PayloadBuf bytes.Buffer
-	if err := p.Payload.Encode(&PayloadBuf); err != nil {
-		return err
-	}
-	p.PayloadLen = uint32(PayloadBuf.Len())
-	if err := codec.PutBasicTypeLE(buf, p.PayloadLen); err != nil {
+	payloadPos := buf.Len()
+	if err := codec.PutBasicTypeLE(buf, uint32(0)); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "PayloadLen", err)
 	}
-	if err := binary.Write(buf, binary.LittleEndian, PayloadBuf.Bytes()); err != nil {
-		return err
+	payloadStart := buf.Len()
+	if p.Payload != nil {
+		if err := p.Payload.Encode(buf); err != nil {
+			return err
+		}
 	}
+	payloadEnd := buf.Len()
+	p.PayloadLen = uint32(payloadEnd - payloadStart)
+	binary.LittleEndian.PutUint32(buf.Bytes()[payloadPos:payloadPos+4], p.PayloadLen)
 	if checksumService, ok := codec.Get("CRC32"); ok {
 		p.Checksum = checksumService.(codec.ChecksumService[*bytes.Buffer, uint32]).Calc(buf)
 	}

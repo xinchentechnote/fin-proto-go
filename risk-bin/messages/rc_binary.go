@@ -58,17 +58,19 @@ func (p *RcBinary) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutBasicType(buf, p.Version); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "Version", err)
 	}
-	var BodyBuf bytes.Buffer
-	if err := p.Body.Encode(&BodyBuf); err != nil {
-		return err
-	}
-	p.MsgBodyLen = uint32(BodyBuf.Len())
-	if err := codec.PutBasicType(buf, p.MsgBodyLen); err != nil {
+	bodyPos := buf.Len()
+	if err := codec.PutBasicType(buf, uint32(0)); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgBodyLen", err)
 	}
-	if err := binary.Write(buf, binary.BigEndian, BodyBuf.Bytes()); err != nil {
-		return err
+	bodyStart := buf.Len()
+	if p.Body != nil {
+		if err := p.Body.Encode(buf); err != nil {
+			return err
+		}
 	}
+	bodyEnd := buf.Len()
+	p.MsgBodyLen = uint32(bodyEnd - bodyStart)
+	binary.BigEndian.PutUint32(buf.Bytes()[bodyPos:bodyPos+4], p.MsgBodyLen)
 	return nil
 }
 
