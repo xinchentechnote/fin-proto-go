@@ -67,7 +67,7 @@ func (p *SseBinary) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutBasicType(buf, p.MsgSeqNum); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgSeqNum", err)
 	}
-	bodyLenPos := buf.Len()
+	bodyPos := buf.Len()
 	if err := codec.PutBasicType(buf, uint32(0)); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgBodyLen", err)
 	}
@@ -79,7 +79,7 @@ func (p *SseBinary) Encode(buf *bytes.Buffer) error {
 	}
 	bodyEnd := buf.Len()
 	p.MsgBodyLen = uint32(bodyEnd - bodyStart)
-	binary.BigEndian.PutUint32(buf.Bytes()[bodyLenPos:bodyLenPos+4], p.MsgBodyLen)
+	binary.BigEndian.PutUint32(buf.Bytes()[bodyPos:bodyPos+4], p.MsgBodyLen)
 	if checksumService, ok := codec.Get("SSE_BIN"); ok {
 		p.Checksum = checksumService.(codec.ChecksumService[*bytes.Buffer, uint32]).Calc(buf)
 	}
