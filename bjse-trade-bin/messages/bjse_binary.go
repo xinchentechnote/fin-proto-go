@@ -3,6 +3,7 @@ package bjse_trade_bin
 
 import (
 	"bytes"
+	"encoding/binary"
 	"fmt"
 
 	"github.com/xinchentechnote/fin-proto-go/codec"
@@ -59,19 +60,19 @@ func (p *BjseBinary) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutBasicTypeLE(buf, p.MsgType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgType", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.BodyLength); err != nil {
+	bodyPos := buf.Len()
+	if err := codec.PutBasicTypeLE(buf, uint32(0)); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "BodyLength", err)
 	}
-	if p.Body == nil {
-		if val, err := NewBjseBinaryMessageByMsgType(p.MsgType); err != nil {
+	bodyStart := buf.Len()
+	if p.Body != nil {
+		if err := p.Body.Encode(buf); err != nil {
 			return err
-		} else {
-			p.Body = val
 		}
 	}
-	if err := p.Body.Encode(buf); err != nil {
-		return err
-	}
+	bodyEnd := buf.Len()
+	p.BodyLength = uint32(bodyEnd - bodyStart)
+	binary.LittleEndian.PutUint32(buf.Bytes()[bodyPos:bodyPos+4], p.BodyLength)
 	if err := codec.PutBasicTypeLE(buf, p.Checksum); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "Checksum", err)
 	}
