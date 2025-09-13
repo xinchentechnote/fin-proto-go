@@ -13,34 +13,32 @@ func init() {
 
 // Report represents the packet structure.
 type Report struct {
-	Pbu           string `json:"Pbu"`
-	SetId         uint32 `json:"SetID"`
-	ReportIndex   uint64 `json:"ReportIndex"`
-	BizId         uint32 `json:"BizID"`
-	ExecType      string `json:"ExecType"`
-	BizPbu        string `json:"BizPbu"`
-	ClOrdId       string `json:"ClOrdID"`
-	SecurityId    string `json:"SecurityID"`
-	Account       string `json:"Account"`
-	OwnerType     uint8  `json:"OwnerType"`
-	Side          string `json:"Side"`
-	Price         int64  `json:"Price"`
-	OrderQty      int64  `json:"OrderQty"`
-	LeavesQty     int64  `json:"LeavesQty"`
-	CxlQty        int64  `json:"CxlQty"`
-	OrdType       string `json:"OrdType"`
-	TimeInForce   string `json:"TimeInForce"`
-	OrdStatus     string `json:"OrdStatus"`
-	CreditTag     string `json:"CreditTag"`
-	OrigClOrdId   string `json:"OrigClOrdID"`
-	ClearingFirm  string `json:"ClearingFirm"`
-	BranchId      string `json:"BranchID"`
-	OrdRejReason  uint32 `json:"OrdRejReason"`
-	OrdCnfmId     string `json:"OrdCnfmID"`
-	OrigOrdCnfmId string `json:"OrigOrdCnfmID"`
-	TradeDate     uint32 `json:"TradeDate"`
-	TransactTime  uint64 `json:"TransactTime"`
-	UserInfo      string `json:"UserInfo"`
+	Pbu            string `json:"Pbu"`
+	SetId          uint32 `json:"SetID"`
+	ReportIndex    uint64 `json:"ReportIndex"`
+	BizId          uint32 `json:"BizID"`
+	ExecType       string `json:"ExecType"`
+	BizPbu         string `json:"BizPbu"`
+	ClOrdId        string `json:"ClOrdID"`
+	SecurityId     string `json:"SecurityID"`
+	Account        string `json:"Account"`
+	OwnerType      uint8  `json:"OwnerType"`
+	OrderEntryTime uint64 `json:"OrderEntryTime"`
+	LastPx         int64  `json:"LastPx"`
+	LastQty        int64  `json:"LastQty"`
+	GrossTradeAmt  int64  `json:"GrossTradeAmt"`
+	Side           string `json:"Side"`
+	OrderQty       int64  `json:"OrderQty"`
+	LeavesQty      int64  `json:"LeavesQty"`
+	OrdStatus      string `json:"OrdStatus"`
+	CreditTag      string `json:"CreditTag"`
+	ClearingFirm   string `json:"ClearingFirm"`
+	BranchId       string `json:"BranchID"`
+	TrdCnfmId      string `json:"TrdCnfmID"`
+	OrdCnfmId      string `json:"OrdCnfmID"`
+	TradeDate      uint32 `json:"TradeDate"`
+	TransactTime   uint64 `json:"TransactTime"`
+	UserInfo       string `json:"UserInfo"`
 }
 
 // NewReport creates a new instance of Report.
@@ -50,7 +48,7 @@ func NewReport() *Report {
 
 // String returns a string representation of the packet.
 func (p *Report) String() string {
-	return fmt.Sprintf("Report{Pbu: %v, SetId: %v, ReportIndex: %v, BizId: %v, ExecType: %v, BizPbu: %v, ClOrdId: %v, SecurityId: %v, Account: %v, OwnerType: %v, Side: %v, Price: %v, OrderQty: %v, LeavesQty: %v, CxlQty: %v, OrdType: %v, TimeInForce: %v, OrdStatus: %v, CreditTag: %v, OrigClOrdId: %v, ClearingFirm: %v, BranchId: %v, OrdRejReason: %v, OrdCnfmId: %v, OrigOrdCnfmId: %v, TradeDate: %v, TransactTime: %v, UserInfo: %v}", p.Pbu, p.SetId, p.ReportIndex, p.BizId, p.ExecType, p.BizPbu, p.ClOrdId, p.SecurityId, p.Account, p.OwnerType, p.Side, p.Price, p.OrderQty, p.LeavesQty, p.CxlQty, p.OrdType, p.TimeInForce, p.OrdStatus, p.CreditTag, p.OrigClOrdId, p.ClearingFirm, p.BranchId, p.OrdRejReason, p.OrdCnfmId, p.OrigOrdCnfmId, p.TradeDate, p.TransactTime, p.UserInfo)
+	return fmt.Sprintf("Report{Pbu: %v, SetId: %v, ReportIndex: %v, BizId: %v, ExecType: %v, BizPbu: %v, ClOrdId: %v, SecurityId: %v, Account: %v, OwnerType: %v, OrderEntryTime: %v, LastPx: %v, LastQty: %v, GrossTradeAmt: %v, Side: %v, OrderQty: %v, LeavesQty: %v, OrdStatus: %v, CreditTag: %v, ClearingFirm: %v, BranchId: %v, TrdCnfmId: %v, OrdCnfmId: %v, TradeDate: %v, TransactTime: %v, UserInfo: %v}", p.Pbu, p.SetId, p.ReportIndex, p.BizId, p.ExecType, p.BizPbu, p.ClOrdId, p.SecurityId, p.Account, p.OwnerType, p.OrderEntryTime, p.LastPx, p.LastQty, p.GrossTradeAmt, p.Side, p.OrderQty, p.LeavesQty, p.OrdStatus, p.CreditTag, p.ClearingFirm, p.BranchId, p.TrdCnfmId, p.OrdCnfmId, p.TradeDate, p.TransactTime, p.UserInfo)
 }
 
 // Encode encodes the packet into a byte slice.
@@ -86,11 +84,20 @@ func (p *Report) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutBasicType(buf, p.OwnerType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "OwnerType", err)
 	}
+	if err := codec.PutBasicType(buf, p.OrderEntryTime); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "OrderEntryTime", err)
+	}
+	if err := codec.PutBasicType(buf, p.LastPx); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "LastPx", err)
+	}
+	if err := codec.PutBasicType(buf, p.LastQty); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "LastQty", err)
+	}
+	if err := codec.PutBasicType(buf, p.GrossTradeAmt); err != nil {
+		return fmt.Errorf("failed to encode %s: %w", "GrossTradeAmt", err)
+	}
 	if err := codec.PutFixedString(buf, p.Side, 1); err != nil {
 		return err
-	}
-	if err := codec.PutBasicType(buf, p.Price); err != nil {
-		return fmt.Errorf("failed to encode %s: %w", "Price", err)
 	}
 	if err := codec.PutBasicType(buf, p.OrderQty); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "OrderQty", err)
@@ -98,22 +105,10 @@ func (p *Report) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutBasicType(buf, p.LeavesQty); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "LeavesQty", err)
 	}
-	if err := codec.PutBasicType(buf, p.CxlQty); err != nil {
-		return fmt.Errorf("failed to encode %s: %w", "CxlQty", err)
-	}
-	if err := codec.PutFixedString(buf, p.OrdType, 1); err != nil {
-		return err
-	}
-	if err := codec.PutFixedString(buf, p.TimeInForce, 1); err != nil {
-		return err
-	}
 	if err := codec.PutFixedString(buf, p.OrdStatus, 1); err != nil {
 		return err
 	}
 	if err := codec.PutFixedString(buf, p.CreditTag, 2); err != nil {
-		return err
-	}
-	if err := codec.PutFixedString(buf, p.OrigClOrdId, 10); err != nil {
 		return err
 	}
 	if err := codec.PutFixedString(buf, p.ClearingFirm, 8); err != nil {
@@ -122,13 +117,10 @@ func (p *Report) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutFixedString(buf, p.BranchId, 8); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.OrdRejReason); err != nil {
-		return fmt.Errorf("failed to encode %s: %w", "OrdRejReason", err)
-	}
-	if err := codec.PutFixedString(buf, p.OrdCnfmId, 16); err != nil {
+	if err := codec.PutFixedString(buf, p.TrdCnfmId, 16); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.OrigOrdCnfmId, 16); err != nil {
+	if err := codec.PutFixedString(buf, p.OrdCnfmId, 16); err != nil {
 		return err
 	}
 	if err := codec.PutBasicType(buf, p.TradeDate); err != nil {
@@ -195,15 +187,30 @@ func (p *Report) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.OwnerType = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.GetBasicType[uint64](buf); err != nil {
 		return err
 	} else {
-		p.Side = val
+		p.OrderEntryTime = val
 	}
 	if val, err := codec.GetBasicType[int64](buf); err != nil {
 		return err
 	} else {
-		p.Price = val
+		p.LastPx = val
+	}
+	if val, err := codec.GetBasicType[int64](buf); err != nil {
+		return err
+	} else {
+		p.LastQty = val
+	}
+	if val, err := codec.GetBasicType[int64](buf); err != nil {
+		return err
+	} else {
+		p.GrossTradeAmt = val
+	}
+	if val, err := codec.GetFixedString(buf, 1); err != nil {
+		return err
+	} else {
+		p.Side = val
 	}
 	if val, err := codec.GetBasicType[int64](buf); err != nil {
 		return err
@@ -215,21 +222,6 @@ func (p *Report) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.LeavesQty = val
 	}
-	if val, err := codec.GetBasicType[int64](buf); err != nil {
-		return err
-	} else {
-		p.CxlQty = val
-	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
-		return err
-	} else {
-		p.OrdType = val
-	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
-		return err
-	} else {
-		p.TimeInForce = val
-	}
 	if val, err := codec.GetFixedString(buf, 1); err != nil {
 		return err
 	} else {
@@ -239,11 +231,6 @@ func (p *Report) Decode(buf *bytes.Buffer) error {
 		return err
 	} else {
 		p.CreditTag = val
-	}
-	if val, err := codec.GetFixedString(buf, 10); err != nil {
-		return err
-	} else {
-		p.OrigClOrdId = val
 	}
 	if val, err := codec.GetFixedString(buf, 8); err != nil {
 		return err
@@ -255,20 +242,15 @@ func (p *Report) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.BranchId = val
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.GetFixedString(buf, 16); err != nil {
 		return err
 	} else {
-		p.OrdRejReason = val
+		p.TrdCnfmId = val
 	}
 	if val, err := codec.GetFixedString(buf, 16); err != nil {
 		return err
 	} else {
 		p.OrdCnfmId = val
-	}
-	if val, err := codec.GetFixedString(buf, 16); err != nil {
-		return err
-	} else {
-		p.OrigOrdCnfmId = val
 	}
 	if val, err := codec.GetBasicType[uint32](buf); err != nil {
 		return err
