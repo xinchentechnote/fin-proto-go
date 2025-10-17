@@ -44,13 +44,13 @@ func (p *StringPacket) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutStringLE[uint16](buf, p.FieldDynamicString1); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.FieldFixedString1, 1); err != nil {
+	if err := codec.PutFixedStringWithPadding(buf, p.FieldFixedString1, 1, '0', true); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.FieldFixedString10, 10); err != nil {
+	if err := codec.PutFixedStringWithPadding(buf, p.FieldFixedString10, 10, '0', true); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.FieldFixedString10Pad, 10); err != nil {
+	if err := codec.PutFixedStringWithPadding(buf, p.FieldFixedString10Pad, 10, ' ', true); err != nil {
 		return err
 	}
 	if err := codec.PutStringListLE[uint16, uint16](buf, p.FieldDynamicStringList); err != nil {
@@ -59,13 +59,13 @@ func (p *StringPacket) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutStringListLE[uint16, uint16](buf, p.FieldDynamicString1List); err != nil {
 		return err
 	}
-	if err := codec.PutFixedStringListLE[uint16](buf, p.FieldFixedString1List, 1); err != nil {
+	if err := codec.PutFixedStringListWithPaddingLE[uint16](buf, p.FieldFixedString1List, 1, '0', true); err != nil {
 		return err
 	}
-	if err := codec.PutFixedStringListLE[uint16](buf, p.FieldFixedString10List, 10); err != nil {
+	if err := codec.PutFixedStringListWithPaddingLE[uint16](buf, p.FieldFixedString10List, 10, '0', true); err != nil {
 		return err
 	}
-	if err := codec.PutFixedStringListLE[uint16](buf, p.FieldFixedString10ListPad, 10); err != nil {
+	if err := codec.PutFixedStringListWithPaddingLE[uint16](buf, p.FieldFixedString10ListPad, 10, '0', false); err != nil {
 		return err
 	}
 	return nil
@@ -83,17 +83,17 @@ func (p *StringPacket) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.FieldDynamicString1 = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.GetFixedStringTrimPadding(buf, 1, '0', true); err != nil {
 		return err
 	} else {
 		p.FieldFixedString1 = val
 	}
-	if val, err := codec.GetFixedString(buf, 10); err != nil {
+	if val, err := codec.GetFixedStringTrimPadding(buf, 10, '0', true); err != nil {
 		return err
 	} else {
 		p.FieldFixedString10 = val
 	}
-	if val, err := codec.GetFixedString(buf, 10); err != nil {
+	if val, err := codec.GetFixedStringTrimPadding(buf, 10, ' ', true); err != nil {
 		return err
 	} else {
 		p.FieldFixedString10Pad = val
@@ -108,17 +108,17 @@ func (p *StringPacket) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.FieldDynamicString1List = val
 	}
-	if val, err := codec.GetFixedStringListLE[uint16](buf, 1); err != nil {
+	if val, err := codec.GetFixedStringListTrimPaddingLE[uint16](buf, 1, '0', true); err != nil {
 		return err
 	} else {
 		p.FieldFixedString1List = val
 	}
-	if val, err := codec.GetFixedStringListLE[uint16](buf, 10); err != nil {
+	if val, err := codec.GetFixedStringListTrimPaddingLE[uint16](buf, 10, '0', true); err != nil {
 		return err
 	} else {
 		p.FieldFixedString10List = val
 	}
-	if val, err := codec.GetFixedStringListLE[uint16](buf, 10); err != nil {
+	if val, err := codec.GetFixedStringListTrimPaddingLE[uint16](buf, 10, '0', false); err != nil {
 		return err
 	} else {
 		p.FieldFixedString10ListPad = val

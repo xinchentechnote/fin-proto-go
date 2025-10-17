@@ -62,7 +62,7 @@ func (p *BasicPacket) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutBasicTypeLE(buf, p.FieldI64); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldI64", err)
 	}
-	if err := codec.PutFixedString(buf, p.FieldChar, 1); err != nil {
+	if err := codec.PutFixedStringWithPadding(buf, p.FieldChar, 1, '0', true); err != nil {
 		return err
 	}
 	if err := codec.PutBasicTypeLE(buf, p.FieldU8); err != nil {
@@ -95,7 +95,7 @@ func (p *BasicPacket) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutBasicTypeListLE[uint16](buf, p.FieldI64List); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldI64List", err)
 	}
-	if err := codec.PutFixedStringListLE[uint16](buf, p.FieldCharList, 1); err != nil {
+	if err := codec.PutFixedStringListWithPaddingLE[uint16](buf, p.FieldCharList, 1, '0', true); err != nil {
 		return err
 	}
 	if err := codec.PutBasicTypeListLE[uint16](buf, p.FieldU8List); err != nil {
@@ -141,7 +141,7 @@ func (p *BasicPacket) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.FieldI64 = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.GetFixedStringTrimPadding(buf, 1, '0', true); err != nil {
 		return err
 	} else {
 		p.FieldChar = val
@@ -196,7 +196,7 @@ func (p *BasicPacket) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.FieldI64List = val
 	}
-	if val, err := codec.GetFixedStringListLE[uint16](buf, 1); err != nil {
+	if val, err := codec.GetFixedStringListTrimPaddingLE[uint16](buf, 1, '0', true); err != nil {
 		return err
 	} else {
 		p.FieldCharList = val
