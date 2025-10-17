@@ -13,14 +13,16 @@ func init() {
 
 // StringPacket represents the packet structure.
 type StringPacket struct {
-	FieldDynamicString      string   `json:"fieldDynamicString"`
-	FieldDynamicString1     string   `json:"fieldDynamicString1"`
-	FieldFixedString1       string   `json:"fieldFixedString1"`
-	FieldFixedString10      string   `json:"fieldFixedString10"`
-	FieldDynamicStringList  []string `json:"fieldDynamicStringList"`
-	FieldDynamicString1List []string `json:"fieldDynamicString1List"`
-	FieldFixedString1List   []string `json:"fieldFixedString1List"`
-	FieldFixedString10List  []string `json:"fieldFixedString10List"`
+	FieldDynamicString        string   `json:"fieldDynamicString"`
+	FieldDynamicString1       string   `json:"fieldDynamicString1"`
+	FieldFixedString1         string   `json:"fieldFixedString1"`
+	FieldFixedString10        string   `json:"fieldFixedString10"`
+	FieldFixedString10Pad     string   `json:"fieldFixedString10Pad"`
+	FieldDynamicStringList    []string `json:"fieldDynamicStringList"`
+	FieldDynamicString1List   []string `json:"fieldDynamicString1List"`
+	FieldFixedString1List     []string `json:"fieldFixedString1List"`
+	FieldFixedString10List    []string `json:"fieldFixedString10List"`
+	FieldFixedString10ListPad []string `json:"fieldFixedString10ListPad"`
 }
 
 // NewStringPacket creates a new instance of StringPacket.
@@ -30,7 +32,7 @@ func NewStringPacket() *StringPacket {
 
 // String returns a string representation of the packet.
 func (p *StringPacket) String() string {
-	return fmt.Sprintf("StringPacket{FieldDynamicString: %v, FieldDynamicString1: %v, FieldFixedString1: %v, FieldFixedString10: %v, FieldDynamicStringList: %v, FieldDynamicString1List: %v, FieldFixedString1List: %v, FieldFixedString10List: %v}", p.FieldDynamicString, p.FieldDynamicString1, p.FieldFixedString1, p.FieldFixedString10, p.FieldDynamicStringList, p.FieldDynamicString1List, p.FieldFixedString1List, p.FieldFixedString10List)
+	return fmt.Sprintf("StringPacket{FieldDynamicString: %v, FieldDynamicString1: %v, FieldFixedString1: %v, FieldFixedString10: %v, FieldFixedString10Pad: %v, FieldDynamicStringList: %v, FieldDynamicString1List: %v, FieldFixedString1List: %v, FieldFixedString10List: %v, FieldFixedString10ListPad: %v}", p.FieldDynamicString, p.FieldDynamicString1, p.FieldFixedString1, p.FieldFixedString10, p.FieldFixedString10Pad, p.FieldDynamicStringList, p.FieldDynamicString1List, p.FieldFixedString1List, p.FieldFixedString10List, p.FieldFixedString10ListPad)
 }
 
 // Encode encodes the packet into a byte slice.
@@ -48,6 +50,9 @@ func (p *StringPacket) Encode(buf *bytes.Buffer) error {
 	if err := codec.PutFixedString(buf, p.FieldFixedString10, 10); err != nil {
 		return err
 	}
+	if err := codec.PutFixedString(buf, p.FieldFixedString10Pad, 10); err != nil {
+		return err
+	}
 	if err := codec.PutStringListLE[uint16, uint16](buf, p.FieldDynamicStringList); err != nil {
 		return err
 	}
@@ -58,6 +63,9 @@ func (p *StringPacket) Encode(buf *bytes.Buffer) error {
 		return err
 	}
 	if err := codec.PutFixedStringListLE[uint16](buf, p.FieldFixedString10List, 10); err != nil {
+		return err
+	}
+	if err := codec.PutFixedStringListLE[uint16](buf, p.FieldFixedString10ListPad, 10); err != nil {
 		return err
 	}
 	return nil
@@ -85,6 +93,11 @@ func (p *StringPacket) Decode(buf *bytes.Buffer) error {
 	} else {
 		p.FieldFixedString10 = val
 	}
+	if val, err := codec.GetFixedString(buf, 10); err != nil {
+		return err
+	} else {
+		p.FieldFixedString10Pad = val
+	}
 	if val, err := codec.GetStringListLE[uint16, uint16](buf); err != nil {
 		return err
 	} else {
@@ -104,6 +117,11 @@ func (p *StringPacket) Decode(buf *bytes.Buffer) error {
 		return err
 	} else {
 		p.FieldFixedString10List = val
+	}
+	if val, err := codec.GetFixedStringListLE[uint16](buf, 10); err != nil {
+		return err
+	} else {
+		p.FieldFixedString10ListPad = val
 	}
 	return nil
 }
