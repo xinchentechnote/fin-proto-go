@@ -156,23 +156,23 @@ func WriteFixedString(buf *bytes.Buffer, s string, fixedLen int) error {
 	return WriteFixedStringWithPadding(buf, s, fixedLen, ' ', false)
 }
 
-func WriteFixedStringWithPadding(buf *bytes.Buffer, s string, fixedLen int, padding rune, fromLeft bool) error {
+func WriteFixedStringWithPadding(buf *bytes.Buffer, s string, fixedLen int, padChar rune, padLeft bool) error {
 	data := []byte(s)
 	if len(data) > fixedLen {
 		if _, err := buf.Write(data[:fixedLen]); err != nil {
 			return err
 		}
 	} else {
-		if fromLeft {
-			if err := Padding(buf, fixedLen-len(data), padding); err != nil {
+		if padLeft {
+			if err := Padding(buf, fixedLen-len(data), padChar); err != nil {
 				return err
 			}
 		}
 		if _, err := buf.Write(data); err != nil {
 			return err
 		}
-		if !fromLeft {
-			if err := Padding(buf, fixedLen-len(data), padding); err != nil {
+		if !padLeft {
+			if err := Padding(buf, fixedLen-len(data), padChar); err != nil {
 				return err
 			}
 		}
@@ -180,9 +180,9 @@ func WriteFixedStringWithPadding(buf *bytes.Buffer, s string, fixedLen int, padd
 	return nil
 }
 
-func Padding(buf *bytes.Buffer, paddedLen int, padding rune) error {
-	paddingBytes := bytes.Repeat([]byte{byte(padding)}, paddedLen)
-	if _, err := buf.Write(paddingBytes); err != nil {
+func Padding(buf *bytes.Buffer, paddedLen int, padChar rune) error {
+	padCharBytes := bytes.Repeat([]byte{byte(padChar)}, paddedLen)
+	if _, err := buf.Write(padCharBytes); err != nil {
 		return err
 	}
 	return nil
@@ -192,14 +192,14 @@ func WriteFixedStringList[T constraints.Unsigned](buf *bytes.Buffer, values []st
 	return WriteFixedStringListWithPadding[T](buf, values, fixedLen, ' ', false)
 }
 
-func WriteFixedStringListWithPadding[T constraints.Unsigned](buf *bytes.Buffer, values []string, fixedLen int, padding rune, fromLeft bool) error {
+func WriteFixedStringListWithPadding[T constraints.Unsigned](buf *bytes.Buffer, values []string, fixedLen int, padChar rune, padLeft bool) error {
 	if err := binary.Write(buf, binary.BigEndian, T(len(values))); err != nil {
 		return err
 	}
 
 	// Write each string with its own length prefix
 	for _, s := range values {
-		err := WriteFixedStringWithPadding(buf, s, fixedLen, padding, fromLeft)
+		err := WriteFixedStringWithPadding(buf, s, fixedLen, padChar, padLeft)
 		if err != nil {
 			return nil
 		}
@@ -210,14 +210,14 @@ func WriteFixedStringListWithPadding[T constraints.Unsigned](buf *bytes.Buffer, 
 func WriteFixedStringListLE[T constraints.Unsigned](buf *bytes.Buffer, values []string, fixedLen int) error {
 	return WriteFixedStringListWithPaddingLE[T](buf, values, fixedLen, ' ', false)
 }
-func WriteFixedStringListWithPaddingLE[T constraints.Unsigned](buf *bytes.Buffer, values []string, fixedLen int, padding rune, fromLeft bool) error {
+func WriteFixedStringListWithPaddingLE[T constraints.Unsigned](buf *bytes.Buffer, values []string, fixedLen int, padChar rune, padLeft bool) error {
 	if err := binary.Write(buf, binary.LittleEndian, T(len(values))); err != nil {
 		return err
 	}
 
 	// Write each string with its own length prefix
 	for _, s := range values {
-		err := WriteFixedStringWithPadding(buf, s, fixedLen, padding, fromLeft)
+		err := WriteFixedStringWithPadding(buf, s, fixedLen, padChar, padLeft)
 		if err != nil {
 			return nil
 		}
@@ -228,19 +228,19 @@ func WriteFixedStringListWithPaddingLE[T constraints.Unsigned](buf *bytes.Buffer
 func ReadFixedString(buf *bytes.Buffer, fixedLen int) (string, error) {
 	return ReadFixedStringTrimPadding(buf, fixedLen, ' ', false)
 }
-func ReadFixedStringTrimPadding(buf *bytes.Buffer, fixedLen int, padding rune, fromLeft bool) (string, error) {
+func ReadFixedStringTrimPadding(buf *bytes.Buffer, fixedLen int, padChar rune, padLeft bool) (string, error) {
 	strBytes := make([]byte, fixedLen)
 	_, err := io.ReadFull(buf, strBytes)
-	if fromLeft {
-		return string(bytes.TrimLeft(strBytes, string(padding))), err
+	if padLeft {
+		return string(bytes.TrimLeft(strBytes, string(padChar))), err
 	}
-	return string(bytes.TrimRight(strBytes, string(padding))), err
+	return string(bytes.TrimRight(strBytes, string(padChar))), err
 }
 
 func ReadFixedStringList[T constraints.Unsigned](buf *bytes.Buffer, fixedLen int) ([]string, error) {
 	return ReadFixedStringListTrimPadding[T](buf, fixedLen, ' ', false)
 }
-func ReadFixedStringListTrimPadding[T constraints.Unsigned](buf *bytes.Buffer, fixedLen int, padding rune, fromLeft bool) ([]string, error) {
+func ReadFixedStringListTrimPadding[T constraints.Unsigned](buf *bytes.Buffer, fixedLen int, padChar rune, padLeft bool) ([]string, error) {
 	var t T
 	if err := binary.Read(buf, binary.BigEndian, &t); err != nil {
 		return nil, err
@@ -250,7 +250,7 @@ func ReadFixedStringListTrimPadding[T constraints.Unsigned](buf *bytes.Buffer, f
 	result := make([]string, 0, count)
 	var err error
 	for i := 0; i < count; i++ {
-		str, e := ReadFixedStringTrimPadding(buf, fixedLen, padding, fromLeft)
+		str, e := ReadFixedStringTrimPadding(buf, fixedLen, padChar, padLeft)
 		if e != nil {
 			return nil, e
 		}
@@ -263,7 +263,7 @@ func ReadFixedStringListLE[T constraints.Unsigned](buf *bytes.Buffer, fixedLen i
 	return ReadFixedStringListTrimPaddingLE[T](buf, fixedLen, ' ', false)
 }
 
-func ReadFixedStringListTrimPaddingLE[T constraints.Unsigned](buf *bytes.Buffer, fixedLen int, padding rune, fromLeft bool) ([]string, error) {
+func ReadFixedStringListTrimPaddingLE[T constraints.Unsigned](buf *bytes.Buffer, fixedLen int, padChar rune, padLeft bool) ([]string, error) {
 	var t T
 	if err := binary.Read(buf, binary.LittleEndian, &t); err != nil {
 		return nil, err
@@ -273,7 +273,7 @@ func ReadFixedStringListTrimPaddingLE[T constraints.Unsigned](buf *bytes.Buffer,
 	result := make([]string, 0, count)
 	var err error
 	for i := 0; i < count; i++ {
-		str, e := ReadFixedStringTrimPadding(buf, fixedLen, padding, fromLeft)
+		str, e := ReadFixedStringTrimPadding(buf, fixedLen, padChar, padLeft)
 		if e != nil {
 			return nil, e
 		}
