@@ -50,70 +50,70 @@ func (p *BasicPacket) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *BasicPacket) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicTypeLE(buf, p.FieldI8); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.FieldI8); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldI8", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.FieldI16); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.FieldI16); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldI16", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.FieldI32); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.FieldI32); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldI32", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.FieldI64); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.FieldI64); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldI64", err)
 	}
-	if err := codec.PutFixedStringWithPadding(buf, p.FieldChar, 1, '0', true); err != nil {
+	if err := codec.WriteFixedStringWithPadding(buf, p.FieldChar, 1, '0', true); err != nil {
 		return err
 	}
-	if err := codec.PutBasicTypeLE(buf, p.FieldU8); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.FieldU8); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldU8", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.FieldU16); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.FieldU16); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldU16", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.FieldU32); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.FieldU32); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldU32", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.FieldU64); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.FieldU64); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldU64", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.FieldF32); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.FieldF32); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldF32", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.FieldF64); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.FieldF64); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldF64", err)
 	}
-	if err := codec.PutBasicTypeListLE[uint16](buf, p.FieldI8List); err != nil {
+	if err := codec.WriteBasicTypeListLE[uint16](buf, p.FieldI8List); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldI8List", err)
 	}
-	if err := codec.PutBasicTypeListLE[uint16](buf, p.FieldI16List); err != nil {
+	if err := codec.WriteBasicTypeListLE[uint16](buf, p.FieldI16List); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldI16List", err)
 	}
-	if err := codec.PutBasicTypeListLE[uint16](buf, p.FieldI32List); err != nil {
+	if err := codec.WriteBasicTypeListLE[uint16](buf, p.FieldI32List); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldI32List", err)
 	}
-	if err := codec.PutBasicTypeListLE[uint16](buf, p.FieldI64List); err != nil {
+	if err := codec.WriteBasicTypeListLE[uint16](buf, p.FieldI64List); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldI64List", err)
 	}
-	if err := codec.PutFixedStringListWithPaddingLE[uint16](buf, p.FieldCharList, 1, '0', true); err != nil {
+	if err := codec.WriteFixedStringListWithPaddingLE[uint16](buf, p.FieldCharList, 1, '0', true); err != nil {
 		return err
 	}
-	if err := codec.PutBasicTypeListLE[uint16](buf, p.FieldU8List); err != nil {
+	if err := codec.WriteBasicTypeListLE[uint16](buf, p.FieldU8List); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldU8List", err)
 	}
-	if err := codec.PutBasicTypeListLE[uint16](buf, p.FieldU16List); err != nil {
+	if err := codec.WriteBasicTypeListLE[uint16](buf, p.FieldU16List); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldU16List", err)
 	}
-	if err := codec.PutBasicTypeListLE[uint16](buf, p.FieldU32List); err != nil {
+	if err := codec.WriteBasicTypeListLE[uint16](buf, p.FieldU32List); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldU32List", err)
 	}
-	if err := codec.PutBasicTypeListLE[uint16](buf, p.FieldU64List); err != nil {
+	if err := codec.WriteBasicTypeListLE[uint16](buf, p.FieldU64List); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldU64List", err)
 	}
-	if err := codec.PutBasicTypeListLE[uint16](buf, p.FieldF32List); err != nil {
+	if err := codec.WriteBasicTypeListLE[uint16](buf, p.FieldF32List); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldF32List", err)
 	}
-	if err := codec.PutBasicTypeListLE[uint16](buf, p.FieldF64List); err != nil {
+	if err := codec.WriteBasicTypeListLE[uint16](buf, p.FieldF64List); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "fieldF64List", err)
 	}
 	return nil
@@ -121,112 +121,112 @@ func (p *BasicPacket) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *BasicPacket) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicTypeLE[int8](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[int8](buf); err != nil {
 		return err
 	} else {
 		p.FieldI8 = val
 	}
-	if val, err := codec.GetBasicTypeLE[int16](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[int16](buf); err != nil {
 		return err
 	} else {
 		p.FieldI16 = val
 	}
-	if val, err := codec.GetBasicTypeLE[int32](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[int32](buf); err != nil {
 		return err
 	} else {
 		p.FieldI32 = val
 	}
-	if val, err := codec.GetBasicTypeLE[int64](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[int64](buf); err != nil {
 		return err
 	} else {
 		p.FieldI64 = val
 	}
-	if val, err := codec.GetFixedStringTrimPadding(buf, 1, '0', true); err != nil {
+	if val, err := codec.ReadFixedStringTrimPadding(buf, 1, '0', true); err != nil {
 		return err
 	} else {
 		p.FieldChar = val
 	}
-	if val, err := codec.GetBasicTypeLE[uint8](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint8](buf); err != nil {
 		return err
 	} else {
 		p.FieldU8 = val
 	}
-	if val, err := codec.GetBasicTypeLE[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint16](buf); err != nil {
 		return err
 	} else {
 		p.FieldU16 = val
 	}
-	if val, err := codec.GetBasicTypeLE[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint32](buf); err != nil {
 		return err
 	} else {
 		p.FieldU32 = val
 	}
-	if val, err := codec.GetBasicTypeLE[uint64](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint64](buf); err != nil {
 		return err
 	} else {
 		p.FieldU64 = val
 	}
-	if val, err := codec.GetBasicTypeLE[float32](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[float32](buf); err != nil {
 		return err
 	} else {
 		p.FieldF32 = val
 	}
-	if val, err := codec.GetBasicTypeLE[float64](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[float64](buf); err != nil {
 		return err
 	} else {
 		p.FieldF64 = val
 	}
-	if val, err := codec.GetBasicTypeListLE[uint16, int8](buf); err != nil {
+	if val, err := codec.ReadBasicTypeListLE[uint16, int8](buf); err != nil {
 		return err
 	} else {
 		p.FieldI8List = val
 	}
-	if val, err := codec.GetBasicTypeListLE[uint16, int16](buf); err != nil {
+	if val, err := codec.ReadBasicTypeListLE[uint16, int16](buf); err != nil {
 		return err
 	} else {
 		p.FieldI16List = val
 	}
-	if val, err := codec.GetBasicTypeListLE[uint16, int32](buf); err != nil {
+	if val, err := codec.ReadBasicTypeListLE[uint16, int32](buf); err != nil {
 		return err
 	} else {
 		p.FieldI32List = val
 	}
-	if val, err := codec.GetBasicTypeListLE[uint16, int64](buf); err != nil {
+	if val, err := codec.ReadBasicTypeListLE[uint16, int64](buf); err != nil {
 		return err
 	} else {
 		p.FieldI64List = val
 	}
-	if val, err := codec.GetFixedStringListTrimPaddingLE[uint16](buf, 1, '0', true); err != nil {
+	if val, err := codec.ReadFixedStringListTrimPaddingLE[uint16](buf, 1, '0', true); err != nil {
 		return err
 	} else {
 		p.FieldCharList = val
 	}
-	if val, err := codec.GetBasicTypeListLE[uint16, uint8](buf); err != nil {
+	if val, err := codec.ReadBasicTypeListLE[uint16, uint8](buf); err != nil {
 		return err
 	} else {
 		p.FieldU8List = val
 	}
-	if val, err := codec.GetBasicTypeListLE[uint16, uint16](buf); err != nil {
+	if val, err := codec.ReadBasicTypeListLE[uint16, uint16](buf); err != nil {
 		return err
 	} else {
 		p.FieldU16List = val
 	}
-	if val, err := codec.GetBasicTypeListLE[uint16, uint32](buf); err != nil {
+	if val, err := codec.ReadBasicTypeListLE[uint16, uint32](buf); err != nil {
 		return err
 	} else {
 		p.FieldU32List = val
 	}
-	if val, err := codec.GetBasicTypeListLE[uint16, uint64](buf); err != nil {
+	if val, err := codec.ReadBasicTypeListLE[uint16, uint64](buf); err != nil {
 		return err
 	} else {
 		p.FieldU64List = val
 	}
-	if val, err := codec.GetBasicTypeListLE[uint16, float32](buf); err != nil {
+	if val, err := codec.ReadBasicTypeListLE[uint16, float32](buf); err != nil {
 		return err
 	} else {
 		p.FieldF32List = val
 	}
-	if val, err := codec.GetBasicTypeListLE[uint16, float64](buf); err != nil {
+	if val, err := codec.ReadBasicTypeListLE[uint16, float64](buf); err != nil {
 		return err
 	} else {
 		p.FieldF64List = val

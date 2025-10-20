@@ -29,7 +29,7 @@ func (p *Extend206315) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *Extend206315) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.CashMargin, 1); err != nil {
+	if err := codec.WriteFixedString(buf, p.CashMargin, 1); err != nil {
 		return err
 	}
 	return nil
@@ -37,7 +37,7 @@ func (p *Extend206315) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *Extend206315) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.ReadFixedString(buf, 1); err != nil {
 		return err
 	} else {
 		p.CashMargin = val

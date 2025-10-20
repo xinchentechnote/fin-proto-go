@@ -9,24 +9,24 @@ import (
 	"github.com/xinchentechnote/fin-proto-go/codec"
 )
 
-func TestPutAndGetStringLE(t *testing.T) {
+func TestWriteAndReadStringLE(t *testing.T) {
 	var buf bytes.Buffer
 	original := "hello world"
 
-	codec.PutStringLE[uint16](&buf, original)
+	codec.WriteStringLE[uint16](&buf, original)
 
-	decoded, err := codec.GetStringLE[uint16](&buf)
+	decoded, err := codec.ReadStringLE[uint16](&buf)
 
 	require.NoError(t, err)
 	require.Equal(t, original, decoded)
 }
 
-func TestPutAndGetFixedString(t *testing.T) {
+func TestWriteAndReadFixedString(t *testing.T) {
 	var buf bytes.Buffer
 	original := "abc"
-	codec.PutFixedString(&buf, original, 8)
+	codec.WriteFixedString(&buf, original, 8)
 
-	decoded, err := codec.GetFixedString(&buf, 8)
+	decoded, err := codec.ReadFixedString(&buf, 8)
 
 	require.NoError(t, err)
 	require.Equal(t, original, decoded)
@@ -35,25 +35,25 @@ func TestPutAndGetFixedString(t *testing.T) {
 func TestFixedStringOverflow(t *testing.T) {
 	var buf bytes.Buffer
 	original := "toolongstring"
-	codec.PutFixedString(&buf, original, 5)
+	codec.WriteFixedString(&buf, original, 5)
 
-	decoded, err := codec.GetFixedString(&buf, 5)
+	decoded, err := codec.ReadFixedString(&buf, 5)
 
 	require.NoError(t, err)
 	require.Equal(t, original[:5], decoded)
 }
 
-func TestPutAndGetStringListLE(t *testing.T) {
+func TestWriteAndReadStringListLE(t *testing.T) {
 	original := []string{"foo", "bar", "baz"}
 
 	var buf bytes.Buffer
-	codec.PutStringListLE[uint16, uint16](&buf, original)
-	decoded, err := codec.GetStringListLE[uint16, uint16](&buf)
+	codec.WriteStringListLE[uint16, uint16](&buf, original)
+	decoded, err := codec.ReadStringListLE[uint16, uint16](&buf)
 	require.NoError(t, err)
 	require.Equal(t, original, decoded)
 }
 
-func TestGetBasicType(t *testing.T) {
+func TestReadBasicType(t *testing.T) {
 	order := binary.BigEndian
 
 	t.Run("uint8", func(t *testing.T) {
@@ -63,7 +63,7 @@ func TestGetBasicType(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to write: %v", err)
 		}
-		val, err := codec.GetBasicType[uint8](buf)
+		val, err := codec.ReadBasicType[uint8](buf)
 		if err != nil || val != original {
 			t.Errorf("expected %v, got %v (err=%v)", original, val, err)
 		}
@@ -76,7 +76,7 @@ func TestGetBasicType(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to write: %v", err)
 		}
-		val, err := codec.GetBasicType[int16](buf)
+		val, err := codec.ReadBasicType[int16](buf)
 		if err != nil || val != original {
 			t.Errorf("expected %v, got %v (err=%v)", original, val, err)
 		}
@@ -89,7 +89,7 @@ func TestGetBasicType(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to write: %v", err)
 		}
-		val, err := codec.GetBasicType[uint32](buf)
+		val, err := codec.ReadBasicType[uint32](buf)
 		if err != nil || val != original {
 			t.Errorf("expected %v, got %v (err=%v)", original, val, err)
 		}
@@ -102,7 +102,7 @@ func TestGetBasicType(t *testing.T) {
 		if err != nil {
 			t.Fatalf("failed to write: %v", err)
 		}
-		val, err := codec.GetBasicType[float64](buf)
+		val, err := codec.ReadBasicType[float64](buf)
 		if err != nil || val != original {
 			t.Errorf("expected %v, got %v (err=%v)", original, val, err)
 		}

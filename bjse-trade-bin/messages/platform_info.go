@@ -33,10 +33,10 @@ func (p *NoPartitions) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *NoPartitions) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicTypeLE(buf, p.PartitionNo); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.PartitionNo); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "PartitionNo", err)
 	}
-	if err := codec.PutFixedString(buf, p.PartitionName, 20); err != nil {
+	if err := codec.WriteFixedString(buf, p.PartitionName, 20); err != nil {
 		return err
 	}
 	return nil
@@ -44,12 +44,12 @@ func (p *NoPartitions) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *NoPartitions) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicTypeLE[int32](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[int32](buf); err != nil {
 		return err
 	} else {
 		p.PartitionNo = val
 	}
-	if val, err := codec.GetFixedString(buf, 20); err != nil {
+	if val, err := codec.ReadFixedString(buf, 20); err != nil {
 		return err
 	} else {
 		p.PartitionName = val
@@ -76,10 +76,10 @@ func (p *PlatformInfo) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *PlatformInfo) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicTypeLE(buf, p.PlatformId); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.PlatformId); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "PlatformID", err)
 	}
-	if err := codec.PutObjectListLE[uint16](buf, p.NoPartitions); err != nil {
+	if err := codec.WriteObjectListLE[uint16](buf, p.NoPartitions); err != nil {
 		return err
 	}
 	return nil
@@ -87,12 +87,12 @@ func (p *PlatformInfo) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *PlatformInfo) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicTypeLE[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint16](buf); err != nil {
 		return err
 	} else {
 		p.PlatformId = val
 	}
-	if val, err := codec.GetObjectListLE[uint16](buf, func() *NoPartitions { return &NoPartitions{} }); err != nil {
+	if val, err := codec.ReadObjectListLE[uint16](buf, func() *NoPartitions { return &NoPartitions{} }); err != nil {
 		return err
 	} else {
 		p.NoPartitions = val

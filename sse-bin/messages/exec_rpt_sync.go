@@ -34,13 +34,13 @@ func (p *SubExecRptSync) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *SubExecRptSync) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.Pbu, 8); err != nil {
+	if err := codec.WriteFixedString(buf, p.Pbu, 8); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.SetId); err != nil {
+	if err := codec.WriteBasicType(buf, p.SetId); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "SetID", err)
 	}
-	if err := codec.PutBasicType(buf, p.BeginReportIndex); err != nil {
+	if err := codec.WriteBasicType(buf, p.BeginReportIndex); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "BeginReportIndex", err)
 	}
 	return nil
@@ -48,17 +48,17 @@ func (p *SubExecRptSync) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *SubExecRptSync) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 8); err != nil {
+	if val, err := codec.ReadFixedString(buf, 8); err != nil {
 		return err
 	} else {
 		p.Pbu = val
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.SetId = val
 	}
-	if val, err := codec.GetBasicType[uint64](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint64](buf); err != nil {
 		return err
 	} else {
 		p.BeginReportIndex = val
@@ -84,7 +84,7 @@ func (p *ExecRptSync) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *ExecRptSync) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutObjectList[uint16](buf, p.SubExecRptSync); err != nil {
+	if err := codec.WriteObjectList[uint16](buf, p.SubExecRptSync); err != nil {
 		return err
 	}
 	return nil
@@ -92,7 +92,7 @@ func (p *ExecRptSync) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *ExecRptSync) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetObjectList[uint16](buf, func() *SubExecRptSync { return &SubExecRptSync{} }); err != nil {
+	if val, err := codec.ReadObjectList[uint16](buf, func() *SubExecRptSync { return &SubExecRptSync{} }); err != nil {
 		return err
 	} else {
 		p.SubExecRptSync = val

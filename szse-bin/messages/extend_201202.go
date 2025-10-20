@@ -34,22 +34,22 @@ func (p *Extend201202) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *Extend201202) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.InsufficientSecurityId, 8); err != nil {
+	if err := codec.WriteFixedString(buf, p.InsufficientSecurityId, 8); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.NoSecurity); err != nil {
+	if err := codec.WriteBasicType(buf, p.NoSecurity); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "NoSecurity", err)
 	}
-	if err := codec.PutFixedString(buf, p.UnderlyingSecurityId, 8); err != nil {
+	if err := codec.WriteFixedString(buf, p.UnderlyingSecurityId, 8); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.UnderlyingSecurityIdsource, 4); err != nil {
+	if err := codec.WriteFixedString(buf, p.UnderlyingSecurityIdsource, 4); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.DeliveryQty); err != nil {
+	if err := codec.WriteBasicType(buf, p.DeliveryQty); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "DeliveryQty", err)
 	}
-	if err := codec.PutBasicType(buf, p.SubstCash); err != nil {
+	if err := codec.WriteBasicType(buf, p.SubstCash); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "SubstCash", err)
 	}
 	return nil
@@ -57,32 +57,32 @@ func (p *Extend201202) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *Extend201202) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 8); err != nil {
+	if val, err := codec.ReadFixedString(buf, 8); err != nil {
 		return err
 	} else {
 		p.InsufficientSecurityId = val
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.NoSecurity = val
 	}
-	if val, err := codec.GetFixedString(buf, 8); err != nil {
+	if val, err := codec.ReadFixedString(buf, 8); err != nil {
 		return err
 	} else {
 		p.UnderlyingSecurityId = val
 	}
-	if val, err := codec.GetFixedString(buf, 4); err != nil {
+	if val, err := codec.ReadFixedString(buf, 4); err != nil {
 		return err
 	} else {
 		p.UnderlyingSecurityIdsource = val
 	}
-	if val, err := codec.GetBasicType[int64](buf); err != nil {
+	if val, err := codec.ReadBasicType[int64](buf); err != nil {
 		return err
 	} else {
 		p.DeliveryQty = val
 	}
-	if val, err := codec.GetBasicType[int64](buf); err != nil {
+	if val, err := codec.ReadBasicType[int64](buf); err != nil {
 		return err
 	} else {
 		p.SubstCash = val

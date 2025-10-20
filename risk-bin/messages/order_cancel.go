@@ -33,19 +33,19 @@ func (p *OrderCancel) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *OrderCancel) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutString[uint32](buf, p.UniqueOrderId); err != nil {
+	if err := codec.WriteString[uint32](buf, p.UniqueOrderId); err != nil {
 		return err
 	}
-	if err := codec.PutString[uint32](buf, p.UniqueOrigOrderId); err != nil {
+	if err := codec.WriteString[uint32](buf, p.UniqueOrigOrderId); err != nil {
 		return err
 	}
-	if err := codec.PutString[uint32](buf, p.ClOrdId); err != nil {
+	if err := codec.WriteString[uint32](buf, p.ClOrdId); err != nil {
 		return err
 	}
-	if err := codec.PutString[uint32](buf, p.OrigClOrdId); err != nil {
+	if err := codec.WriteString[uint32](buf, p.OrigClOrdId); err != nil {
 		return err
 	}
-	if err := codec.PutString[uint32](buf, p.SecurityId); err != nil {
+	if err := codec.WriteString[uint32](buf, p.SecurityId); err != nil {
 		return err
 	}
 	return nil
@@ -53,27 +53,27 @@ func (p *OrderCancel) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *OrderCancel) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.UniqueOrderId = val
 	}
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.UniqueOrigOrderId = val
 	}
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.ClOrdId = val
 	}
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.OrigClOrdId = val
 	}
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.SecurityId = val

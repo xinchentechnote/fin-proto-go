@@ -33,19 +33,19 @@ func (p *CancelReject) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *CancelReject) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutString[uint32](buf, p.UniqueOrderId); err != nil {
+	if err := codec.WriteString[uint32](buf, p.UniqueOrderId); err != nil {
 		return err
 	}
-	if err := codec.PutString[uint32](buf, p.UniqueOrigOrderId); err != nil {
+	if err := codec.WriteString[uint32](buf, p.UniqueOrigOrderId); err != nil {
 		return err
 	}
-	if err := codec.PutString[uint32](buf, p.ClOrdId); err != nil {
+	if err := codec.WriteString[uint32](buf, p.ClOrdId); err != nil {
 		return err
 	}
-	if err := codec.PutString[uint32](buf, p.OrigClOrdId); err != nil {
+	if err := codec.WriteString[uint32](buf, p.OrigClOrdId); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.CxlRejReason); err != nil {
+	if err := codec.WriteBasicType(buf, p.CxlRejReason); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "CxlRejReason", err)
 	}
 	return nil
@@ -53,27 +53,27 @@ func (p *CancelReject) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *CancelReject) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.UniqueOrderId = val
 	}
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.UniqueOrigOrderId = val
 	}
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.ClOrdId = val
 	}
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.OrigClOrdId = val
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.CxlRejReason = val

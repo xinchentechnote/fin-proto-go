@@ -30,10 +30,10 @@ func (p *PlatformStateInfo) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *PlatformStateInfo) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicTypeLE(buf, p.PlatformId); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.PlatformId); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "PlatformID", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.PlatformState); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.PlatformState); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "PlatformState", err)
 	}
 	return nil
@@ -41,12 +41,12 @@ func (p *PlatformStateInfo) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *PlatformStateInfo) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicTypeLE[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint16](buf); err != nil {
 		return err
 	} else {
 		p.PlatformId = val
 	}
-	if val, err := codec.GetBasicTypeLE[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint16](buf); err != nil {
 		return err
 	} else {
 		p.PlatformState = val

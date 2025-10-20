@@ -50,11 +50,11 @@ func (p *RootPacket) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *RootPacket) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicTypeLE(buf, p.MsgType); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.MsgType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgType", err)
 	}
 	payloadPos := buf.Len()
-	if err := codec.PutBasicTypeLE(buf, uint32(0)); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, uint32(0)); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "PayloadLen", err)
 	}
 	payloadStart := buf.Len()
@@ -69,7 +69,7 @@ func (p *RootPacket) Encode(buf *bytes.Buffer) error {
 	if checksumService, ok := codec.Get("CRC32"); ok {
 		p.Checksum = checksumService.(codec.ChecksumService[*bytes.Buffer, uint32]).Calc(buf)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.Checksum); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.Checksum); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "Checksum", err)
 	}
 	return nil
@@ -77,12 +77,12 @@ func (p *RootPacket) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *RootPacket) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicTypeLE[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint16](buf); err != nil {
 		return err
 	} else {
 		p.MsgType = val
 	}
-	if val, err := codec.GetBasicTypeLE[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint32](buf); err != nil {
 		return err
 	} else {
 		p.PayloadLen = val
@@ -95,7 +95,7 @@ func (p *RootPacket) Decode(buf *bytes.Buffer) error {
 	if err := p.Payload.Decode(buf); err != nil {
 		return err
 	}
-	if val, err := codec.GetBasicTypeLE[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint32](buf); err != nil {
 		return err
 	} else {
 		p.Checksum = val

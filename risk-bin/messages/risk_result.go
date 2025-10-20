@@ -31,13 +31,13 @@ func (p *RiskResult) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *RiskResult) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutString[uint32](buf, p.UniqueOrderId); err != nil {
+	if err := codec.WriteString[uint32](buf, p.UniqueOrderId); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.RiskStatus); err != nil {
+	if err := codec.WriteBasicType(buf, p.RiskStatus); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "RiskStatus", err)
 	}
-	if err := codec.PutString[uint32](buf, p.RiskReason); err != nil {
+	if err := codec.WriteString[uint32](buf, p.RiskReason); err != nil {
 		return err
 	}
 	return nil
@@ -45,17 +45,17 @@ func (p *RiskResult) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *RiskResult) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.UniqueOrderId = val
 	}
-	if val, err := codec.GetBasicType[uint8](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint8](buf); err != nil {
 		return err
 	} else {
 		p.RiskStatus = val
 	}
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.RiskReason = val

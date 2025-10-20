@@ -56,10 +56,10 @@ func (p *BjseBinary) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *BjseBinary) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicTypeLE(buf, p.MsgType); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.MsgType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgType", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.BodyLength); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.BodyLength); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "BodyLength", err)
 	}
 	if p.Body == nil {
@@ -72,7 +72,7 @@ func (p *BjseBinary) Encode(buf *bytes.Buffer) error {
 	if err := p.Body.Encode(buf); err != nil {
 		return err
 	}
-	if err := codec.PutBasicTypeLE(buf, p.Checksum); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.Checksum); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "Checksum", err)
 	}
 	return nil
@@ -80,12 +80,12 @@ func (p *BjseBinary) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *BjseBinary) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicTypeLE[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint32](buf); err != nil {
 		return err
 	} else {
 		p.MsgType = val
 	}
-	if val, err := codec.GetBasicTypeLE[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint32](buf); err != nil {
 		return err
 	} else {
 		p.BodyLength = val
@@ -98,7 +98,7 @@ func (p *BjseBinary) Decode(buf *bytes.Buffer) error {
 	if err := p.Body.Decode(buf); err != nil {
 		return err
 	}
-	if val, err := codec.GetBasicTypeLE[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint32](buf); err != nil {
 		return err
 	} else {
 		p.Checksum = val

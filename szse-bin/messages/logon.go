@@ -33,19 +33,19 @@ func (p *Logon) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *Logon) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.SenderCompId, 20); err != nil {
+	if err := codec.WriteFixedString(buf, p.SenderCompId, 20); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.TargetCompId, 20); err != nil {
+	if err := codec.WriteFixedString(buf, p.TargetCompId, 20); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.HeartBtint); err != nil {
+	if err := codec.WriteBasicType(buf, p.HeartBtint); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "HeartBtint", err)
 	}
-	if err := codec.PutFixedString(buf, p.Password, 16); err != nil {
+	if err := codec.WriteFixedString(buf, p.Password, 16); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.DefaultApplVerId, 32); err != nil {
+	if err := codec.WriteFixedString(buf, p.DefaultApplVerId, 32); err != nil {
 		return err
 	}
 	return nil
@@ -53,27 +53,27 @@ func (p *Logon) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *Logon) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 20); err != nil {
+	if val, err := codec.ReadFixedString(buf, 20); err != nil {
 		return err
 	} else {
 		p.SenderCompId = val
 	}
-	if val, err := codec.GetFixedString(buf, 20); err != nil {
+	if val, err := codec.ReadFixedString(buf, 20); err != nil {
 		return err
 	} else {
 		p.TargetCompId = val
 	}
-	if val, err := codec.GetBasicType[int32](buf); err != nil {
+	if val, err := codec.ReadBasicType[int32](buf); err != nil {
 		return err
 	} else {
 		p.HeartBtint = val
 	}
-	if val, err := codec.GetFixedString(buf, 16); err != nil {
+	if val, err := codec.ReadFixedString(buf, 16); err != nil {
 		return err
 	} else {
 		p.Password = val
 	}
-	if val, err := codec.GetFixedString(buf, 32); err != nil {
+	if val, err := codec.ReadFixedString(buf, 32); err != nil {
 		return err
 	} else {
 		p.DefaultApplVerId = val

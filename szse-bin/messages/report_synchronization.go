@@ -29,7 +29,7 @@ func (p *ReportSynchronization) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *ReportSynchronization) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutObjectList[uint32](buf, p.PartitionReport); err != nil {
+	if err := codec.WriteObjectList[uint32](buf, p.PartitionReport); err != nil {
 		return err
 	}
 	return nil
@@ -37,7 +37,7 @@ func (p *ReportSynchronization) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *ReportSynchronization) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetObjectList[uint32](buf, func() *PartitionReport { return &PartitionReport{} }); err != nil {
+	if val, err := codec.ReadObjectList[uint32](buf, func() *PartitionReport { return &PartitionReport{} }); err != nil {
 		return err
 	} else {
 		p.PartitionReport = val

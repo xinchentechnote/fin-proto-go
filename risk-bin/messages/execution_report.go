@@ -34,22 +34,22 @@ func (p *ExecutionReport) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *ExecutionReport) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutString[uint32](buf, p.UniqueOrderId); err != nil {
+	if err := codec.WriteString[uint32](buf, p.UniqueOrderId); err != nil {
 		return err
 	}
-	if err := codec.PutString[uint32](buf, p.ClOrdId); err != nil {
+	if err := codec.WriteString[uint32](buf, p.ClOrdId); err != nil {
 		return err
 	}
-	if err := codec.PutString[uint32](buf, p.OrdCnfmId); err != nil {
+	if err := codec.WriteString[uint32](buf, p.OrdCnfmId); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.LastPx); err != nil {
+	if err := codec.WriteBasicType(buf, p.LastPx); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "LastPx", err)
 	}
-	if err := codec.PutBasicType(buf, p.LastQty); err != nil {
+	if err := codec.WriteBasicType(buf, p.LastQty); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "LastQty", err)
 	}
-	if err := codec.PutFixedString(buf, p.OrdStatus, 1); err != nil {
+	if err := codec.WriteFixedString(buf, p.OrdStatus, 1); err != nil {
 		return err
 	}
 	return nil
@@ -57,32 +57,32 @@ func (p *ExecutionReport) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *ExecutionReport) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.UniqueOrderId = val
 	}
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.ClOrdId = val
 	}
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.OrdCnfmId = val
 	}
-	if val, err := codec.GetBasicType[uint64](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint64](buf); err != nil {
 		return err
 	} else {
 		p.LastPx = val
 	}
-	if val, err := codec.GetBasicType[uint64](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint64](buf); err != nil {
 		return err
 	} else {
 		p.LastQty = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.ReadFixedString(buf, 1); err != nil {
 		return err
 	} else {
 		p.OrdStatus = val

@@ -36,28 +36,28 @@ func (p *Extend101401) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *Extend101401) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicType(buf, p.StopPx); err != nil {
+	if err := codec.WriteBasicType(buf, p.StopPx); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "StopPx", err)
 	}
-	if err := codec.PutBasicType(buf, p.MinQty); err != nil {
+	if err := codec.WriteBasicType(buf, p.MinQty); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MinQty", err)
 	}
-	if err := codec.PutBasicType(buf, p.MaxPriceLevels); err != nil {
+	if err := codec.WriteBasicType(buf, p.MaxPriceLevels); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MaxPriceLevels", err)
 	}
-	if err := codec.PutFixedString(buf, p.TimeInForce, 1); err != nil {
+	if err := codec.WriteFixedString(buf, p.TimeInForce, 1); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.PositionEffect, 1); err != nil {
+	if err := codec.WriteFixedString(buf, p.PositionEffect, 1); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.CoveredOrUncovered); err != nil {
+	if err := codec.WriteBasicType(buf, p.CoveredOrUncovered); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "CoveredOrUncovered", err)
 	}
-	if err := codec.PutFixedString(buf, p.ContractAccountCode, 6); err != nil {
+	if err := codec.WriteFixedString(buf, p.ContractAccountCode, 6); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.SecondaryOrderId, 16); err != nil {
+	if err := codec.WriteFixedString(buf, p.SecondaryOrderId, 16); err != nil {
 		return err
 	}
 	return nil
@@ -65,42 +65,42 @@ func (p *Extend101401) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *Extend101401) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicType[int64](buf); err != nil {
+	if val, err := codec.ReadBasicType[int64](buf); err != nil {
 		return err
 	} else {
 		p.StopPx = val
 	}
-	if val, err := codec.GetBasicType[int64](buf); err != nil {
+	if val, err := codec.ReadBasicType[int64](buf); err != nil {
 		return err
 	} else {
 		p.MinQty = val
 	}
-	if val, err := codec.GetBasicType[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint16](buf); err != nil {
 		return err
 	} else {
 		p.MaxPriceLevels = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.ReadFixedString(buf, 1); err != nil {
 		return err
 	} else {
 		p.TimeInForce = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.ReadFixedString(buf, 1); err != nil {
 		return err
 	} else {
 		p.PositionEffect = val
 	}
-	if val, err := codec.GetBasicType[uint8](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint8](buf); err != nil {
 		return err
 	} else {
 		p.CoveredOrUncovered = val
 	}
-	if val, err := codec.GetFixedString(buf, 6); err != nil {
+	if val, err := codec.ReadFixedString(buf, 6); err != nil {
 		return err
 	} else {
 		p.ContractAccountCode = val
 	}
-	if val, err := codec.GetFixedString(buf, 16); err != nil {
+	if val, err := codec.ReadFixedString(buf, 16); err != nil {
 		return err
 	} else {
 		p.SecondaryOrderId = val

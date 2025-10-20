@@ -45,55 +45,55 @@ func (p *Extend204129) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *Extend204129) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.MemberId, 6); err != nil {
+	if err := codec.WriteFixedString(buf, p.MemberId, 6); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.InvestorType, 2); err != nil {
+	if err := codec.WriteFixedString(buf, p.InvestorType, 2); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.InvestorId, 10); err != nil {
+	if err := codec.WriteFixedString(buf, p.InvestorId, 10); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.InvestorName, 120); err != nil {
+	if err := codec.WriteFixedString(buf, p.InvestorName, 120); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.TraderCode, 8); err != nil {
+	if err := codec.WriteFixedString(buf, p.TraderCode, 8); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.SecondaryOrderId, 16); err != nil {
+	if err := codec.WriteFixedString(buf, p.SecondaryOrderId, 16); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.BidTransType); err != nil {
+	if err := codec.WriteBasicType(buf, p.BidTransType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "BidTransType", err)
 	}
-	if err := codec.PutBasicType(buf, p.BidExecInstType); err != nil {
+	if err := codec.WriteBasicType(buf, p.BidExecInstType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "BidExecInstType", err)
 	}
-	if err := codec.PutBasicType(buf, p.LowLimitPrice); err != nil {
+	if err := codec.WriteBasicType(buf, p.LowLimitPrice); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "LowLimitPrice", err)
 	}
-	if err := codec.PutBasicType(buf, p.HighLimitPrice); err != nil {
+	if err := codec.WriteBasicType(buf, p.HighLimitPrice); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "HighLimitPrice", err)
 	}
-	if err := codec.PutBasicType(buf, p.MinQty); err != nil {
+	if err := codec.WriteBasicType(buf, p.MinQty); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MinQty", err)
 	}
-	if err := codec.PutBasicType(buf, p.TradeDate); err != nil {
+	if err := codec.WriteBasicType(buf, p.TradeDate); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "TradeDate", err)
 	}
-	if err := codec.PutBasicType(buf, p.SettlType); err != nil {
+	if err := codec.WriteBasicType(buf, p.SettlType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "SettlType", err)
 	}
-	if err := codec.PutBasicType(buf, p.SettlPeriod); err != nil {
+	if err := codec.WriteBasicType(buf, p.SettlPeriod); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "SettlPeriod", err)
 	}
-	if err := codec.PutBasicType(buf, p.PreTradeAnonymity); err != nil {
+	if err := codec.WriteBasicType(buf, p.PreTradeAnonymity); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "PreTradeAnonymity", err)
 	}
-	if err := codec.PutFixedString(buf, p.CashMargin, 1); err != nil {
+	if err := codec.WriteFixedString(buf, p.CashMargin, 1); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.Memo, 160); err != nil {
+	if err := codec.WriteFixedString(buf, p.Memo, 160); err != nil {
 		return err
 	}
 	return nil
@@ -101,87 +101,87 @@ func (p *Extend204129) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *Extend204129) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 6); err != nil {
+	if val, err := codec.ReadFixedString(buf, 6); err != nil {
 		return err
 	} else {
 		p.MemberId = val
 	}
-	if val, err := codec.GetFixedString(buf, 2); err != nil {
+	if val, err := codec.ReadFixedString(buf, 2); err != nil {
 		return err
 	} else {
 		p.InvestorType = val
 	}
-	if val, err := codec.GetFixedString(buf, 10); err != nil {
+	if val, err := codec.ReadFixedString(buf, 10); err != nil {
 		return err
 	} else {
 		p.InvestorId = val
 	}
-	if val, err := codec.GetFixedString(buf, 120); err != nil {
+	if val, err := codec.ReadFixedString(buf, 120); err != nil {
 		return err
 	} else {
 		p.InvestorName = val
 	}
-	if val, err := codec.GetFixedString(buf, 8); err != nil {
+	if val, err := codec.ReadFixedString(buf, 8); err != nil {
 		return err
 	} else {
 		p.TraderCode = val
 	}
-	if val, err := codec.GetFixedString(buf, 16); err != nil {
+	if val, err := codec.ReadFixedString(buf, 16); err != nil {
 		return err
 	} else {
 		p.SecondaryOrderId = val
 	}
-	if val, err := codec.GetBasicType[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint16](buf); err != nil {
 		return err
 	} else {
 		p.BidTransType = val
 	}
-	if val, err := codec.GetBasicType[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint16](buf); err != nil {
 		return err
 	} else {
 		p.BidExecInstType = val
 	}
-	if val, err := codec.GetBasicType[int64](buf); err != nil {
+	if val, err := codec.ReadBasicType[int64](buf); err != nil {
 		return err
 	} else {
 		p.LowLimitPrice = val
 	}
-	if val, err := codec.GetBasicType[int64](buf); err != nil {
+	if val, err := codec.ReadBasicType[int64](buf); err != nil {
 		return err
 	} else {
 		p.HighLimitPrice = val
 	}
-	if val, err := codec.GetBasicType[int64](buf); err != nil {
+	if val, err := codec.ReadBasicType[int64](buf); err != nil {
 		return err
 	} else {
 		p.MinQty = val
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.TradeDate = val
 	}
-	if val, err := codec.GetBasicType[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint16](buf); err != nil {
 		return err
 	} else {
 		p.SettlType = val
 	}
-	if val, err := codec.GetBasicType[uint8](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint8](buf); err != nil {
 		return err
 	} else {
 		p.SettlPeriod = val
 	}
-	if val, err := codec.GetBasicType[uint8](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint8](buf); err != nil {
 		return err
 	} else {
 		p.PreTradeAnonymity = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.ReadFixedString(buf, 1); err != nil {
 		return err
 	} else {
 		p.CashMargin = val
 	}
-	if val, err := codec.GetFixedString(buf, 160); err != nil {
+	if val, err := codec.ReadFixedString(buf, 160); err != nil {
 		return err
 	} else {
 		p.Memo = val

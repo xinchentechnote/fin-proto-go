@@ -123,11 +123,11 @@ func (p *SzseBinary) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *SzseBinary) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicType(buf, p.MsgType); err != nil {
+	if err := codec.WriteBasicType(buf, p.MsgType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgType", err)
 	}
 	bodyPos := buf.Len()
-	if err := codec.PutBasicType(buf, uint32(0)); err != nil {
+	if err := codec.WriteBasicType(buf, uint32(0)); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "BodyLength", err)
 	}
 	bodyStart := buf.Len()
@@ -142,7 +142,7 @@ func (p *SzseBinary) Encode(buf *bytes.Buffer) error {
 	if checksumService, ok := codec.Get("SZSE_BIN"); ok {
 		p.Checksum = checksumService.(codec.ChecksumService[*bytes.Buffer, int32]).Calc(buf)
 	}
-	if err := codec.PutBasicType(buf, p.Checksum); err != nil {
+	if err := codec.WriteBasicType(buf, p.Checksum); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "Checksum", err)
 	}
 	return nil
@@ -150,12 +150,12 @@ func (p *SzseBinary) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *SzseBinary) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.MsgType = val
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.BodyLength = val
@@ -168,7 +168,7 @@ func (p *SzseBinary) Decode(buf *bytes.Buffer) error {
 	if err := p.Body.Decode(buf); err != nil {
 		return err
 	}
-	if val, err := codec.GetBasicType[int32](buf); err != nil {
+	if val, err := codec.ReadBasicType[int32](buf); err != nil {
 		return err
 	} else {
 		p.Checksum = val

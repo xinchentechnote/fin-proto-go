@@ -29,7 +29,7 @@ func (p *Extend101701) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *Extend101701) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicType(buf, p.CashOrderQty); err != nil {
+	if err := codec.WriteBasicType(buf, p.CashOrderQty); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "CashOrderQty", err)
 	}
 	return nil
@@ -37,7 +37,7 @@ func (p *Extend101701) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *Extend101701) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicType[int64](buf); err != nil {
+	if val, err := codec.ReadBasicType[int64](buf); err != nil {
 		return err
 	} else {
 		p.CashOrderQty = val

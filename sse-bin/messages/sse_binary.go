@@ -61,14 +61,14 @@ func (p *SseBinary) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *SseBinary) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicType(buf, p.MsgType); err != nil {
+	if err := codec.WriteBasicType(buf, p.MsgType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgType", err)
 	}
-	if err := codec.PutBasicType(buf, p.MsgSeqNum); err != nil {
+	if err := codec.WriteBasicType(buf, p.MsgSeqNum); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgSeqNum", err)
 	}
 	bodyPos := buf.Len()
-	if err := codec.PutBasicType(buf, uint32(0)); err != nil {
+	if err := codec.WriteBasicType(buf, uint32(0)); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgBodyLen", err)
 	}
 	bodyStart := buf.Len()
@@ -83,7 +83,7 @@ func (p *SseBinary) Encode(buf *bytes.Buffer) error {
 	if checksumService, ok := codec.Get("SSE_BIN"); ok {
 		p.Checksum = checksumService.(codec.ChecksumService[*bytes.Buffer, uint32]).Calc(buf)
 	}
-	if err := codec.PutBasicType(buf, p.Checksum); err != nil {
+	if err := codec.WriteBasicType(buf, p.Checksum); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "Checksum", err)
 	}
 	return nil
@@ -91,17 +91,17 @@ func (p *SseBinary) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *SseBinary) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.MsgType = val
 	}
-	if val, err := codec.GetBasicType[uint64](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint64](buf); err != nil {
 		return err
 	} else {
 		p.MsgSeqNum = val
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.MsgBodyLen = val
@@ -114,7 +114,7 @@ func (p *SseBinary) Decode(buf *bytes.Buffer) error {
 	if err := p.Body.Decode(buf); err != nil {
 		return err
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.Checksum = val

@@ -32,16 +32,16 @@ func (p *Extend200715) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *Extend200715) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicType(buf, p.ExpirationDays); err != nil {
+	if err := codec.WriteBasicType(buf, p.ExpirationDays); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "ExpirationDays", err)
 	}
-	if err := codec.PutBasicType(buf, p.ExpirationType); err != nil {
+	if err := codec.WriteBasicType(buf, p.ExpirationType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "ExpirationType", err)
 	}
-	if err := codec.PutBasicType(buf, p.MaturityDate); err != nil {
+	if err := codec.WriteBasicType(buf, p.MaturityDate); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MaturityDate", err)
 	}
-	if err := codec.PutFixedString(buf, p.ShareProperty, 2); err != nil {
+	if err := codec.WriteFixedString(buf, p.ShareProperty, 2); err != nil {
 		return err
 	}
 	return nil
@@ -49,22 +49,22 @@ func (p *Extend200715) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *Extend200715) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicType[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint16](buf); err != nil {
 		return err
 	} else {
 		p.ExpirationDays = val
 	}
-	if val, err := codec.GetBasicType[uint8](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint8](buf); err != nil {
 		return err
 	} else {
 		p.ExpirationType = val
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.MaturityDate = val
 	}
-	if val, err := codec.GetFixedString(buf, 2); err != nil {
+	if val, err := codec.ReadFixedString(buf, 2); err != nil {
 		return err
 	} else {
 		p.ShareProperty = val

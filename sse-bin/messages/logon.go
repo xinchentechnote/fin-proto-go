@@ -34,22 +34,22 @@ func (p *Logon) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *Logon) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.SenderCompId, 32); err != nil {
+	if err := codec.WriteFixedString(buf, p.SenderCompId, 32); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.TargetCompId, 32); err != nil {
+	if err := codec.WriteFixedString(buf, p.TargetCompId, 32); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.HeartBtInt); err != nil {
+	if err := codec.WriteBasicType(buf, p.HeartBtInt); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "HeartBtInt", err)
 	}
-	if err := codec.PutFixedString(buf, p.PrtclVersion, 8); err != nil {
+	if err := codec.WriteFixedString(buf, p.PrtclVersion, 8); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.TradeDate); err != nil {
+	if err := codec.WriteBasicType(buf, p.TradeDate); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "TradeDate", err)
 	}
-	if err := codec.PutBasicType(buf, p.Qsize); err != nil {
+	if err := codec.WriteBasicType(buf, p.Qsize); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "QSize", err)
 	}
 	return nil
@@ -57,32 +57,32 @@ func (p *Logon) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *Logon) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 32); err != nil {
+	if val, err := codec.ReadFixedString(buf, 32); err != nil {
 		return err
 	} else {
 		p.SenderCompId = val
 	}
-	if val, err := codec.GetFixedString(buf, 32); err != nil {
+	if val, err := codec.ReadFixedString(buf, 32); err != nil {
 		return err
 	} else {
 		p.TargetCompId = val
 	}
-	if val, err := codec.GetBasicType[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint16](buf); err != nil {
 		return err
 	} else {
 		p.HeartBtInt = val
 	}
-	if val, err := codec.GetFixedString(buf, 8); err != nil {
+	if val, err := codec.ReadFixedString(buf, 8); err != nil {
 		return err
 	} else {
 		p.PrtclVersion = val
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.TradeDate = val
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.Qsize = val

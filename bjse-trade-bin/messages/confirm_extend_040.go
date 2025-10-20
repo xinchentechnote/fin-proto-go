@@ -33,19 +33,19 @@ func (p *ConfirmExtend040) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *ConfirmExtend040) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicTypeLE(buf, p.StopPx); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.StopPx); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "StopPx", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.MinQty); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.MinQty); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MinQty", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.MaxPriceLevels); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.MaxPriceLevels); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MaxPriceLevels", err)
 	}
-	if err := codec.PutFixedString(buf, p.TimeInForce, 1); err != nil {
+	if err := codec.WriteFixedString(buf, p.TimeInForce, 1); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.CashMargin, 1); err != nil {
+	if err := codec.WriteFixedString(buf, p.CashMargin, 1); err != nil {
 		return err
 	}
 	return nil
@@ -53,27 +53,27 @@ func (p *ConfirmExtend040) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *ConfirmExtend040) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicTypeLE[int64](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[int64](buf); err != nil {
 		return err
 	} else {
 		p.StopPx = val
 	}
-	if val, err := codec.GetBasicTypeLE[int64](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[int64](buf); err != nil {
 		return err
 	} else {
 		p.MinQty = val
 	}
-	if val, err := codec.GetBasicTypeLE[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint16](buf); err != nil {
 		return err
 	} else {
 		p.MaxPriceLevels = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.ReadFixedString(buf, 1); err != nil {
 		return err
 	} else {
 		p.TimeInForce = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.ReadFixedString(buf, 1); err != nil {
 		return err
 	} else {
 		p.CashMargin = val

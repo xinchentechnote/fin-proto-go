@@ -30,10 +30,10 @@ func (p *AllegeQuoteExtend070) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *AllegeQuoteExtend070) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.CashMargin, 1); err != nil {
+	if err := codec.WriteFixedString(buf, p.CashMargin, 1); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.CounterPartyPbuid, 6); err != nil {
+	if err := codec.WriteFixedString(buf, p.CounterPartyPbuid, 6); err != nil {
 		return err
 	}
 	return nil
@@ -41,12 +41,12 @@ func (p *AllegeQuoteExtend070) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *AllegeQuoteExtend070) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.ReadFixedString(buf, 1); err != nil {
 		return err
 	} else {
 		p.CashMargin = val
 	}
-	if val, err := codec.GetFixedString(buf, 6); err != nil {
+	if val, err := codec.ReadFixedString(buf, 6); err != nil {
 		return err
 	} else {
 		p.CounterPartyPbuid = val

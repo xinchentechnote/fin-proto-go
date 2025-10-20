@@ -36,28 +36,28 @@ func (p *TradeCaptureReportExtend031) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *TradeCaptureReportExtend031) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.MemberId, 6); err != nil {
+	if err := codec.WriteFixedString(buf, p.MemberId, 6); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.TraderCode, 5); err != nil {
+	if err := codec.WriteFixedString(buf, p.TraderCode, 5); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.CounterPartyMemberId, 6); err != nil {
+	if err := codec.WriteFixedString(buf, p.CounterPartyMemberId, 6); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.CounterPartyTraderCode, 5); err != nil {
+	if err := codec.WriteFixedString(buf, p.CounterPartyTraderCode, 5); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.SettlType, 1); err != nil {
+	if err := codec.WriteFixedString(buf, p.SettlType, 1); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.SettlPeriod, 1); err != nil {
+	if err := codec.WriteFixedString(buf, p.SettlPeriod, 1); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.CashMargin, 1); err != nil {
+	if err := codec.WriteFixedString(buf, p.CashMargin, 1); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.Memo, 120); err != nil {
+	if err := codec.WriteFixedString(buf, p.Memo, 120); err != nil {
 		return err
 	}
 	return nil
@@ -65,42 +65,42 @@ func (p *TradeCaptureReportExtend031) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *TradeCaptureReportExtend031) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 6); err != nil {
+	if val, err := codec.ReadFixedString(buf, 6); err != nil {
 		return err
 	} else {
 		p.MemberId = val
 	}
-	if val, err := codec.GetFixedString(buf, 5); err != nil {
+	if val, err := codec.ReadFixedString(buf, 5); err != nil {
 		return err
 	} else {
 		p.TraderCode = val
 	}
-	if val, err := codec.GetFixedString(buf, 6); err != nil {
+	if val, err := codec.ReadFixedString(buf, 6); err != nil {
 		return err
 	} else {
 		p.CounterPartyMemberId = val
 	}
-	if val, err := codec.GetFixedString(buf, 5); err != nil {
+	if val, err := codec.ReadFixedString(buf, 5); err != nil {
 		return err
 	} else {
 		p.CounterPartyTraderCode = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.ReadFixedString(buf, 1); err != nil {
 		return err
 	} else {
 		p.SettlType = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.ReadFixedString(buf, 1); err != nil {
 		return err
 	} else {
 		p.SettlPeriod = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.ReadFixedString(buf, 1); err != nil {
 		return err
 	} else {
 		p.CashMargin = val
 	}
-	if val, err := codec.GetFixedString(buf, 120); err != nil {
+	if val, err := codec.ReadFixedString(buf, 120); err != nil {
 		return err
 	} else {
 		p.Memo = val

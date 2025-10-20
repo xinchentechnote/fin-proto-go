@@ -30,10 +30,10 @@ func (p *Extend202802) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *Extend202802) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.LenderPbu, 6); err != nil {
+	if err := codec.WriteFixedString(buf, p.LenderPbu, 6); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.LenderAccountId, 12); err != nil {
+	if err := codec.WriteFixedString(buf, p.LenderAccountId, 12); err != nil {
 		return err
 	}
 	return nil
@@ -41,12 +41,12 @@ func (p *Extend202802) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *Extend202802) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 6); err != nil {
+	if val, err := codec.ReadFixedString(buf, 6); err != nil {
 		return err
 	} else {
 		p.LenderPbu = val
 	}
-	if val, err := codec.GetFixedString(buf, 12); err != nil {
+	if val, err := codec.ReadFixedString(buf, 12); err != nil {
 		return err
 	} else {
 		p.LenderAccountId = val

@@ -52,14 +52,14 @@ func (p *RcBinary) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *RcBinary) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicType(buf, p.MsgType); err != nil {
+	if err := codec.WriteBasicType(buf, p.MsgType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgType", err)
 	}
-	if err := codec.PutBasicType(buf, p.Version); err != nil {
+	if err := codec.WriteBasicType(buf, p.Version); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "Version", err)
 	}
 	bodyPos := buf.Len()
-	if err := codec.PutBasicType(buf, uint32(0)); err != nil {
+	if err := codec.WriteBasicType(buf, uint32(0)); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MsgBodyLen", err)
 	}
 	bodyStart := buf.Len()
@@ -76,17 +76,17 @@ func (p *RcBinary) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *RcBinary) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.MsgType = val
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.Version = val
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.MsgBodyLen = val

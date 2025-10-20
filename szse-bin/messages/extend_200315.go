@@ -29,7 +29,7 @@ func (p *Extend200315) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *Extend200315) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicType(buf, p.MaturityDate); err != nil {
+	if err := codec.WriteBasicType(buf, p.MaturityDate); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MaturityDate", err)
 	}
 	return nil
@@ -37,7 +37,7 @@ func (p *Extend200315) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *Extend200315) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.MaturityDate = val

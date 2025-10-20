@@ -33,10 +33,10 @@ func (p *ReportPartitionSync) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *ReportPartitionSync) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicTypeLE(buf, p.PartitionNo); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.PartitionNo); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "PartitionNo", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.ReportIndex); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.ReportIndex); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "ReportIndex", err)
 	}
 	return nil
@@ -44,12 +44,12 @@ func (p *ReportPartitionSync) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *ReportPartitionSync) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicTypeLE[int32](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[int32](buf); err != nil {
 		return err
 	} else {
 		p.PartitionNo = val
 	}
-	if val, err := codec.GetBasicTypeLE[int64](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[int64](buf); err != nil {
 		return err
 	} else {
 		p.ReportIndex = val
@@ -75,7 +75,7 @@ func (p *ReportSynchronization) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *ReportSynchronization) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutObjectListLE[uint16](buf, p.ReportPartitionSync); err != nil {
+	if err := codec.WriteObjectListLE[uint16](buf, p.ReportPartitionSync); err != nil {
 		return err
 	}
 	return nil
@@ -83,7 +83,7 @@ func (p *ReportSynchronization) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *ReportSynchronization) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetObjectListLE[uint16](buf, func() *ReportPartitionSync { return &ReportPartitionSync{} }); err != nil {
+	if val, err := codec.ReadObjectListLE[uint16](buf, func() *ReportPartitionSync { return &ReportPartitionSync{} }); err != nil {
 		return err
 	} else {
 		p.ReportPartitionSync = val

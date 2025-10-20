@@ -34,22 +34,22 @@ func (p *TradingSessionStatus) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *TradingSessionStatus) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.MarketId, 3); err != nil {
+	if err := codec.WriteFixedString(buf, p.MarketId, 3); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.MarketSegmentId, 3); err != nil {
+	if err := codec.WriteFixedString(buf, p.MarketSegmentId, 3); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.TradingSessionId, 3); err != nil {
+	if err := codec.WriteFixedString(buf, p.TradingSessionId, 3); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.TradingSessionSubId, 3); err != nil {
+	if err := codec.WriteFixedString(buf, p.TradingSessionSubId, 3); err != nil {
 		return err
 	}
-	if err := codec.PutBasicTypeLE(buf, p.TradSesStatus); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.TradSesStatus); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "TradSesStatus", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.TradSesStartTime); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.TradSesStartTime); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "TradSesStartTime", err)
 	}
 	return nil
@@ -57,32 +57,32 @@ func (p *TradingSessionStatus) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *TradingSessionStatus) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 3); err != nil {
+	if val, err := codec.ReadFixedString(buf, 3); err != nil {
 		return err
 	} else {
 		p.MarketId = val
 	}
-	if val, err := codec.GetFixedString(buf, 3); err != nil {
+	if val, err := codec.ReadFixedString(buf, 3); err != nil {
 		return err
 	} else {
 		p.MarketSegmentId = val
 	}
-	if val, err := codec.GetFixedString(buf, 3); err != nil {
+	if val, err := codec.ReadFixedString(buf, 3); err != nil {
 		return err
 	} else {
 		p.TradingSessionId = val
 	}
-	if val, err := codec.GetFixedString(buf, 3); err != nil {
+	if val, err := codec.ReadFixedString(buf, 3); err != nil {
 		return err
 	} else {
 		p.TradingSessionSubId = val
 	}
-	if val, err := codec.GetBasicTypeLE[uint8](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint8](buf); err != nil {
 		return err
 	} else {
 		p.TradSesStatus = val
 	}
-	if val, err := codec.GetBasicTypeLE[int64](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[int64](buf); err != nil {
 		return err
 	} else {
 		p.TradSesStartTime = val

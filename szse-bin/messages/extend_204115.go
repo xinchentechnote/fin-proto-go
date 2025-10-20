@@ -36,28 +36,28 @@ func (p *Extend204115) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *Extend204115) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.CashMargin, 1); err != nil {
+	if err := codec.WriteFixedString(buf, p.CashMargin, 1); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.SettlType); err != nil {
+	if err := codec.WriteBasicType(buf, p.SettlType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "SettlType", err)
 	}
-	if err := codec.PutBasicType(buf, p.SettlPeriod); err != nil {
+	if err := codec.WriteBasicType(buf, p.SettlPeriod); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "SettlPeriod", err)
 	}
-	if err := codec.PutFixedString(buf, p.CounterpartyMemberId, 6); err != nil {
+	if err := codec.WriteFixedString(buf, p.CounterpartyMemberId, 6); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.CounterpartyInvestorType, 2); err != nil {
+	if err := codec.WriteFixedString(buf, p.CounterpartyInvestorType, 2); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.CounterpartyInvestorId, 10); err != nil {
+	if err := codec.WriteFixedString(buf, p.CounterpartyInvestorId, 10); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.CounterpartyInvestorName, 120); err != nil {
+	if err := codec.WriteFixedString(buf, p.CounterpartyInvestorName, 120); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.CounterpartyTraderCode, 8); err != nil {
+	if err := codec.WriteFixedString(buf, p.CounterpartyTraderCode, 8); err != nil {
 		return err
 	}
 	return nil
@@ -65,42 +65,42 @@ func (p *Extend204115) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *Extend204115) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.ReadFixedString(buf, 1); err != nil {
 		return err
 	} else {
 		p.CashMargin = val
 	}
-	if val, err := codec.GetBasicType[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint16](buf); err != nil {
 		return err
 	} else {
 		p.SettlType = val
 	}
-	if val, err := codec.GetBasicType[uint8](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint8](buf); err != nil {
 		return err
 	} else {
 		p.SettlPeriod = val
 	}
-	if val, err := codec.GetFixedString(buf, 6); err != nil {
+	if val, err := codec.ReadFixedString(buf, 6); err != nil {
 		return err
 	} else {
 		p.CounterpartyMemberId = val
 	}
-	if val, err := codec.GetFixedString(buf, 2); err != nil {
+	if val, err := codec.ReadFixedString(buf, 2); err != nil {
 		return err
 	} else {
 		p.CounterpartyInvestorType = val
 	}
-	if val, err := codec.GetFixedString(buf, 10); err != nil {
+	if val, err := codec.ReadFixedString(buf, 10); err != nil {
 		return err
 	} else {
 		p.CounterpartyInvestorId = val
 	}
-	if val, err := codec.GetFixedString(buf, 120); err != nil {
+	if val, err := codec.ReadFixedString(buf, 120); err != nil {
 		return err
 	} else {
 		p.CounterpartyInvestorName = val
 	}
-	if val, err := codec.GetFixedString(buf, 8); err != nil {
+	if val, err := codec.ReadFixedString(buf, 8); err != nil {
 		return err
 	} else {
 		p.CounterpartyTraderCode = val

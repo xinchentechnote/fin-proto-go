@@ -38,34 +38,34 @@ func (p *BusinessReject) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *BusinessReject) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.ApplId, 3); err != nil {
+	if err := codec.WriteFixedString(buf, p.ApplId, 3); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.TransactTime); err != nil {
+	if err := codec.WriteBasicType(buf, p.TransactTime); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "TransactTime", err)
 	}
-	if err := codec.PutFixedString(buf, p.SubmittingPbuid, 6); err != nil {
+	if err := codec.WriteFixedString(buf, p.SubmittingPbuid, 6); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.SecurityId, 8); err != nil {
+	if err := codec.WriteFixedString(buf, p.SecurityId, 8); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.SecurityIdsource, 4); err != nil {
+	if err := codec.WriteFixedString(buf, p.SecurityIdsource, 4); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.RefSeqNum); err != nil {
+	if err := codec.WriteBasicType(buf, p.RefSeqNum); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "RefSeqNum", err)
 	}
-	if err := codec.PutBasicType(buf, p.RefMsgType); err != nil {
+	if err := codec.WriteBasicType(buf, p.RefMsgType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "RefMsgType", err)
 	}
-	if err := codec.PutFixedString(buf, p.BusinessRejectRefId, 10); err != nil {
+	if err := codec.WriteFixedString(buf, p.BusinessRejectRefId, 10); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.BusinessRejectReason); err != nil {
+	if err := codec.WriteBasicType(buf, p.BusinessRejectReason); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "BusinessRejectReason", err)
 	}
-	if err := codec.PutFixedString(buf, p.BusinessRejectText, 50); err != nil {
+	if err := codec.WriteFixedString(buf, p.BusinessRejectText, 50); err != nil {
 		return err
 	}
 	return nil
@@ -73,52 +73,52 @@ func (p *BusinessReject) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *BusinessReject) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 3); err != nil {
+	if val, err := codec.ReadFixedString(buf, 3); err != nil {
 		return err
 	} else {
 		p.ApplId = val
 	}
-	if val, err := codec.GetBasicType[int64](buf); err != nil {
+	if val, err := codec.ReadBasicType[int64](buf); err != nil {
 		return err
 	} else {
 		p.TransactTime = val
 	}
-	if val, err := codec.GetFixedString(buf, 6); err != nil {
+	if val, err := codec.ReadFixedString(buf, 6); err != nil {
 		return err
 	} else {
 		p.SubmittingPbuid = val
 	}
-	if val, err := codec.GetFixedString(buf, 8); err != nil {
+	if val, err := codec.ReadFixedString(buf, 8); err != nil {
 		return err
 	} else {
 		p.SecurityId = val
 	}
-	if val, err := codec.GetFixedString(buf, 4); err != nil {
+	if val, err := codec.ReadFixedString(buf, 4); err != nil {
 		return err
 	} else {
 		p.SecurityIdsource = val
 	}
-	if val, err := codec.GetBasicType[int64](buf); err != nil {
+	if val, err := codec.ReadBasicType[int64](buf); err != nil {
 		return err
 	} else {
 		p.RefSeqNum = val
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.RefMsgType = val
 	}
-	if val, err := codec.GetFixedString(buf, 10); err != nil {
+	if val, err := codec.ReadFixedString(buf, 10); err != nil {
 		return err
 	} else {
 		p.BusinessRejectRefId = val
 	}
-	if val, err := codec.GetBasicType[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint16](buf); err != nil {
 		return err
 	} else {
 		p.BusinessRejectReason = val
 	}
-	if val, err := codec.GetFixedString(buf, 50); err != nil {
+	if val, err := codec.ReadFixedString(buf, 50); err != nil {
 		return err
 	} else {
 		p.BusinessRejectText = val

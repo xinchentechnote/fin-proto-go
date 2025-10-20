@@ -30,10 +30,10 @@ func (p *Logout) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *Logout) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicType(buf, p.SessionStatus); err != nil {
+	if err := codec.WriteBasicType(buf, p.SessionStatus); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "SessionStatus", err)
 	}
-	if err := codec.PutFixedString(buf, p.Text, 200); err != nil {
+	if err := codec.WriteFixedString(buf, p.Text, 200); err != nil {
 		return err
 	}
 	return nil
@@ -41,12 +41,12 @@ func (p *Logout) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *Logout) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicType[int32](buf); err != nil {
+	if val, err := codec.ReadBasicType[int32](buf); err != nil {
 		return err
 	} else {
 		p.SessionStatus = val
 	}
-	if val, err := codec.GetFixedString(buf, 200); err != nil {
+	if val, err := codec.ReadFixedString(buf, 200); err != nil {
 		return err
 	} else {
 		p.Text = val

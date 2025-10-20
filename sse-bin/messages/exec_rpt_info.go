@@ -31,13 +31,13 @@ func (p *ExecRptInfo) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *ExecRptInfo) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicType(buf, p.PlatformId); err != nil {
+	if err := codec.WriteBasicType(buf, p.PlatformId); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "PlatformID", err)
 	}
-	if err := codec.PutFixedStringList[uint16](buf, p.Pbu, 8); err != nil {
+	if err := codec.WriteFixedStringList[uint16](buf, p.Pbu, 8); err != nil {
 		return err
 	}
-	if err := codec.PutBasicTypeList[uint16](buf, p.SetId); err != nil {
+	if err := codec.WriteBasicTypeList[uint16](buf, p.SetId); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "SetID", err)
 	}
 	return nil
@@ -45,17 +45,17 @@ func (p *ExecRptInfo) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *ExecRptInfo) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicType[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint16](buf); err != nil {
 		return err
 	} else {
 		p.PlatformId = val
 	}
-	if val, err := codec.GetFixedStringList[uint16](buf, 8); err != nil {
+	if val, err := codec.ReadFixedStringList[uint16](buf, 8); err != nil {
 		return err
 	} else {
 		p.Pbu = val
 	}
-	if val, err := codec.GetBasicTypeList[uint16, uint32](buf); err != nil {
+	if val, err := codec.ReadBasicTypeList[uint16, uint32](buf); err != nil {
 		return err
 	} else {
 		p.SetId = val

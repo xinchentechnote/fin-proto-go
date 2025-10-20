@@ -29,7 +29,7 @@ func (p *Extend204702) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *Extend204702) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.SecondaryOrderId, 16); err != nil {
+	if err := codec.WriteFixedString(buf, p.SecondaryOrderId, 16); err != nil {
 		return err
 	}
 	return nil
@@ -37,7 +37,7 @@ func (p *Extend204702) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *Extend204702) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 16); err != nil {
+	if val, err := codec.ReadFixedString(buf, 16); err != nil {
 		return err
 	} else {
 		p.SecondaryOrderId = val

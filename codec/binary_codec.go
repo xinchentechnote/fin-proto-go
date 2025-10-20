@@ -20,53 +20,53 @@ type BasicType interface {
 		~float32 | ~float64
 }
 
-func PutBasicType[T BasicType](buf *bytes.Buffer, v T) error {
+func WriteBasicType[T BasicType](buf *bytes.Buffer, v T) error {
 	return binary.Write(buf, binary.BigEndian, &v)
 }
 
-func PutBasicTypeLE[T BasicType](buf *bytes.Buffer, v T) error {
+func WriteBasicTypeLE[T BasicType](buf *bytes.Buffer, v T) error {
 	return binary.Write(buf, binary.LittleEndian, &v)
 }
 
-// GetBasicType reads a basic type value from the buffer using the specified byte order.
-func GetBasicType[T BasicType](buf *bytes.Buffer) (T, error) {
+// ReadBasicType reads a basic type value from the buffer using the specified byte order.
+func ReadBasicType[T BasicType](buf *bytes.Buffer) (T, error) {
 	var v T
 	err := binary.Read(buf, binary.BigEndian, &v)
 	return v, err
 }
 
-func GetBasicTypeLE[T BasicType](buf *bytes.Buffer) (T, error) {
+func ReadBasicTypeLE[T BasicType](buf *bytes.Buffer) (T, error) {
 	var v T
 	err := binary.Read(buf, binary.LittleEndian, &v)
 	return v, err
 }
 
-func PutBasicTypeList[T constraints.Unsigned, K BasicType](buf *bytes.Buffer, values []K) error {
+func WriteBasicTypeList[T constraints.Unsigned, K BasicType](buf *bytes.Buffer, values []K) error {
 	if err := binary.Write(buf, binary.BigEndian, T(len(values))); err != nil {
 		return err
 	}
 	for _, s := range values {
-		if err := PutBasicType(buf, s); err != nil {
+		if err := WriteBasicType(buf, s); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func PutBasicTypeListLE[T constraints.Unsigned, K BasicType](buf *bytes.Buffer, values []K) error {
+func WriteBasicTypeListLE[T constraints.Unsigned, K BasicType](buf *bytes.Buffer, values []K) error {
 	if err := binary.Write(buf, binary.LittleEndian, T(len(values))); err != nil {
 		return err
 	}
 	for _, s := range values {
-		if err := PutBasicType(buf, s); err != nil {
+		if err := WriteBasicType(buf, s); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-// GetBasicType reads a basic type value from the buffer using the specified byte order.
-func GetBasicTypeList[T constraints.Unsigned, K BasicType](buf *bytes.Buffer) ([]K, error) {
+// ReadBasicType reads a basic type value from the buffer using the specified byte order.
+func ReadBasicTypeList[T constraints.Unsigned, K BasicType](buf *bytes.Buffer) ([]K, error) {
 	var t T
 	if err := binary.Read(buf, binary.BigEndian, &t); err != nil {
 		return nil, err
@@ -76,7 +76,7 @@ func GetBasicTypeList[T constraints.Unsigned, K BasicType](buf *bytes.Buffer) ([
 	result := make([]K, 0, count)
 	var err error
 	for i := 0; i < count; i++ {
-		v, e := GetBasicType[K](buf)
+		v, e := ReadBasicType[K](buf)
 		if e != nil {
 			return nil, e
 		}
@@ -85,7 +85,7 @@ func GetBasicTypeList[T constraints.Unsigned, K BasicType](buf *bytes.Buffer) ([
 	return result, err
 }
 
-func GetBasicTypeListLE[T constraints.Unsigned, K BasicType](buf *bytes.Buffer) ([]K, error) {
+func ReadBasicTypeListLE[T constraints.Unsigned, K BasicType](buf *bytes.Buffer) ([]K, error) {
 	var t T
 	if err := binary.Read(buf, binary.LittleEndian, &t); err != nil {
 		return nil, err
@@ -95,7 +95,7 @@ func GetBasicTypeListLE[T constraints.Unsigned, K BasicType](buf *bytes.Buffer) 
 	result := make([]K, 0, count)
 	var err error
 	for i := 0; i < count; i++ {
-		v, e := GetBasicType[K](buf)
+		v, e := ReadBasicType[K](buf)
 		if e != nil {
 			return nil, e
 		}
@@ -108,7 +108,7 @@ func GetBasicTypeListLE[T constraints.Unsigned, K BasicType](buf *bytes.Buffer) 
 // String Functions
 // ----------------------------
 
-func PutString[T constraints.Unsigned](buf *bytes.Buffer, s string) error {
+func WriteString[T constraints.Unsigned](buf *bytes.Buffer, s string) error {
 	if err := binary.Write(buf, binary.BigEndian, T(len(s))); err != nil {
 		return err
 	}
@@ -118,7 +118,7 @@ func PutString[T constraints.Unsigned](buf *bytes.Buffer, s string) error {
 	return nil
 }
 
-func PutStringLE[T constraints.Unsigned](buf *bytes.Buffer, s string) error {
+func WriteStringLE[T constraints.Unsigned](buf *bytes.Buffer, s string) error {
 	if err := binary.Write(buf, binary.LittleEndian, T(len(s))); err != nil {
 		return err
 	}
@@ -128,7 +128,7 @@ func PutStringLE[T constraints.Unsigned](buf *bytes.Buffer, s string) error {
 	return nil
 }
 
-func GetString[T constraints.Unsigned](buf *bytes.Buffer) (string, error) {
+func ReadString[T constraints.Unsigned](buf *bytes.Buffer) (string, error) {
 	var t T
 	if err := binary.Read(buf, binary.BigEndian, &t); err != nil {
 		return "", err
@@ -140,7 +140,7 @@ func GetString[T constraints.Unsigned](buf *bytes.Buffer) (string, error) {
 	return string(strBytes), err
 }
 
-func GetStringLE[T constraints.Unsigned](buf *bytes.Buffer) (string, error) {
+func ReadStringLE[T constraints.Unsigned](buf *bytes.Buffer) (string, error) {
 	var t T
 	if err := binary.Read(buf, binary.LittleEndian, &t); err != nil {
 		return "", err
@@ -152,11 +152,11 @@ func GetStringLE[T constraints.Unsigned](buf *bytes.Buffer) (string, error) {
 	return string(strBytes), err
 }
 
-func PutFixedString(buf *bytes.Buffer, s string, fixedLen int) error {
-	return PutFixedStringWithPadding(buf, s, fixedLen, ' ', false)
+func WriteFixedString(buf *bytes.Buffer, s string, fixedLen int) error {
+	return WriteFixedStringWithPadding(buf, s, fixedLen, ' ', false)
 }
 
-func PutFixedStringWithPadding(buf *bytes.Buffer, s string, fixedLen int, padding rune, fromLeft bool) error {
+func WriteFixedStringWithPadding(buf *bytes.Buffer, s string, fixedLen int, padding rune, fromLeft bool) error {
 	data := []byte(s)
 	if len(data) > fixedLen {
 		if _, err := buf.Write(data[:fixedLen]); err != nil {
@@ -188,18 +188,18 @@ func Padding(buf *bytes.Buffer, paddedLen int, padding rune) error {
 	return nil
 }
 
-func PutFixedStringList[T constraints.Unsigned](buf *bytes.Buffer, values []string, fixedLen int) error {
-	return PutFixedStringListWithPadding[T](buf, values, fixedLen, ' ', false)
+func WriteFixedStringList[T constraints.Unsigned](buf *bytes.Buffer, values []string, fixedLen int) error {
+	return WriteFixedStringListWithPadding[T](buf, values, fixedLen, ' ', false)
 }
 
-func PutFixedStringListWithPadding[T constraints.Unsigned](buf *bytes.Buffer, values []string, fixedLen int, padding rune, fromLeft bool) error {
+func WriteFixedStringListWithPadding[T constraints.Unsigned](buf *bytes.Buffer, values []string, fixedLen int, padding rune, fromLeft bool) error {
 	if err := binary.Write(buf, binary.BigEndian, T(len(values))); err != nil {
 		return err
 	}
 
 	// Write each string with its own length prefix
 	for _, s := range values {
-		err := PutFixedStringWithPadding(buf, s, fixedLen, padding, fromLeft)
+		err := WriteFixedStringWithPadding(buf, s, fixedLen, padding, fromLeft)
 		if err != nil {
 			return nil
 		}
@@ -207,17 +207,17 @@ func PutFixedStringListWithPadding[T constraints.Unsigned](buf *bytes.Buffer, va
 	return nil
 }
 
-func PutFixedStringListLE[T constraints.Unsigned](buf *bytes.Buffer, values []string, fixedLen int) error {
-	return PutFixedStringListWithPaddingLE[T](buf, values, fixedLen, ' ', false)
+func WriteFixedStringListLE[T constraints.Unsigned](buf *bytes.Buffer, values []string, fixedLen int) error {
+	return WriteFixedStringListWithPaddingLE[T](buf, values, fixedLen, ' ', false)
 }
-func PutFixedStringListWithPaddingLE[T constraints.Unsigned](buf *bytes.Buffer, values []string, fixedLen int, padding rune, fromLeft bool) error {
+func WriteFixedStringListWithPaddingLE[T constraints.Unsigned](buf *bytes.Buffer, values []string, fixedLen int, padding rune, fromLeft bool) error {
 	if err := binary.Write(buf, binary.LittleEndian, T(len(values))); err != nil {
 		return err
 	}
 
 	// Write each string with its own length prefix
 	for _, s := range values {
-		err := PutFixedStringWithPadding(buf, s, fixedLen, padding, fromLeft)
+		err := WriteFixedStringWithPadding(buf, s, fixedLen, padding, fromLeft)
 		if err != nil {
 			return nil
 		}
@@ -225,10 +225,10 @@ func PutFixedStringListWithPaddingLE[T constraints.Unsigned](buf *bytes.Buffer, 
 	return nil
 }
 
-func GetFixedString(buf *bytes.Buffer, fixedLen int) (string, error) {
-	return GetFixedStringTrimPadding(buf, fixedLen, ' ', false)
+func ReadFixedString(buf *bytes.Buffer, fixedLen int) (string, error) {
+	return ReadFixedStringTrimPadding(buf, fixedLen, ' ', false)
 }
-func GetFixedStringTrimPadding(buf *bytes.Buffer, fixedLen int, padding rune, fromLeft bool) (string, error) {
+func ReadFixedStringTrimPadding(buf *bytes.Buffer, fixedLen int, padding rune, fromLeft bool) (string, error) {
 	strBytes := make([]byte, fixedLen)
 	_, err := io.ReadFull(buf, strBytes)
 	if fromLeft {
@@ -237,10 +237,10 @@ func GetFixedStringTrimPadding(buf *bytes.Buffer, fixedLen int, padding rune, fr
 	return string(bytes.TrimRight(strBytes, string(padding))), err
 }
 
-func GetFixedStringList[T constraints.Unsigned](buf *bytes.Buffer, fixedLen int) ([]string, error) {
-	return GetFixedStringListTrimPadding[T](buf, fixedLen, ' ', false)
+func ReadFixedStringList[T constraints.Unsigned](buf *bytes.Buffer, fixedLen int) ([]string, error) {
+	return ReadFixedStringListTrimPadding[T](buf, fixedLen, ' ', false)
 }
-func GetFixedStringListTrimPadding[T constraints.Unsigned](buf *bytes.Buffer, fixedLen int, padding rune, fromLeft bool) ([]string, error) {
+func ReadFixedStringListTrimPadding[T constraints.Unsigned](buf *bytes.Buffer, fixedLen int, padding rune, fromLeft bool) ([]string, error) {
 	var t T
 	if err := binary.Read(buf, binary.BigEndian, &t); err != nil {
 		return nil, err
@@ -250,7 +250,7 @@ func GetFixedStringListTrimPadding[T constraints.Unsigned](buf *bytes.Buffer, fi
 	result := make([]string, 0, count)
 	var err error
 	for i := 0; i < count; i++ {
-		str, e := GetFixedStringTrimPadding(buf, fixedLen, padding, fromLeft)
+		str, e := ReadFixedStringTrimPadding(buf, fixedLen, padding, fromLeft)
 		if e != nil {
 			return nil, e
 		}
@@ -259,11 +259,11 @@ func GetFixedStringListTrimPadding[T constraints.Unsigned](buf *bytes.Buffer, fi
 	return result, err
 }
 
-func GetFixedStringListLE[T constraints.Unsigned](buf *bytes.Buffer, fixedLen int) ([]string, error) {
-	return GetFixedStringListTrimPaddingLE[T](buf, fixedLen, ' ', false)
+func ReadFixedStringListLE[T constraints.Unsigned](buf *bytes.Buffer, fixedLen int) ([]string, error) {
+	return ReadFixedStringListTrimPaddingLE[T](buf, fixedLen, ' ', false)
 }
 
-func GetFixedStringListTrimPaddingLE[T constraints.Unsigned](buf *bytes.Buffer, fixedLen int, padding rune, fromLeft bool) ([]string, error) {
+func ReadFixedStringListTrimPaddingLE[T constraints.Unsigned](buf *bytes.Buffer, fixedLen int, padding rune, fromLeft bool) ([]string, error) {
 	var t T
 	if err := binary.Read(buf, binary.LittleEndian, &t); err != nil {
 		return nil, err
@@ -273,7 +273,7 @@ func GetFixedStringListTrimPaddingLE[T constraints.Unsigned](buf *bytes.Buffer, 
 	result := make([]string, 0, count)
 	var err error
 	for i := 0; i < count; i++ {
-		str, e := GetFixedStringTrimPadding(buf, fixedLen, padding, fromLeft)
+		str, e := ReadFixedStringTrimPadding(buf, fixedLen, padding, fromLeft)
 		if e != nil {
 			return nil, e
 		}
@@ -282,10 +282,10 @@ func GetFixedStringListTrimPaddingLE[T constraints.Unsigned](buf *bytes.Buffer, 
 	return result, err
 }
 
-// PutStringListLE encodes a list of strings into the buffer using little-endian format.
+// WriteStringListLE encodes a list of strings into the buffer using little-endian format.
 // T: type used for the list length prefix (e.g., uint8, uint16, uint32)
 // K: type used for each string's length prefix (e.g., uint8, uint16, uint32)
-func PutStringListLE[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.Buffer, values []string) error {
+func WriteStringListLE[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.Buffer, values []string) error {
 	// Write the list length prefix
 	if err := binary.Write(buf, binary.LittleEndian, T(len(values))); err != nil {
 		return err
@@ -301,7 +301,7 @@ func PutStringListLE[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.
 	return nil
 }
 
-func PutStringList[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.Buffer, values []string) error {
+func WriteStringList[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.Buffer, values []string) error {
 	// Write the list length prefix
 	if err := binary.Write(buf, binary.BigEndian, T(len(values))); err != nil {
 		return err
@@ -317,10 +317,10 @@ func PutStringList[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.Bu
 	return nil
 }
 
-// GetStringListLE decodes a list of strings from a buffer using little-endian encoding.
+// ReadStringListLE decodes a list of strings from a buffer using little-endian encoding.
 // T: type used for the list length prefix (e.g., uint8, uint16, uint32)
 // K: type used for each string's length prefix (e.g., uint8, uint16, uint32)
-func GetStringListLE[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.Buffer) ([]string, error) {
+func ReadStringListLE[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.Buffer) ([]string, error) {
 	var t T
 	if err := binary.Read(buf, binary.LittleEndian, &t); err != nil {
 		return nil, err
@@ -346,7 +346,7 @@ func GetStringListLE[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.
 	return result, nil
 }
 
-func GetStringList[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.Buffer) ([]string, error) {
+func ReadStringList[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.Buffer) ([]string, error) {
 	var t T
 	if err := binary.Read(buf, binary.BigEndian, &t); err != nil {
 		return nil, err
@@ -373,7 +373,7 @@ func GetStringList[T constraints.Unsigned, K constraints.Unsigned](buf *bytes.Bu
 }
 
 // Object
-func PutObjectList[T constraints.Unsigned, K BinaryCodec](buf *bytes.Buffer, values []K) error {
+func WriteObjectList[T constraints.Unsigned, K BinaryCodec](buf *bytes.Buffer, values []K) error {
 	// Write the list length prefix
 	if err := binary.Write(buf, binary.BigEndian, T(len(values))); err != nil {
 		return err
@@ -388,7 +388,7 @@ func PutObjectList[T constraints.Unsigned, K BinaryCodec](buf *bytes.Buffer, val
 	return nil
 }
 
-func GetObjectList[T constraints.Unsigned, K BinaryCodec](buf *bytes.Buffer, newFn func() K) ([]K, error) {
+func ReadObjectList[T constraints.Unsigned, K BinaryCodec](buf *bytes.Buffer, newFn func() K) ([]K, error) {
 	var t T
 	if err := binary.Read(buf, binary.BigEndian, &t); err != nil {
 		return nil, err
@@ -407,7 +407,7 @@ func GetObjectList[T constraints.Unsigned, K BinaryCodec](buf *bytes.Buffer, new
 }
 
 // Object
-func PutObjectListLE[T constraints.Unsigned, K BinaryCodec](buf *bytes.Buffer, values []K) error {
+func WriteObjectListLE[T constraints.Unsigned, K BinaryCodec](buf *bytes.Buffer, values []K) error {
 	// Write the list length prefix
 	if err := binary.Write(buf, binary.BigEndian, T(len(values))); err != nil {
 		return err
@@ -422,7 +422,7 @@ func PutObjectListLE[T constraints.Unsigned, K BinaryCodec](buf *bytes.Buffer, v
 	return nil
 }
 
-func GetObjectListLE[T constraints.Unsigned, K BinaryCodec](buf *bytes.Buffer, newFn func() K) ([]K, error) {
+func ReadObjectListLE[T constraints.Unsigned, K BinaryCodec](buf *bytes.Buffer, newFn func() K) ([]K, error) {
 	var t T
 	if err := binary.Read(buf, binary.BigEndian, &t); err != nil {
 		return nil, err

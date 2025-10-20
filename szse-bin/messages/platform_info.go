@@ -30,10 +30,10 @@ func (p *PlatformInfo) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *PlatformInfo) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicType(buf, p.PlatformId); err != nil {
+	if err := codec.WriteBasicType(buf, p.PlatformId); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "PlatformID", err)
 	}
-	if err := codec.PutObjectList[uint32](buf, p.PlatformPartition); err != nil {
+	if err := codec.WriteObjectList[uint32](buf, p.PlatformPartition); err != nil {
 		return err
 	}
 	return nil
@@ -41,12 +41,12 @@ func (p *PlatformInfo) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *PlatformInfo) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicType[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint16](buf); err != nil {
 		return err
 	} else {
 		p.PlatformId = val
 	}
-	if val, err := codec.GetObjectList[uint32](buf, func() *PlatformPartition { return &PlatformPartition{} }); err != nil {
+	if val, err := codec.ReadObjectList[uint32](buf, func() *PlatformPartition { return &PlatformPartition{} }); err != nil {
 		return err
 	} else {
 		p.PlatformPartition = val

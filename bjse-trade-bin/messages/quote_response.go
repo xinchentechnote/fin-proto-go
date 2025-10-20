@@ -48,13 +48,13 @@ func (p *Quote2) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *Quote2) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.QuoteId, 10); err != nil {
+	if err := codec.WriteFixedString(buf, p.QuoteId, 10); err != nil {
 		return err
 	}
-	if err := codec.PutBasicTypeLE(buf, p.QuotePrice); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.QuotePrice); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "QuotePrice", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.QuoteQty); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.QuoteQty); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "QuoteQty", err)
 	}
 	return nil
@@ -62,17 +62,17 @@ func (p *Quote2) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *Quote2) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 10); err != nil {
+	if val, err := codec.ReadFixedString(buf, 10); err != nil {
 		return err
 	} else {
 		p.QuoteId = val
 	}
-	if val, err := codec.GetBasicTypeLE[int64](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[int64](buf); err != nil {
 		return err
 	} else {
 		p.QuotePrice = val
 	}
-	if val, err := codec.GetBasicTypeLE[int64](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[int64](buf); err != nil {
 		return err
 	} else {
 		p.QuoteQty = val
@@ -117,61 +117,61 @@ func (p *QuoteResponse) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *QuoteResponse) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.ApplId, 3); err != nil {
+	if err := codec.WriteFixedString(buf, p.ApplId, 3); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.ReportingPbuid, 6); err != nil {
+	if err := codec.WriteFixedString(buf, p.ReportingPbuid, 6); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.SubmittingPbuid, 6); err != nil {
+	if err := codec.WriteFixedString(buf, p.SubmittingPbuid, 6); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.SecurityId, 8); err != nil {
+	if err := codec.WriteFixedString(buf, p.SecurityId, 8); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.SecurityIdsource, 4); err != nil {
+	if err := codec.WriteFixedString(buf, p.SecurityIdsource, 4); err != nil {
 		return err
 	}
-	if err := codec.PutBasicTypeLE(buf, p.OwnerType); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.OwnerType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "OwnerType", err)
 	}
-	if err := codec.PutFixedString(buf, p.ClearingFirm, 2); err != nil {
+	if err := codec.WriteFixedString(buf, p.ClearingFirm, 2); err != nil {
 		return err
 	}
-	if err := codec.PutBasicTypeLE(buf, p.TransactTime); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.TransactTime); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "TransactTime", err)
 	}
-	if err := codec.PutFixedString(buf, p.UserInfo, 32); err != nil {
+	if err := codec.WriteFixedString(buf, p.UserInfo, 32); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.ClOrdId, 10); err != nil {
+	if err := codec.WriteFixedString(buf, p.ClOrdId, 10); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.AccountId, 10); err != nil {
+	if err := codec.WriteFixedString(buf, p.AccountId, 10); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.BranchId, 2); err != nil {
+	if err := codec.WriteFixedString(buf, p.BranchId, 2); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.QuoteRespId, 10); err != nil {
+	if err := codec.WriteFixedString(buf, p.QuoteRespId, 10); err != nil {
 		return err
 	}
-	if err := codec.PutBasicTypeLE(buf, p.QuoteRespType); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.QuoteRespType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "QuoteRespType", err)
 	}
-	if err := codec.PutFixedString(buf, p.Side, 1); err != nil {
+	if err := codec.WriteFixedString(buf, p.Side, 1); err != nil {
 		return err
 	}
-	if err := codec.PutBasicTypeLE(buf, p.ValidUntilTime); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.ValidUntilTime); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "ValidUntilTime", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.QuoteType); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.QuoteType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "QuoteType", err)
 	}
-	if err := codec.PutBasicTypeLE(buf, p.PriceType); err != nil {
+	if err := codec.WriteBasicTypeLE(buf, p.PriceType); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "PriceType", err)
 	}
-	if err := codec.PutObjectListLE[uint16](buf, p.Quote2); err != nil {
+	if err := codec.WriteObjectListLE[uint16](buf, p.Quote2); err != nil {
 		return err
 	}
 	if p.ApplExtend == nil {
@@ -189,97 +189,97 @@ func (p *QuoteResponse) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *QuoteResponse) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 3); err != nil {
+	if val, err := codec.ReadFixedString(buf, 3); err != nil {
 		return err
 	} else {
 		p.ApplId = val
 	}
-	if val, err := codec.GetFixedString(buf, 6); err != nil {
+	if val, err := codec.ReadFixedString(buf, 6); err != nil {
 		return err
 	} else {
 		p.ReportingPbuid = val
 	}
-	if val, err := codec.GetFixedString(buf, 6); err != nil {
+	if val, err := codec.ReadFixedString(buf, 6); err != nil {
 		return err
 	} else {
 		p.SubmittingPbuid = val
 	}
-	if val, err := codec.GetFixedString(buf, 8); err != nil {
+	if val, err := codec.ReadFixedString(buf, 8); err != nil {
 		return err
 	} else {
 		p.SecurityId = val
 	}
-	if val, err := codec.GetFixedString(buf, 4); err != nil {
+	if val, err := codec.ReadFixedString(buf, 4); err != nil {
 		return err
 	} else {
 		p.SecurityIdsource = val
 	}
-	if val, err := codec.GetBasicTypeLE[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint16](buf); err != nil {
 		return err
 	} else {
 		p.OwnerType = val
 	}
-	if val, err := codec.GetFixedString(buf, 2); err != nil {
+	if val, err := codec.ReadFixedString(buf, 2); err != nil {
 		return err
 	} else {
 		p.ClearingFirm = val
 	}
-	if val, err := codec.GetBasicTypeLE[int64](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[int64](buf); err != nil {
 		return err
 	} else {
 		p.TransactTime = val
 	}
-	if val, err := codec.GetFixedString(buf, 32); err != nil {
+	if val, err := codec.ReadFixedString(buf, 32); err != nil {
 		return err
 	} else {
 		p.UserInfo = val
 	}
-	if val, err := codec.GetFixedString(buf, 10); err != nil {
+	if val, err := codec.ReadFixedString(buf, 10); err != nil {
 		return err
 	} else {
 		p.ClOrdId = val
 	}
-	if val, err := codec.GetFixedString(buf, 10); err != nil {
+	if val, err := codec.ReadFixedString(buf, 10); err != nil {
 		return err
 	} else {
 		p.AccountId = val
 	}
-	if val, err := codec.GetFixedString(buf, 2); err != nil {
+	if val, err := codec.ReadFixedString(buf, 2); err != nil {
 		return err
 	} else {
 		p.BranchId = val
 	}
-	if val, err := codec.GetFixedString(buf, 10); err != nil {
+	if val, err := codec.ReadFixedString(buf, 10); err != nil {
 		return err
 	} else {
 		p.QuoteRespId = val
 	}
-	if val, err := codec.GetBasicTypeLE[uint8](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint8](buf); err != nil {
 		return err
 	} else {
 		p.QuoteRespType = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.ReadFixedString(buf, 1); err != nil {
 		return err
 	} else {
 		p.Side = val
 	}
-	if val, err := codec.GetBasicTypeLE[int64](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[int64](buf); err != nil {
 		return err
 	} else {
 		p.ValidUntilTime = val
 	}
-	if val, err := codec.GetBasicTypeLE[uint8](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint8](buf); err != nil {
 		return err
 	} else {
 		p.QuoteType = val
 	}
-	if val, err := codec.GetBasicTypeLE[uint8](buf); err != nil {
+	if val, err := codec.ReadBasicTypeLE[uint8](buf); err != nil {
 		return err
 	} else {
 		p.PriceType = val
 	}
-	if val, err := codec.GetObjectListLE[uint16](buf, func() *Quote2 { return &Quote2{} }); err != nil {
+	if val, err := codec.ReadObjectListLE[uint16](buf, func() *Quote2 { return &Quote2{} }); err != nil {
 		return err
 	} else {
 		p.Quote2 = val

@@ -36,28 +36,28 @@ func (p *NewOrder) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *NewOrder) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutString[uint32](buf, p.UniqueOrderId); err != nil {
+	if err := codec.WriteString[uint32](buf, p.UniqueOrderId); err != nil {
 		return err
 	}
-	if err := codec.PutString[uint32](buf, p.ClOrdId); err != nil {
+	if err := codec.WriteString[uint32](buf, p.ClOrdId); err != nil {
 		return err
 	}
-	if err := codec.PutString[uint32](buf, p.SecurityId); err != nil {
+	if err := codec.WriteString[uint32](buf, p.SecurityId); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.Side, 1); err != nil {
+	if err := codec.WriteFixedString(buf, p.Side, 1); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.Price); err != nil {
+	if err := codec.WriteBasicType(buf, p.Price); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "Price", err)
 	}
-	if err := codec.PutBasicType(buf, p.OrderQty); err != nil {
+	if err := codec.WriteBasicType(buf, p.OrderQty); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "OrderQty", err)
 	}
-	if err := codec.PutFixedString(buf, p.OrdType, 1); err != nil {
+	if err := codec.WriteFixedString(buf, p.OrdType, 1); err != nil {
 		return err
 	}
-	if err := codec.PutString[uint32](buf, p.Account); err != nil {
+	if err := codec.WriteString[uint32](buf, p.Account); err != nil {
 		return err
 	}
 	return nil
@@ -65,42 +65,42 @@ func (p *NewOrder) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *NewOrder) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.UniqueOrderId = val
 	}
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.ClOrdId = val
 	}
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.SecurityId = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.ReadFixedString(buf, 1); err != nil {
 		return err
 	} else {
 		p.Side = val
 	}
-	if val, err := codec.GetBasicType[uint64](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint64](buf); err != nil {
 		return err
 	} else {
 		p.Price = val
 	}
-	if val, err := codec.GetBasicType[uint64](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint64](buf); err != nil {
 		return err
 	} else {
 		p.OrderQty = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.ReadFixedString(buf, 1); err != nil {
 		return err
 	} else {
 		p.OrdType = val
 	}
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.Account = val

@@ -37,22 +37,22 @@ func (p *SubExecRptSyncRsp) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *SubExecRptSyncRsp) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.Pbu, 8); err != nil {
+	if err := codec.WriteFixedString(buf, p.Pbu, 8); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.SetId); err != nil {
+	if err := codec.WriteBasicType(buf, p.SetId); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "SetID", err)
 	}
-	if err := codec.PutBasicType(buf, p.BeginReportIndex); err != nil {
+	if err := codec.WriteBasicType(buf, p.BeginReportIndex); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "BeginReportIndex", err)
 	}
-	if err := codec.PutBasicType(buf, p.EndReportIndex); err != nil {
+	if err := codec.WriteBasicType(buf, p.EndReportIndex); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "EndReportIndex", err)
 	}
-	if err := codec.PutBasicType(buf, p.RejReason); err != nil {
+	if err := codec.WriteBasicType(buf, p.RejReason); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "RejReason", err)
 	}
-	if err := codec.PutFixedString(buf, p.Text, 64); err != nil {
+	if err := codec.WriteFixedString(buf, p.Text, 64); err != nil {
 		return err
 	}
 	return nil
@@ -60,32 +60,32 @@ func (p *SubExecRptSyncRsp) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *SubExecRptSyncRsp) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 8); err != nil {
+	if val, err := codec.ReadFixedString(buf, 8); err != nil {
 		return err
 	} else {
 		p.Pbu = val
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.SetId = val
 	}
-	if val, err := codec.GetBasicType[uint64](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint64](buf); err != nil {
 		return err
 	} else {
 		p.BeginReportIndex = val
 	}
-	if val, err := codec.GetBasicType[uint64](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint64](buf); err != nil {
 		return err
 	} else {
 		p.EndReportIndex = val
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.RejReason = val
 	}
-	if val, err := codec.GetFixedString(buf, 64); err != nil {
+	if val, err := codec.ReadFixedString(buf, 64); err != nil {
 		return err
 	} else {
 		p.Text = val
@@ -111,7 +111,7 @@ func (p *ExecRptSyncRsp) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *ExecRptSyncRsp) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutObjectList[uint16](buf, p.SubExecRptSyncRsp); err != nil {
+	if err := codec.WriteObjectList[uint16](buf, p.SubExecRptSyncRsp); err != nil {
 		return err
 	}
 	return nil
@@ -119,7 +119,7 @@ func (p *ExecRptSyncRsp) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *ExecRptSyncRsp) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetObjectList[uint16](buf, func() *SubExecRptSyncRsp { return &SubExecRptSyncRsp{} }); err != nil {
+	if val, err := codec.ReadObjectList[uint16](buf, func() *SubExecRptSyncRsp { return &SubExecRptSyncRsp{} }); err != nil {
 		return err
 	} else {
 		p.SubExecRptSyncRsp = val

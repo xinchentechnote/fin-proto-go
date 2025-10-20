@@ -36,28 +36,28 @@ func (p *Extend206302) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *Extend206302) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.RejectText, 16); err != nil {
+	if err := codec.WriteFixedString(buf, p.RejectText, 16); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.StopPx); err != nil {
+	if err := codec.WriteBasicType(buf, p.StopPx); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "StopPx", err)
 	}
-	if err := codec.PutBasicType(buf, p.MinQty); err != nil {
+	if err := codec.WriteBasicType(buf, p.MinQty); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MinQty", err)
 	}
-	if err := codec.PutBasicType(buf, p.MaxPriceLevels); err != nil {
+	if err := codec.WriteBasicType(buf, p.MaxPriceLevels); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "MaxPriceLevels", err)
 	}
-	if err := codec.PutFixedString(buf, p.TimeInForce, 1); err != nil {
+	if err := codec.WriteFixedString(buf, p.TimeInForce, 1); err != nil {
 		return err
 	}
-	if err := codec.PutFixedString(buf, p.LotType, 1); err != nil {
+	if err := codec.WriteFixedString(buf, p.LotType, 1); err != nil {
 		return err
 	}
-	if err := codec.PutBasicType(buf, p.ImcrejectTextLen); err != nil {
+	if err := codec.WriteBasicType(buf, p.ImcrejectTextLen); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "IMCRejectTextLen", err)
 	}
-	if err := codec.PutString[uint32](buf, p.ImcrejectText); err != nil {
+	if err := codec.WriteString[uint32](buf, p.ImcrejectText); err != nil {
 		return err
 	}
 	return nil
@@ -65,42 +65,42 @@ func (p *Extend206302) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *Extend206302) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 16); err != nil {
+	if val, err := codec.ReadFixedString(buf, 16); err != nil {
 		return err
 	} else {
 		p.RejectText = val
 	}
-	if val, err := codec.GetBasicType[int64](buf); err != nil {
+	if val, err := codec.ReadBasicType[int64](buf); err != nil {
 		return err
 	} else {
 		p.StopPx = val
 	}
-	if val, err := codec.GetBasicType[int64](buf); err != nil {
+	if val, err := codec.ReadBasicType[int64](buf); err != nil {
 		return err
 	} else {
 		p.MinQty = val
 	}
-	if val, err := codec.GetBasicType[uint16](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint16](buf); err != nil {
 		return err
 	} else {
 		p.MaxPriceLevels = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.ReadFixedString(buf, 1); err != nil {
 		return err
 	} else {
 		p.TimeInForce = val
 	}
-	if val, err := codec.GetFixedString(buf, 1); err != nil {
+	if val, err := codec.ReadFixedString(buf, 1); err != nil {
 		return err
 	} else {
 		p.LotType = val
 	}
-	if val, err := codec.GetBasicType[uint32](buf); err != nil {
+	if val, err := codec.ReadBasicType[uint32](buf); err != nil {
 		return err
 	} else {
 		p.ImcrejectTextLen = val
 	}
-	if val, err := codec.GetString[uint32](buf); err != nil {
+	if val, err := codec.ReadString[uint32](buf); err != nil {
 		return err
 	} else {
 		p.ImcrejectText = val

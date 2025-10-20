@@ -30,10 +30,10 @@ func (p *PartitionReport) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *PartitionReport) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutBasicType(buf, p.PartitionNo); err != nil {
+	if err := codec.WriteBasicType(buf, p.PartitionNo); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "PartitionNo", err)
 	}
-	if err := codec.PutBasicType(buf, p.ReportIndex); err != nil {
+	if err := codec.WriteBasicType(buf, p.ReportIndex); err != nil {
 		return fmt.Errorf("failed to encode %s: %w", "ReportIndex", err)
 	}
 	return nil
@@ -41,12 +41,12 @@ func (p *PartitionReport) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *PartitionReport) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetBasicType[int32](buf); err != nil {
+	if val, err := codec.ReadBasicType[int32](buf); err != nil {
 		return err
 	} else {
 		p.PartitionNo = val
 	}
-	if val, err := codec.GetBasicType[int64](buf); err != nil {
+	if val, err := codec.ReadBasicType[int64](buf); err != nil {
 		return err
 	} else {
 		p.ReportIndex = val

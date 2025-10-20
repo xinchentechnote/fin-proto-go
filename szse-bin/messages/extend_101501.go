@@ -29,7 +29,7 @@ func (p *Extend101501) String() string {
 // Encode encodes the packet into a byte slice.
 func (p *Extend101501) Encode(buf *bytes.Buffer) error {
 	// Implement encoding logic here.
-	if err := codec.PutFixedString(buf, p.ShareProperty, 2); err != nil {
+	if err := codec.WriteFixedString(buf, p.ShareProperty, 2); err != nil {
 		return err
 	}
 	return nil
@@ -37,7 +37,7 @@ func (p *Extend101501) Encode(buf *bytes.Buffer) error {
 
 // Decode decodes the packet from a byte slice.
 func (p *Extend101501) Decode(buf *bytes.Buffer) error {
-	if val, err := codec.GetFixedString(buf, 2); err != nil {
+	if val, err := codec.ReadFixedString(buf, 2); err != nil {
 		return err
 	} else {
 		p.ShareProperty = val
