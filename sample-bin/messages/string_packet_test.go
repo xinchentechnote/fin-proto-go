@@ -12,16 +12,18 @@ import (
 func TestStringPacketCodec(t *testing.T) {
 
 	original := &msg.StringPacket{
-		FieldDynamicString:        "hello",
-		FieldDynamicString1:       "hello",
-		FieldFixedString1:         "x",
-		FieldFixedString10:        "xxxxxxxxxx",
-		FieldFixedString10Pad:     "xxxxxxxxxx",
-		FieldDynamicStringList:    []string{"hello"},
-		FieldDynamicString1List:   []string{"hello"},
-		FieldFixedString1List:     []string{"x"},
-		FieldFixedString10List:    []string{"xxxxxxxxxx"},
-		FieldFixedString10ListPad: []string{"xxxxxxxxxx"},
+		FieldDynamicString:                          "hello",
+		FieldDynamicString1:                         "hello",
+		FieldFixedString1:                           "x",
+		FieldFixedString10:                          "xxxxxxxxxx",
+		FieldFixedString10Pad:                       "xxxxxxxxxx",
+		FieldFixedString10PadWithNullTerminator:     "xxxxxxxxxx",
+		FieldDynamicStringList:                      []string{"hello"},
+		FieldDynamicString1List:                     []string{"hello"},
+		FieldFixedString1List:                       []string{"x"},
+		FieldFixedString10List:                      []string{"xxxxxxxxxx"},
+		FieldFixedString10ListPad:                   []string{"xxxxxxxxxx"},
+		FieldFixedString10PadWithNullTerminatorList: []string{"xxxxxxxxxx"},
 	}
 	var buf bytes.Buffer
 	assert.NoError(t, original.Encode(&buf))
